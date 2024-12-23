@@ -1,0 +1,20 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-c",
+      "-Wall",
+      "-arch",
+      "arm64",
+      "-fPIC",
+      "-I./libs/",
+      "-I/opt/homebrew/Cellar/luajit/2.1.1734355927/include/luajit-2.1/",
+      "-o",
+      "build/luaminiaudio.so",
+      "src/luaminiaudio.c"
+    ],
+    "directory": "/Users/castlelecs/dev/projects/LovePlayer",
+    "file": "/Users/castlelecs/dev/projects/LovePlayer/src/luaminiaudio.c",
+    "output": "/Users/castlelecs/dev/projects/LovePlayer/build/luaminiaudio.so"
+  }
+]

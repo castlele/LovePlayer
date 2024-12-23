@@ -1,0 +1,248 @@
+{
+  "main": {
+    "id": "a4ba45d878a19608",
+    "type": "split",
+    "children": [
+      {
+        "id": "020c583dba61beb9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "09eafae1337c6a75",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "056958fe525237ed",
+    "type": "split",
+    "children": [
+      {
+        "id": "395ce8d0f32f868a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "46ba84b2915067f3",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "8c53273b0fd917ad",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "b78e8500370f9237",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "horizontal",
+    "width": 230.50043487548828
+  },
+  "right": {
+    "id": "75ff9a8d2812c2a0",
+    "type": "split",
+    "children": [
+      {
+        "id": "6858eb8f58093009",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9d4a0e93af6f04aa",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {},
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          },
+          {
+            "id": "ac4592af03549e93",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "c346abf890d4bc95",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "computer_science/dataStructures/trees/binary_tree.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for binary_tree"
+            }
+          },
+          {
+            "id": "2bcc6ec5c2857a14",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "computer_science/dataStructures/trees/binary_tree.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from binary_tree"
+            }
+          }
+        ]
+      },
+      {
+        "id": "27f00551efd5d624",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "88c4a5f9848f39c6",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "e0dac9a79621043c",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 246.5,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "graph:Open graph view": false,
+      "obsidian-kanban:Create new board": false,
+      "switcher:Open quick switcher": false,
+      "canvas:Create new canvas": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "daily-notes:Open today's daily note": false,
+      "audio-recorder:Start/stop recording": false
+    }
+  },
+  "active": "09eafae1337c6a75",
+  "lastOpenFiles": [
+    "mvp_plan.md",
+    "[MacOS] Implement flow of picking folder ui.md",
+    "music_folder_picker.md",
+    "mindmap.canvas",
+    "statistics.md",
+    "user_map.canvas",
+    "lists.md",
+    "player.md",
+    "Untitled",
+    "backend",
+    "UI",
+    "notes/toughts.md",
+    "notes/2025/idp.md",
+    "games/2025/idp.md",
+    "notes/2025/goals.canvas",
+    "devops/2025/idp.md",
+    "entrepreneurship/2025/idp.md",
+    "road_map.canvas",
+    "idp.md",
+    "notes/2025",
+    "notes/goals.canvas",
+    "notes/ideas.canvas",
+    "games/2025",
+    "entrepreneurship/2025",
+    "entrepreneurship",
+    "notes/joy.md",
+    "devops/2025",
+    "notes/ideas.md",
+    "2024-12-22.md",
+    "notes/materials_log.md",
+    "notes/2024/idp_results.md",
+    "notes/2024",
+    "notes/alco.md",
+    "MaterialsLog.md",
+    "computer_science/algorithms/patterns.md",
+    "computer_science/algorithms/bubleSort.md",
+    "notes/CV.md",
+    "notes/MaterialsLog.md",
+    "notes/windows_notes.md",
+    "notes/cs2.md",
+    "notes/macos_notes.md",
+    "notes",
+    "res/k8s_architecture.png",
+    "k8s_architecture.png",
+    "Pasted image 20241214125642.png",
+    "res/uuid_version.png",
+    "res/uuid_variation.png",
+    "uuid_variation.png",
+    "Pasted image 20241214084632.png",
+    "res/uuid-version.png",
+    "uuid-version.png",
+    "Pasted image 20241214083749.png",
+    "road.canvas"
+  ]
+}

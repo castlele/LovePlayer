@@ -1,0 +1,22 @@
+{
+  "show-checkboxes": true,
+  "tag-colors": [
+    {
+      "tagKey": "#ui",
+      "color": "rgba(255, 255, 255, 0.93)",
+      "backgroundColor": "rgba(255, 95, 95, 0.79)"
+    },
+    {
+      "tagKey": "#backend",
+      "color": "rgba(84, 84, 84, 1)",
+      "backgroundColor": "rgba(194, 255, 173, 0.89)"
+    },
+    {
+      "tagKey": "#music_folder_picker",
+      "color": "rgba(104, 104, 104, 1)",
+      "backgroundColor": "rgba(255, 223, 123, 0.64)"
+    }
+  ],
+  "move-tags": true,
+  "tag-sort": []
+}

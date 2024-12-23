@@ -1,0 +1,194 @@
+{
+  "main": {
+    "id": "b011c7eceda5726f",
+    "type": "split",
+    "children": [
+      {
+        "id": "b29d6e1effd1ff41",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e72c1cdcb06bb126",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "languages/objc/objc.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "objc"
+            }
+          },
+          {
+            "id": "de3c93d9622bf41c",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "eed4f6f025f0859e",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "5c19ef7121243f61",
+        "type": "leaf",
+        "state": {
+          "type": "file-explorer",
+          "state": {
+            "sortOrder": "alphabetical"
+          },
+          "icon": "lucide-folder-closed",
+          "title": "Files"
+        }
+      },
+      {
+        "id": "b05db697b0f5afef",
+        "type": "leaf",
+        "state": {
+          "type": "search",
+          "state": {
+            "query": "",
+            "matchingCase": false,
+            "explainSearch": false,
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical"
+          },
+          "icon": "lucide-search",
+          "title": "Search"
+        }
+      },
+      {
+        "id": "50050890d4314a83",
+        "type": "leaf",
+        "state": {
+          "type": "tag",
+          "state": {
+            "sortOrder": "frequency",
+            "useHierarchy": true
+          },
+          "icon": "lucide-tags",
+          "title": "Tags"
+        }
+      },
+      {
+        "id": "b227fc3d01fe967a",
+        "type": "leaf",
+        "state": {
+          "type": "bookmarks",
+          "state": {},
+          "icon": "lucide-bookmark",
+          "title": "Bookmarks"
+        }
+      },
+      {
+        "id": "88f0afcfb70ac89a",
+        "type": "leaf",
+        "state": {
+          "type": "all-properties",
+          "state": {
+            "sortOrder": "frequency",
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-archive",
+          "title": "All properties"
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "right": {
+    "id": "c9809e4b6a61ad2b",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "4f0b1ace19b7b5e8",
+        "type": "leaf",
+        "state": {
+          "type": "backlink",
+          "state": {
+            "file": "languages/objc/objc.md",
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical",
+            "showSearch": false,
+            "searchQuery": "",
+            "backlinkCollapsed": false,
+            "unlinkedCollapsed": true
+          },
+          "icon": "links-coming-in",
+          "title": "Backlinks"
+        }
+      },
+      {
+        "id": "1aee4015d8c8835d",
+        "type": "leaf",
+        "state": {
+          "type": "outgoing-link",
+          "state": {
+            "file": "languages/objc/objc.md",
+            "linksCollapsed": false,
+            "unlinkedCollapsed": true
+          },
+          "icon": "links-going-out",
+          "title": "Outgoing links"
+        }
+      },
+      {
+        "id": "4d6839b3bfefaacc",
+        "type": "leaf",
+        "state": {
+          "type": "outline",
+          "state": {
+            "file": "languages/objc/objc.md"
+          },
+          "icon": "lucide-list",
+          "title": "Outline"
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "obsidian-kanban:Create new board": false,
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "audio-recorder:Start/stop recording": false
+    }
+  },
+  "active": "e72c1cdcb06bb126",
+  "lastOpenFiles": [
+    "ios/interview_plan.md",
+    "languages/kotlin/Basic language concepts.md",
+    "road_map.canvas",
+    "languages/java/java.md",
+    "Untitled.md",
+    "CV.md",
+    "computer_science/multithreading/Future and Promises.md",
+    "computer_science/multithreading",
+    "computer_science/HLS.md",
+    "MaterialsLog.md",
+    "devops/raid.md",
+    "devops/bash.md",
+    "ÆÑ«ÓÑÔ¿þÑß¬¿® ¼¿¡¿¼Ò¼ »« Computer Science. éßÑ, þÔ« ¡Òª¡« »Ó«úÓá¼¼¿ßÔÒ ¿ ÓáºÓáí«Ôþ¿¬Ò [2018] é½áñßÔ«¡ öÑÓÓÑ®Óá ö¿½«.pdf",
+    "ÆÑ«ÓÑÔ¿þÑß¬¿® ¼¿¡¿¼Ò¼ »« Computer Science. æÑÔ¿, ¬Ó¿»Ô«úÓáõ¿´ ¿ data science [2022] ö¿½«,  Å¿¬ÔÑÔ.epub",
+    "kmp/coroutines/coroutines.md"
+  ]
+}

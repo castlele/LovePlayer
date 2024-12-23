@@ -1,0 +1,27 @@
+{
+	"nodes":[
+		{"id":"cb24669f8b3e399d","x":640,"y":-253,"width":1554,"height":487,"color":"3","type":"group","label":"Epics"},
+		{"id":"359643a953cd5c47","type":"group","x":-360,"y":-220,"width":340,"height":420,"label":"MVP"},
+		{"id":"f531533b229339d8","type":"group","x":180,"y":-155,"width":260,"height":290,"color":"4","label":"Tasks domain areas"},
+		{"id":"1db7436d5f306205","type":"text","text":"Statistics collection:\n- how much time was spent on the certain tracks\n- show this as most popular tracks, artists, albums","x":-340,"y":-120,"width":300,"height":180},
+		{"id":"de1ff08f9b38663a","type":"text","text":"Show tracks as plain list, as list of artists and as list of albums","x":-340,"y":80,"width":300,"height":100},
+		{"id":"00e0de05768285bd","type":"text","text":"Player functionality","x":-340,"y":-200,"width":300,"height":60},
+		{"id":"20f3c11c0c977692","type":"text","text":"⚠️ This is very important not to worry about UI","x":-740,"y":-420,"width":365,"height":78,"color":"#ff0000"},
+		{"id":"aaef51feb4516eea","type":"file","file":"user_map.canvas","x":-957,"y":160,"width":400,"height":310,"color":"1"},
+		{"id":"3675d695e0bb4cf6","type":"text","text":"Business logic","x":234,"y":-105,"width":164,"height":60,"color":"#bff7cb"},
+		{"id":"4b38c1a768370656","type":"text","text":"UI","x":282,"y":25,"width":68,"height":60,"color":"2"},
+		{"id":"32597f9b2a52d6ce","type":"file","file":"music_folder_picker.md","x":660,"y":-233,"width":318,"height":447},
+		{"id":"74884f5200c476d5","type":"file","file":"lists.md","x":1018,"y":-233,"width":316,"height":447},
+		{"id":"9c39dc460c8f183c","type":"file","file":"player.md","x":1374,"y":-233,"width":360,"height":447},
+		{"id":"4498a9b7fd30b3f1","type":"file","file":"statistics.md","x":1774,"y":-233,"width":400,"height":447}
+	],
+	"edges":[
+		{"id":"16b36f6a36cb3702","fromNode":"20f3c11c0c977692","fromSide":"right","toNode":"359643a953cd5c47","toSide":"top","toEnd":"none","color":"#ff0000"},
+		{"id":"03c23cc76557c961","fromNode":"aaef51feb4516eea","fromSide":"top","toNode":"359643a953cd5c47","toSide":"left","toEnd":"none","color":"1"},
+		{"id":"b695443aa34e49cf","fromNode":"359643a953cd5c47","fromSide":"right","toNode":"f531533b229339d8","toSide":"left"},
+		{"id":"32271b87106130a0","fromNode":"f531533b229339d8","fromSide":"right","toNode":"32597f9b2a52d6ce","toSide":"left"},
+		{"id":"d140955b07fd1569","fromNode":"32597f9b2a52d6ce","fromSide":"right","toNode":"74884f5200c476d5","toSide":"left"},
+		{"id":"6b540e7f30ae5b0b","fromNode":"74884f5200c476d5","fromSide":"right","toNode":"9c39dc460c8f183c","toSide":"left"},
+		{"id":"cf9a674e630a82c8","fromNode":"9c39dc460c8f183c","fromSide":"right","toNode":"4498a9b7fd30b3f1","toSide":"left"}
+	]
+}

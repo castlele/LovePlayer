@@ -1,0 +1,2 @@
+--- Module is responsible for getting data about audio files in the requested folder.
+--- Its main goal is to provide a list of songs with every possible metadata.

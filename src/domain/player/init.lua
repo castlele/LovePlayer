@@ -1,0 +1,2 @@
+--- Module is responsible for managing track queues and playing songs (managing player lifecycle)
+--- Its main goal is to provide an interface for playing music.

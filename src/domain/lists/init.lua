@@ -1,0 +1,2 @@
+--- Module is responsible for managing track lists.
+--- Its main goal it to sort, filter and combine lists of songs.

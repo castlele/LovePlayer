@@ -6,8 +6,6 @@ kanban-plugin: board
 
 ## Tasks
 
-- [ ] Research architecture for backend #backend #music_folder_picker #1h
-- [ ] Create empty state with non picked folder #1_5h #ui #music_folder_picker
 - [ ] Implement button for folder picking #30m #music_folder_picker#ui
 - [ ] [MacOS] Implement flow of picking folder #2h #ui #music_folder_picker
 - [ ] [iOS/iPadOS] Implement flow of picking folder #music_folder_picker  #ui
@@ -24,6 +22,8 @@ kanban-plugin: board
 
 ## Done
 
+- [x] Research architecture for backend #backend #music_folder_picker #1h
+- [x] Create empty state with non picked folder #1_5h #ui #music_folder_picker
 
 
 

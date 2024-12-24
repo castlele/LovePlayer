@@ -11,10 +11,37 @@
             "id": "09eafae1337c6a75",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
+              "type": "kanban",
+              "state": {
+                "file": "mvp_plan.md",
+                "kanbanViewState": {
+                  "kanban-plugin": "board",
+                  "list-collapse": [
+                    false,
+                    false,
+                    false
+                  ]
+                }
+              },
+              "icon": "lucide-trello",
+              "title": "mvp_plan"
+            }
+          },
+          {
+            "id": "6aa588e01e1da641",
+            "type": "leaf",
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "mindmap.canvas",
+                "viewState": {
+                  "x": 618.5,
+                  "y": 25,
+                  "zoom": -0.8887328431840702
+                }
+              },
+              "icon": "lucide-layout-dashboard",
+              "title": "mindmap"
             }
           }
         ]
@@ -74,7 +101,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 230.50043487548828
+    "width": 230.50043487548828,
+    "collapsed": true
   },
   "right": {
     "id": "75ff9a8d2812c2a0",
@@ -191,10 +219,11 @@
   },
   "active": "09eafae1337c6a75",
   "lastOpenFiles": [
+    "mindmap.canvas",
+    "Untitled.md",
     "mvp_plan.md",
     "[MacOS] Implement flow of picking folder ui.md",
     "music_folder_picker.md",
-    "mindmap.canvas",
     "statistics.md",
     "user_map.canvas",
     "lists.md",
@@ -230,8 +259,6 @@
     "notes/CV.md",
     "notes/MaterialsLog.md",
     "notes/windows_notes.md",
-    "notes/cs2.md",
-    "notes/macos_notes.md",
     "notes",
     "res/k8s_architecture.png",
     "k8s_architecture.png",

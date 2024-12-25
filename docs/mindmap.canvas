@@ -1,6 +1,6 @@
 {
 	"nodes":[
-		{"id":"cb24669f8b3e399d","x":640,"y":-253,"width":1554,"height":487,"color":"3","type":"group","label":"Epics"},
+		{"id":"cb24669f8b3e399d","type":"group","x":640,"y":-253,"width":1554,"height":487,"color":"3","label":"Epics"},
 		{"id":"359643a953cd5c47","type":"group","x":-360,"y":-220,"width":340,"height":420,"label":"MVP"},
 		{"id":"f531533b229339d8","type":"group","x":180,"y":-155,"width":260,"height":290,"color":"4","label":"Tasks domain areas"},
 		{"id":"1db7436d5f306205","type":"text","text":"Statistics collection:\n- how much time was spent on the certain tracks\n- show this as most popular tracks, artists, albums","x":-340,"y":-120,"width":300,"height":180},

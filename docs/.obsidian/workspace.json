@@ -96,13 +96,11 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 230.50043487548828,
-    "collapsed": true
+    "width": 230.50043487548828
   },
   "right": {
     "id": "75ff9a8d2812c2a0",
@@ -220,14 +218,14 @@
   "active": "09eafae1337c6a75",
   "lastOpenFiles": [
     "mindmap.canvas",
-    "Untitled.md",
-    "mvp_plan.md",
-    "[MacOS] Implement flow of picking folder ui.md",
-    "music_folder_picker.md",
-    "statistics.md",
-    "user_map.canvas",
     "lists.md",
+    "music_folder_picker.md",
+    "mvp_plan.md",
     "player.md",
+    "statistics.md",
+    "Untitled.md",
+    "[MacOS] Implement flow of picking folder ui.md",
+    "user_map.canvas",
     "Untitled",
     "backend",
     "UI",

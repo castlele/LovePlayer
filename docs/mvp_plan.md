@@ -6,9 +6,8 @@ kanban-plugin: board
 
 ## Tasks
 
-- [ ] Implement button for folder picking #30m #music_folder_picker#ui
-- [ ] [MacOS] Implement flow of picking folder #2h #ui #music_folder_picker
 - [ ] [iOS/iPadOS] Implement flow of picking folder #music_folder_picker  #ui
+- [ ] [MacOS] Implement flow of picking folder #2h #ui #music_folder_picker
 - [ ] [Android] Implement flow of picking folder #music_folder_picker  #ui
 - [ ] Implement reload button #30m #ui #music_folder_picker
 - [ ] Implement folder parsing #backend #music_folder_picker #1_5h
@@ -18,6 +17,7 @@ kanban-plugin: board
 
 ## In Progress
 
+- [ ] Implement button for folder picking #30m #music_folder_picker#ui
 
 
 ## Done

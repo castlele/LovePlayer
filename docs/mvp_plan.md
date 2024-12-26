@@ -16,11 +16,11 @@ kanban-plugin: board
 
 ## In Progress
 
-- [ ] [MacOS] Implement flow of picking folder #2h #ui #music_folder_picker
 
 
 ## Done
 
+- [x] [MacOS] Implement flow of picking folder #2h #ui #music_folder_picker
 - [x] Research architecture for backend #backend #music_folder_picker #1h
 - [x] Create empty state with non picked folder #1_5h #ui #music_folder_picker
 - [x] Implement button for folder picking #30m #music_folder_picker#ui

@@ -4,13 +4,13 @@ local Image = require("src.ui.image")
 local Color = require("src.ui.color")
 local geom = require("src.ui.geometry")
 
----@class EmptyView : View
----@field private image Image
+---@class List : View
+---@field private noFolderImage Image
 ---@field private folderPickerButton Button
-local EmptyView = View()
+local List = View()
 
 
-function EmptyView:load()
+function List:load()
    ---@diagnostic disable-next-line
    View.load(self)
    self.size = geom.Size(
@@ -19,37 +19,42 @@ function EmptyView:load()
    )
 
    local path = "res/no_folder.png"
-   self.image = Image()
-   self.image:addImage(path)
+   self.noFolderImage = Image()
+   self.noFolderImage:addImage(path)
 
    self.folderPickerButton = Button()
    self.folderPickerButton.size = geom.Size(100, 50)
    self.folderPickerButton.backgroundColor = Color(0, 0, 1, 1)
-   self.folderPickerButton:addTapAction(function ()
-      print("Picking folder with music!")
-   end)
+   self.folderPickerButton:addTapAction(function () self:openFolder() end)
 
-   self:addSubview(self.image)
+   self:addSubview(self.noFolderImage)
    self:addSubview(self.folderPickerButton)
 end
 
-function EmptyView:update(dt)
+function List:openFolder()
+   local nfd = require("nfd")
+   local result = nfd.openFolder()
+
+   print(result)
+end
+
+function List:update(dt)
    local buttonX = self.size.width / 2 - self.folderPickerButton.size.width / 2
    local buttonY = self.size.height - self.folderPickerButton.size.height
    self.folderPickerButton.origin.x = buttonX
    self.folderPickerButton.origin.y = buttonY
 
-   local imageX = self.size.width / 2 - self.image.size.width / 2
-   local imageY = self.size.height / 2 - self.image.size.height / 2
-   self.image.origin.x = imageX
-   self.image.origin.y = imageY
+   local noFolderImageX = self.size.width / 2 - self.noFolderImage.size.width / 2
+   local noFolderImageY = self.size.height / 2 - self.noFolderImage.size.height / 2
+   self.noFolderImage.origin.x = noFolderImageX
+   self.noFolderImage.origin.y = noFolderImageY
 
    View.update(self, dt)
 end
 
-function EmptyView:toString()
-   return "EmptyView"
+function List:toString()
+   return "List"
 end
 
 
-return EmptyView
+return List

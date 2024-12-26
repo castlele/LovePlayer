@@ -18,5 +18,8 @@ build_$(MINIAUDIO_BINDINGS_NAME):
 	clear
 	$(CC) $(ARCHIVE_CFLAGS) $(INCLUDE) $(LUA_LIBS) $(MINIAUDIO_BINDINGS_SRC) -o $(MINIAUDIO_BINDINGS)
 
+install:
+	cd libs/nativefiledialog && luarocks make lua/nfd-scm-1.rockspec
+
 clean:
 	rm -rf $(BUILD)/*

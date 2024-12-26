@@ -1,0 +1,3 @@
+[submodule "libs/nativefiledialog"]
+	path = libs/nativefiledialog
+	url = git@github.com:Alloyed/nativefiledialog.git

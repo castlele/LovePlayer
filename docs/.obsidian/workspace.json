@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "020c583dba61beb9",
+        "id": "4951d0702d889117",
         "type": "tabs",
         "children": [
           {
-            "id": "09eafae1337c6a75",
+            "id": "91c90efb74ed77eb",
             "type": "leaf",
             "state": {
               "type": "kanban",
@@ -25,23 +25,6 @@
               },
               "icon": "lucide-trello",
               "title": "mvp_plan"
-            }
-          },
-          {
-            "id": "6aa588e01e1da641",
-            "type": "leaf",
-            "state": {
-              "type": "canvas",
-              "state": {
-                "file": "mindmap.canvas",
-                "viewState": {
-                  "x": 618.5,
-                  "y": 25,
-                  "zoom": -0.8887328431840702
-                }
-              },
-              "icon": "lucide-layout-dashboard",
-              "title": "mindmap"
             }
           }
         ]
@@ -215,12 +198,12 @@
       "audio-recorder:Start/stop recording": false
     }
   },
-  "active": "09eafae1337c6a75",
+  "active": "91c90efb74ed77eb",
   "lastOpenFiles": [
     "mindmap.canvas",
+    "mvp_plan.md",
     "lists.md",
     "music_folder_picker.md",
-    "mvp_plan.md",
     "player.md",
     "statistics.md",
     "Untitled.md",

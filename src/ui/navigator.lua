@@ -1,17 +1,19 @@
 local EmptyView = require("src.ui.list.empty")
+local View = require("src.ui.view")
 local TabView = require("src.ui.tabview")
+local geom = require("src.ui.geometry")
 
 ---@enum (key) Flow
 local Flow = {
    INITIAL = 0,
 }
 
----@class Navigator
+---@class Navigator : View
 ---@field private tabView TabView
 ---@field private currentView View
 ---@field private currentFlow Flow
 ---@field private isFlowChanged boolean
-local Navigator = class()
+local Navigator = View()
 
 
 ---@param flow Flow
@@ -21,7 +23,13 @@ function Navigator:startFlow(flow)
 end
 
 function Navigator:load()
+   View.load(self)
+   self.size = geom.Size(
+      love.graphics.getWidth(),
+      love.graphics.getHeight()
+   )
    self.tabView = TabView()
+   self:addSubview(self.tabView)
 end
 
 ---@param dt number
@@ -31,18 +39,18 @@ function Navigator:update(dt)
          self:startInitialFlow()
       end
 
+      --BUG: Here will be a bug when view will start to actually change :)
       self.tabView:push(self.currentView)
    end
 
-   self.tabView:update(dt)
-
    self.isFlowChanged = false
+
+   View.update(self, dt)
 end
 
-function Navigator:draw()
-   self.tabView:draw()
+function Navigator:toString()
+   return "Navigator"
 end
-
 
 ---@private
 function Navigator:startInitialFlow()

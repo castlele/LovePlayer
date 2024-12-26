@@ -12,7 +12,6 @@ local geom = require("src.ui.geometry")
 ---@field origin Point
 ---@field size Size
 ---@field backgroundColor Color
----@field private events Event[]
 local View = class()
 
 
@@ -27,16 +26,13 @@ function View:startFlow(flow)
 end
 
 ---@param view View
-function View:addSubview(view)
-   table.insert(self.subviews, view)
-end
-
-function View:subcribe(name, predicate, event)
-   table.insert(self.events, {
-      name = name,
-      predicate = predicate,
-      event = event,
-   })
+---@param index integer?
+function View:addSubview(view, index)
+   table.insert(
+      self.subviews,
+      index or #self.subviews,
+      view
+   )
 end
 
 ---@param x number
@@ -59,17 +55,47 @@ function View:load()
    self.backgroundColor = Color(1, 1, 1, 1)
    self.origin = geom.Point(0, 0)
    self.size = geom.Size(0, 0)
-   self.events = {}
+end
+
+---@return boolean
+function View:isUserInteractionEnabled()
+   return false
+end
+
+---@param x number
+---@param y number
+---@param mouse number: The button index that was pressed. 1 is the primary mouse button, 2 is the secondary mouse button and 3 is the middle button. Further buttons are mouse dependent.
+---@param isTouch boolean: True if the mouse button press originated from a touchscreen touch-press
+---@diagnostic disable-next-line
+function View:handleMousePressed(x, y, mouse, isTouch)
+end
+
+---@param x number
+---@param y number
+---@param mouse number: The button index that was pressed. 1 is the primary mouse button, 2 is the secondary mouse button and 3 is the middle button. Further buttons are mouse dependent.
+---@param isTouch boolean: True if the mouse button press originated from a touchscreen touch-press
+---@return boolean
+function View:mousepressed(x, y, mouse, isTouch)
+   print(self:toString())
+   if not self:isPointInside(x, y) then
+      return false
+   end
+
+   if not self:isUserInteractionEnabled() then
+      for _, subview in pairs(self.subviews) do
+         if subview:mousepressed(x, y, mouse, isTouch) then
+            return true
+         end
+      end
+   else
+      self:handleMousePressed(x, y, mouse, isTouch)
+   end
+
+   return true
 end
 
 ---@param dt number
 function View:update(dt)
-   for _, event in pairs(self.events) do
-      if event.predicate() then
-         event.event()
-      end
-   end
-
    self:updateSubviews(dt)
 end
 
@@ -91,6 +117,10 @@ function View:draw()
    love.graphics.pop()
 
    self:drawSubviews()
+end
+
+function View:toString()
+   return "View"
 end
 
 ---@private

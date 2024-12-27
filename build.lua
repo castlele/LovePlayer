@@ -16,5 +16,6 @@ conf = {
       bear -- make build_luaminiaudio
       lua ./src/main.lua
    ]],
+   testAll = "./run_tests.sh \"*\"",
    run = love .. " .",
 }

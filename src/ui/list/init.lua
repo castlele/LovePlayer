@@ -3,6 +3,8 @@ local Button = require("src.ui.button")
 local Image = require("src.ui.image")
 local Color = require("src.ui.color")
 local geom = require("src.ui.geometry")
+local mediaLoader = require("src.domain.fm")
+local log = require("src.domain.logger")
 
 ---@class List : View
 ---@field private noFolderImage Image
@@ -33,9 +35,19 @@ end
 
 function List:openFolder()
    local nfd = require("nfd")
-   local result = nfd.openFolder()
+   local folderPath = nfd.openFolder()
 
-   print(result)
+   --WARN: Error handling should be added here
+   if not folderPath and not type(folderPath) == "string" then
+      log.logger.default.log(
+         "Can't get folder! Got: " .. folderPath,
+         ---@diagnostic disable-next-line
+         log.level.ERROR
+      )
+      return
+   end
+
+   local songs = mediaLoader.loadMedia(folderPath)
 end
 
 function List:update(dt)

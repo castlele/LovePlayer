@@ -8,6 +8,7 @@ local geom = require("src.ui.geometry")
 
 
 ---@class View
+---@field isHidden boolean
 ---@field subviews View[]
 ---@field origin Point
 ---@field size Size
@@ -20,11 +21,6 @@ function View:init()
    self:load()
 end
 
-function View:startFlow(flow)
-   self.currentFlow = flow
-   self.isFlowChanged = true
-end
-
 ---@param view View
 ---@param index integer?
 function View:addSubview(view, index)
@@ -33,6 +29,11 @@ function View:addSubview(view, index)
       index or #self.subviews,
       view
    )
+end
+
+---@return boolean
+function View:isUserInteractionEnabled()
+   return false
 end
 
 ---@param x number
@@ -50,24 +51,20 @@ function View:isPointInside(x, y)
    return isInsideWidth and isInsideHeight
 end
 
-function View:load()
-   self.subviews = {}
-   self.backgroundColor = Color(1, 1, 1, 1)
-   self.origin = geom.Point(0, 0)
-   self.size = geom.Size(0, 0)
-end
-
----@return boolean
-function View:isUserInteractionEnabled()
-   return false
-end
-
 ---@param x number
 ---@param y number
 ---@param mouse number: The button index that was pressed. 1 is the primary mouse button, 2 is the secondary mouse button and 3 is the middle button. Further buttons are mouse dependent.
 ---@param isTouch boolean: True if the mouse button press originated from a touchscreen touch-press
 ---@diagnostic disable-next-line
 function View:handleMousePressed(x, y, mouse, isTouch)
+end
+
+function View:load()
+   self.subviews = {}
+   self.isHidden = false
+   self.backgroundColor = Color(1, 1, 1, 1)
+   self.origin = geom.Point(0, 0)
+   self.size = geom.Size(0, 0)
 end
 
 ---@param x number
@@ -96,10 +93,18 @@ end
 
 ---@param dt number
 function View:update(dt)
+   if self.isHidden then
+      return
+   end
+
    self:updateSubviews(dt)
 end
 
 function View:draw()
+   if self.isHidden then
+      return
+   end
+
    love.graphics.push()
    love.graphics.setColor(
       self.backgroundColor.red,

@@ -5,7 +5,6 @@ local navigator = navigatorModule.navigator()
 
 function love.load()
    navigator:startFlow(navigatorModule.flow.INITIAL)
-   navigator:load()
 end
 
 ---@param x number

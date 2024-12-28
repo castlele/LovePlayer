@@ -2,9 +2,10 @@
 --- Its main goal is to provide a list of songs with every possible metadata.
 local Parser = require("src.domain.fm.folder_parser")
 local songs = require("src.domain.song")
-local log = require("src.domain.logger.init")
+local log = require("src.domain.logger")
 
 
+---@class MediaLoaderModule
 local M = {}
 
 

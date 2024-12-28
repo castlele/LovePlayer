@@ -1,65 +1,55 @@
-local View = require("src.ui.view")
 local Button = require("src.ui.button")
-local Image = require("src.ui.image")
 local Color = require("src.ui.color")
-local geom = require("src.ui.geometry")
+local EmptyView = require("src.ui.list.emptylist")
+local NavBar = require("src.ui.navbar")
+local View = require("src.ui.view")
 local mediaLoader = require("src.domain.fm")
-local log = require("src.domain.logger")
 
----@class List : View
----@field private noFolderImage Image
----@field private folderPickerButton Button
+---@class List : View, FolderPickerDelegate
+---@field private navBar NavBar
+---@field private emptyStateView EmptyView
 local List = View()
 
 
 function List:load()
    ---@diagnostic disable-next-line
    View.load(self)
-   self.size = geom.Size(
-      love.graphics.getWidth(),
-      love.graphics.getHeight()
-   )
 
-   local path = "res/no_folder.png"
-   self.noFolderImage = Image()
-   self.noFolderImage:addImage(path)
+   -- TODO: Nav bar should have link to parent to automatically fill width?
+   self.navBar = NavBar()
+   local reloadButton = Button()
+   -- TODO: Move to constants
+   reloadButton:addTapAction(function ()
+      -- mediaLoader.loadMedia(path, parser?)
+   end)
+   reloadButton.backgroundColor = Color(0, 1, 0, 1)
+   reloadButton.size.width = 50
+   reloadButton.size.height = 50
 
-   self.folderPickerButton = Button()
-   self.folderPickerButton.size = geom.Size(100, 50)
-   self.folderPickerButton.backgroundColor = Color(0, 0, 1, 1)
-   self.folderPickerButton:addTapAction(function () self:openFolder() end)
+   self.navBar.trailingView = reloadButton
+   self.navBar:addSubview(reloadButton)
+   self.emptyStateView = EmptyView()
+   self.emptyStateView.mediaLoader = mediaLoader
 
-   self:addSubview(self.noFolderImage)
-   self:addSubview(self.folderPickerButton)
-end
-
-function List:openFolder()
-   local nfd = require("nfd")
-   local folderPath = nfd.openFolder()
-
-   --WARN: Error handling should be added here
-   if not folderPath and not type(folderPath) == "string" then
-      log.logger.default.log(
-         "Can't get folder! Got: " .. folderPath,
-         ---@diagnostic disable-next-line
-         log.level.ERROR
-      )
-      return
+   ---@type fun(isSuccess: boolean)
+   self.onFolderPicked = function (isSuccess)
+      self.emptyStateView.isHidden = isSuccess
+      self.navBar.isHidden = not isSuccess
    end
 
-   local songs = mediaLoader.loadMedia(folderPath)
+   self.emptyStateView.folderPickerDelegate = self
+   self:addSubview(self.emptyStateView)
+   self:addSubview(self.navBar)
 end
 
 function List:update(dt)
-   local buttonX = self.size.width / 2 - self.folderPickerButton.size.width / 2
-   local buttonY = self.size.height - self.folderPickerButton.size.height
-   self.folderPickerButton.origin.x = buttonX
-   self.folderPickerButton.origin.y = buttonY
+   self.emptyStateView.size = self.size
 
-   local noFolderImageX = self.size.width / 2 - self.noFolderImage.size.width / 2
-   local noFolderImageY = self.size.height / 2 - self.noFolderImage.size.height / 2
-   self.noFolderImage.origin.x = noFolderImageX
-   self.noFolderImage.origin.y = noFolderImageY
+   self.navBar.size.width = self.size.width
+   self.navBar.size.height = 50
+   -- TODO: Move to constants
+   self.navBar.backgroundColor = Color(233/255, 233/255, 233/255, 1)
+
 
    View.update(self, dt)
 end

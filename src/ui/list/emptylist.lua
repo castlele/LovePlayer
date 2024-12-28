@@ -10,7 +10,7 @@ local log = require("src.domain.logger")
 
 ---@class EmptyView : View
 ---@field folderPickerDelegate FolderPickerDelegate?
----@field mediaLoader MediaLoaderModule
+---@field interactor ListsInteractor
 ---@field private noFolderImage Image
 ---@field private folderPickerButton Button
 local EmptyView = View()
@@ -46,7 +46,7 @@ function EmptyView:openFolder()
 
    self:onFolderPicked(true)
 
-   local songs = self.mediaLoader.loadMedia(folderPath)
+   self.interactor:requestMedia(folderPath)
 end
 
 function EmptyView:update(dt)

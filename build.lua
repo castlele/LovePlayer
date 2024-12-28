@@ -17,5 +17,6 @@ conf = {
       lua ./src/main.lua
    ]],
    testAll = "./run_tests.sh \"*\"",
+   testListsInteractor = "./run_tests.sh \"listsinteractor_tests\"",
    run = love .. " .",
 }

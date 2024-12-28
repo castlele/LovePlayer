@@ -3,11 +3,13 @@ local Color = require("src.ui.color")
 local EmptyView = require("src.ui.list.emptylist")
 local NavBar = require("src.ui.navbar")
 local View = require("src.ui.view")
-local mediaLoader = require("src.domain.fm")
+local Interactor = require("src.domain.lists")
+local storage = require("src.ui.list.media_storage")
 
 ---@class List : View, FolderPickerDelegate
 ---@field private navBar NavBar
 ---@field private emptyStateView EmptyView
+---@field private interactor ListsInteractor
 local List = View()
 
 
@@ -15,12 +17,15 @@ function List:load()
    ---@diagnostic disable-next-line
    View.load(self)
 
+   self.interactor =Interactor(
+      storage.mediaRepository(storage.mediaDataStore())
+   )
    -- TODO: Nav bar should have link to parent to automatically fill width?
    self.navBar = NavBar()
    local reloadButton = Button()
    -- TODO: Move to constants
    reloadButton:addTapAction(function ()
-      -- mediaLoader.loadMedia(path, parser?)
+      self.interactor:reload()
    end)
    reloadButton.backgroundColor = Color(0, 1, 0, 1)
    reloadButton.size.width = 50
@@ -29,7 +34,7 @@ function List:load()
    self.navBar.trailingView = reloadButton
    self.navBar:addSubview(reloadButton)
    self.emptyStateView = EmptyView()
-   self.emptyStateView.mediaLoader = mediaLoader
+   self.emptyStateView.interactor = self.interactor
 
    ---@type fun(isSuccess: boolean)
    self.onFolderPicked = function (isSuccess)

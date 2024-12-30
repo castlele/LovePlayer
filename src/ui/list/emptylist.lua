@@ -1,9 +1,8 @@
 local View = require("src.ui.view")
 local Button = require("src.ui.button")
 local Image = require("src.ui.image")
-local Color = require("src.ui.color")
+local colors = require("src.ui.colors")
 local geom = require("src.ui.geometry")
-local log = require("src.domain.logger")
 
 ---@class FolderPickerDelegate
 ---@field onFolderPicked fun(isSuccess: boolean)
@@ -19,13 +18,16 @@ local EmptyView = View()
 function EmptyView:load()
    View.load(self)
 
+   self.backgroundColor = colors.background
+
    local path = "res/no_folder.png"
    self.noFolderImage = Image()
+   self.noFolderImage.backgroundColor = colors.background
    self.noFolderImage:addImage(path)
 
    self.folderPickerButton = Button()
    self.folderPickerButton.size = geom.Size(100, 50)
-   self.folderPickerButton.backgroundColor = Color(0, 0, 1, 1)
+   self.folderPickerButton.backgroundColor = colors.blue
    self.folderPickerButton:addTapAction(function () self:openFolder() end)
 
    self:addSubview(self.noFolderImage)
@@ -33,20 +35,16 @@ function EmptyView:load()
 end
 
 function EmptyView:openFolder()
-   local nfd = require("nfd")
-   local folderPath = nfd.openFolder()
+   local i = self.interactor
+   local path = i:requestFilePicker()
 
-   --WARN: Error handling should be added here
-   if not folderPath or not type(folderPath) == "string" then
-      ---@diagnostic disable-next-line
-      log.logger.default.log( "Can't get folder!", log.level.ERROR)
-      self:onFolderPicked(false)
+   if not path then
       return
    end
 
    self:onFolderPicked(true)
 
-   self.interactor:requestMedia(folderPath)
+   i:requestMedia(path)
 end
 
 function EmptyView:update(dt)

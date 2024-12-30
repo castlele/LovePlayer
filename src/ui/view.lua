@@ -1,4 +1,4 @@
-local Color = require("src.ui.color")
+local colors = require("src.ui.colors")
 local geom = require("src.ui.geometry")
 
 ---@class Event
@@ -62,7 +62,7 @@ end
 function View:load()
    self.subviews = {}
    self.isHidden = false
-   self.backgroundColor = Color(1, 1, 1, 1)
+   self.backgroundColor = colors.white
    self.origin = geom.Point(0, 0)
    self.size = geom.Size(0, 0)
 end

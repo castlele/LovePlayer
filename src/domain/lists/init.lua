@@ -26,6 +26,18 @@ function ListsInteractor:init(repo)
    self.mediaRepository = repo
 end
 
+---@return string?
+function ListsInteractor:requestFilePicker()
+   local nfd = require("nfd")
+   local isSuccess, result = pcall(nfd.openFolder)
+
+   if not isSuccess or type(result) ~= "string" then
+      return
+   end
+
+   return result
+end
+
 ---@param path string?
 function ListsInteractor:requestMedia(path)
    local mediaPath = path or self.mediaRepository:getMediaFolderPath()
@@ -36,12 +48,11 @@ function ListsInteractor:requestMedia(path)
       return
    end
 
-   -- TODO: Temporary return
-   -- TODO: Error handling?
+   local repo = self.mediaRepository
    local songs = self.mediaLoader.loadMedia(mediaPath)
 
-   self.mediaRepository:saveMedia(songs)
-   self.mediaRepository:saveMediaFolderPath(mediaPath)
+   repo:saveMedia(songs)
+   repo:saveMediaFolderPath(mediaPath)
 end
 
 function ListsInteractor:reload()

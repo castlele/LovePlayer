@@ -1,7 +1,10 @@
 require("src.utils.class")
+require("src.configfile")
+
 
 local navigatorModule = require("src.ui.navigator")
 local navigator = navigatorModule.navigator()
+
 
 function love.load()
    navigator:startFlow(navigatorModule.flow.INITIAL)

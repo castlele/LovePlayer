@@ -6,6 +6,7 @@
 local Color = class()
 
 
+
 ---@param r number
 ---@param g number
 ---@param b number
@@ -18,4 +19,15 @@ function Color:init(r, g, b, a)
 end
 
 
-return Color
+return {
+   color = Color,
+   clear = Color(0, 0, 0, 0),
+   white = Color(1, 1, 1, 1),
+   red = Color(1, 0, 0, 1),
+   green = Color(0, 1, 0, 1),
+   blue = Color(0, 0, 1, 1),
+   secondary = Color(39/255, 43/255, 52/255, 1),
+   background = Color(173/255, 173/255, 173/255, 1),
+   -- primary = Color(),
+   -- accent = Color(),
+}

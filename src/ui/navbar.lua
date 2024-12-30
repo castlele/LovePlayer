@@ -8,19 +8,19 @@ local NavBar = View()
 function NavBar:load()
    View.load(self)
 
+   self.size.height = Config.navBar.height
    self.trailingView = View()
    self:addSubview(self.trailingView)
 end
 
 function NavBar:update(dt)
-   -- TODO: Move to properties
-   local padding = 5
+   local padding = Config.navBar.horizontalPadding
    self.trailingView.origin.x = self.size.width - padding - self.trailingView.size.width
 
    View.update(self, dt)
 end
 
----@rerturn string
+---@return string
 function NavBar:toString()
    return "NavBar"
 end

@@ -1,3 +1,5 @@
+**Resolution:** Not Started 🗂️
+
 **DOD**:
 1. Music can be played, paused
 2. User can navigate between tracks with prev/next buttons

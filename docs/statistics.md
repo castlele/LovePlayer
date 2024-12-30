@@ -1,3 +1,5 @@
+**Resolution:** Not Started 🗂️
+
 **DOD**:
 1. Statistics of time listening to music are collected
 2. User can navigate to statistics tab where he can see statistics about songs, authors and albums

@@ -1,3 +1,5 @@
+**Resolution:** Done ✅
+
 **DOD:**
 1. User can pick a folder from its system
 2. All supported (by miniaudio) files are fetch from the folder

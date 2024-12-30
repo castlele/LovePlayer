@@ -1,3 +1,5 @@
+**Resolution:** In Progress 🛠️
+
 **DOD**:
 1. From list of songs can be composed three lists:
 	- songs

@@ -15,6 +15,11 @@
       "tagKey": "#music_folder_picker",
       "color": "rgba(104, 104, 104, 1)",
       "backgroundColor": "rgba(255, 223, 123, 0.64)"
+    },
+    {
+      "tagKey": "#lists",
+      "color": "rgba(255, 255, 255, 1)",
+      "backgroundColor": "rgba(175, 219, 255, 0.63)"
     }
   ],
   "move-tags": true,

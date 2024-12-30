@@ -2,15 +2,25 @@ local AudioExt = require("src.domain.audioext")
 
 require("cluautils.string_utils")
 
-
----@class Song
+---@class MediaFile
 ---@filed path string
 ---@field type AudioExt
 
+---@class Author
+---@field name string
+
+---@class Album
+---@field author Author
+---@field songs Song[]
+
+---@class Song
+---@field album Album
+---@field author Author
+---@field file MediaFile
 
 ---@param path string
----@return Song?
-local function createSong(path)
+---@return MediaFile?
+local function createMediaFile(path)
    ---@diagnostic disable-next-line
    local components = string.split(path, "%.")
 
@@ -25,14 +35,20 @@ local function createSong(path)
       return nil
    end
 
-   ---@type Song
+   ---@type MediaFile
    return {
       path = path,
       type = extType,
    }
 end
 
+---@param media MediaFile
+---@return Song
+local function createSong(media) end
 
 return {
-   createSong = createSong,
+   createMediaFile = createMediaFile,
+   song = 1,
+   album = 2,
+   author = 3,
 }

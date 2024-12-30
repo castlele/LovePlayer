@@ -1,7 +1,6 @@
 ---@class MediaDataStoreImpl : MediaDataStore
----@field storage Song[]
+---@field storage MediaFile[]
 local MediaDataStore = class()
-
 
 function MediaDataStore:save(item)
    self.storage = item
@@ -15,25 +14,23 @@ function MediaDataStore:clear()
    self.storage = {}
 end
 
-
 -- TODO: Add data store for path
 ---@class MediaRepositoryImpl : MediaRepository
 ---@field mediaDataStore MediaDataStore
 ---@field mediaFolderPath string?
 local MediaRepository = class()
 
-
 ---@param dataStore MediaDataStore
 function MediaRepository:init(dataStore)
    self.mediaDataStore = dataStore
 end
 
----@param items Song[]
+---@param items MediaFile[]
 function MediaRepository:saveMedia(items)
    self.mediaDataStore:save(items)
 end
 
----@return Song[]
+---@return MediaFile[]
 function MediaRepository:getMedia()
    return self.mediaDataStore:getAll()
 end
@@ -47,7 +44,6 @@ end
 function MediaRepository:getMediaFolderPath()
    return self.mediaFolderPath
 end
-
 
 return {
    mediaDataStore = MediaDataStore,

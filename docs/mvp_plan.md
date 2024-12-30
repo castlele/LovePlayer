@@ -9,7 +9,6 @@ kanban-plugin: board
 - [ ] [iOS/iPadOS] Implement flow of picking folder #music_folder_picker  #ui
 - [ ] [Android] Implement flow of picking folder #music_folder_picker  #ui
 - [ ] Fix tests using luarocks as build system #1_5h #backend
-- [ ] Implement methods of getting songs, albums, and authors from Interactor #2h  #backend #lists
 - [ ] Implement searching in Interactor to support navigation #1_5h #backend #lists
 - [ ] Cache system implementation #backend #lists #2h
 - [ ] Create generic list view #ui #2h #lists
@@ -24,7 +23,7 @@ kanban-plugin: board
 
 ## In Progress
 
-- [ ] Resolve todoes #backend #1h
+- [ ] Implement methods of getting songs, albums, and authors from Interactor #2h  #backend #lists
 
 
 ## Done
@@ -37,6 +36,7 @@ kanban-plugin: board
 - [x] Implement reload button #30m #ui #music_folder_picker
 - [x] Implement folder saving #backend #music_folder_picker #1h
 - [x] Implement folder syncing #backend #music_folder_picker #1_5h
+- [x] Resolve todoes #backend #1h
 
 
 

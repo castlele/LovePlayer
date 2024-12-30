@@ -4,13 +4,13 @@
 local log = require("src.domain.logger.init")
 
 ---@class MediaDataStore
----@field save fun(self: MediaDataStore, item: Song[])
----@field getAll fun(self: MediaDataStore): Song[]
+---@field save fun(self: MediaDataStore, item: MediaFile[])
+---@field getAll fun(self: MediaDataStore): MediaFile[]
 ---@field clear fun(self: MediaDataStore)
 
 ---@class MediaRepository
----@field saveMedia fun(self: MediaRepository, items: Song[])
----@field getMedia fun(self: MediaRepository): Song[]
+---@field saveMedia fun(self: MediaRepository, items: MediaFile[])
+---@field getMedia fun(self: MediaRepository): MediaFile[]
 ---@field saveMediaFolderPath fun(self: MediaRepository, path: string)
 ---@field getMediaFolderPath fun(self: MediaRepository): string?
 
@@ -19,12 +19,18 @@ local log = require("src.domain.logger.init")
 ---@field private mediaRepository MediaRepository
 local ListsInteractor = class()
 
-
 ---@param repo MediaRepository
 function ListsInteractor:init(repo)
    self.mediaLoader = require("src.domain.fm.init")
    self.mediaRepository = repo
 end
+
+---@return Song[]
+function ListsInteractor:getSongs() end
+
+function ListsInteractor:getAlbums() end
+
+function ListsInteractor:getAuthors() end
 
 ---@return string?
 function ListsInteractor:requestFilePicker()
@@ -58,6 +64,5 @@ end
 function ListsInteractor:reload()
    self:requestMedia()
 end
-
 
 return ListsInteractor

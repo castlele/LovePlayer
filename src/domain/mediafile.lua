@@ -2,20 +2,30 @@ local AudioExt = require("src.domain.audioext")
 
 require("cluautils.string_utils")
 
+---@class MediaFileMetadata
+---@field title string
+---@field artist string?
+---@field album string?
+---@field genre string?
+---@field discnumber integer?
+---@field tracknumber integer?
+
 ---@class MediaFile
----@filed path string
+---@field path string
 ---@field type AudioExt
 
----@class Author
+---@class Artist
 ---@field name string
 
 ---@class Album
----@field author Author
+---@field author Artist
 ---@field songs Song[]
 
 ---@class Song
----@field album Album
----@field author Author
+---@field title string
+---@field genre string?
+---@field album Album?
+---@field artist Artist?
 ---@field file MediaFile
 
 ---@param path string
@@ -41,10 +51,6 @@ local function createMediaFile(path)
       type = extType,
    }
 end
-
----@param media MediaFile
----@return Song
-local function createSong(media) end
 
 return {
    createMediaFile = createMediaFile,

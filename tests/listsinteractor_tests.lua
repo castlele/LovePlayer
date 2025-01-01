@@ -7,6 +7,7 @@ local t = require("cluautils.tests")
 local utils = require("tests.utils.fmutils")
 local mocks = require("tests.utils.mocks")
 local FM = require("cluautils.file_manager")
+local ext = require("src.domain.audioext")
 
 require("cluautils.string_utils")
 require("cluautils.table_utils")
@@ -114,5 +115,32 @@ t.describe("ListInteractor tests", function ()
          .. expectedFinalResult
          .. ". But got: " .. finalResult
       )
+   end)
+
+   t.it("Songs list can be got from data source", function ()
+      local dataStore = mocks.dataStore:new()
+      local repo = mocks.mediaRepo:new(dataStore)
+      local sut = sutModule(repo)
+      ---@type Song
+      local song
+
+      utils.runInEnvironment(musicEnv, function (cwd)
+         sut:requestMedia(cwd)
+
+         local songs = sut:getSongs()
+
+         for _, s in ipairs(songs) do
+            if song.file.type == ext.FLAC then
+               song = s
+               break
+            end
+         end
+      end)
+
+      t.expect("Животные" == song.title)
+      t.expect("Скриптонит" == song.artist.name)
+      t.expect("Уроборос: Улица 36" == song.album)
+      t.expect("1" == song.discnumber)
+      t.expect("2" == song.tracknumber)
    end)
 end)

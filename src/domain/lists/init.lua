@@ -28,9 +28,11 @@ end
 ---@return Song[]
 function ListsInteractor:getSongs() end
 
+---@return Album[]
 function ListsInteractor:getAlbums() end
 
-function ListsInteractor:getAuthors() end
+---@return Artist[]
+function ListsInteractor:getArtists() end
 
 ---@return string?
 function ListsInteractor:requestFilePicker()

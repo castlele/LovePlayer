@@ -1,3 +1,6 @@
 [submodule "libs/nativefiledialog"]
 	path = libs/nativefiledialog
 	url = git@github.com:Alloyed/nativefiledialog.git
+[submodule "libs/flac"]
+	path = libs/flac
+	url = git@github.com:xiph/flac.git

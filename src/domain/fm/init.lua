@@ -1,6 +1,7 @@
 --- Module is responsible for getting data about audio files in the requested folder.
 --- Its main goal is to provide a list of songs with every possible metadata.
 local Parser = require("src.domain.fm.folder_parser")
+local mediaParser = require("src.domain.fm.mediafile_metadata_parser")
 local songs = require("src.domain.mediafile")
 local log = require("src.domain.logger.init")
 
@@ -27,6 +28,13 @@ function M.loadMedia(path, parser)
    log.logger.default.log(result)
 
    return result
+end
+
+
+---@param media MediaFile
+---@return MediaFileMetadata?
+function M.loadMetadata(media)
+   return mediaParser.parse(media)
 end
 
 return M

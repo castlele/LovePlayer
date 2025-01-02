@@ -10,6 +10,11 @@ function Point:init(x, y)
    self.y = y
 end
 
+---@return string
+function Point:toString()
+   return string.format("Point: (%i; %i)", self.x, self.y)
+end
+
 ---@class Size
 ---@field wight number
 ---@field height number
@@ -22,6 +27,10 @@ function Size:init(w, h)
    self.height = h
 end
 
+---@return string
+function Size:toString()
+   return string.format("Size (width: %i; height: %i)", self.width, self.height)
+end
 
 return {
    Point = Point,

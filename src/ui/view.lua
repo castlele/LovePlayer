@@ -1,11 +1,11 @@
 local colors = require("src.ui.colors")
 local geom = require("src.ui.geometry")
+local log = require("src.domain.logger")
 
 ---@class Event
 ---@field name string
 ---@field predicate fun(): boolean
 ---@field event fun()
-
 
 ---@class View
 ---@field isHidden boolean
@@ -15,7 +15,6 @@ local geom = require("src.ui.geometry")
 ---@field backgroundColor Color
 local View = class()
 
-
 ---@diagnostic disable-next-line
 function View:init()
    self:load()
@@ -24,11 +23,7 @@ end
 ---@param view View
 ---@param index integer?
 function View:addSubview(view, index)
-   table.insert(
-      self.subviews,
-      index or #self.subviews,
-      view
-   )
+   table.insert(self.subviews, index or #self.subviews, view)
 end
 
 ---@return boolean
@@ -56,8 +51,7 @@ end
 ---@param mouse number: The button index that was pressed. 1 is the primary mouse button, 2 is the secondary mouse button and 3 is the middle button. Further buttons are mouse dependent.
 ---@param isTouch boolean: True if the mouse button press originated from a touchscreen touch-press
 ---@diagnostic disable-next-line
-function View:handleMousePressed(x, y, mouse, isTouch)
-end
+function View:handleMousePressed(x, y, mouse, isTouch) end
 
 function View:load()
    self.subviews = {}
@@ -73,7 +67,8 @@ end
 ---@param isTouch boolean: True if the mouse button press originated from a touchscreen touch-press
 ---@return boolean
 function View:mousepressed(x, y, mouse, isTouch)
-   print(self:toString())
+   log.logger.default.log("Touch: %s", log.level.DEBUG, self:toString())
+
    if not self:isPointInside(x, y) then
       return false
    end
@@ -84,6 +79,7 @@ function View:mousepressed(x, y, mouse, isTouch)
             return true
          end
       end
+      return false
    else
       self:handleMousePressed(x, y, mouse, isTouch)
    end
@@ -141,6 +137,5 @@ function View:drawSubviews()
       subview:draw()
    end
 end
-
 
 return View

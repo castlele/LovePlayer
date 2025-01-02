@@ -42,6 +42,10 @@ end
 
 ---@return string?
 function MediaRepository:getMediaFolderPath()
+   if Config.mock.isMocking then
+      return Config.mock.folderPath
+   end
+
    return self.mediaFolderPath
 end
 

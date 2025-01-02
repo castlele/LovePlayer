@@ -38,6 +38,11 @@ function TabView:push(view)
    view.size.height = view.size.height - tabBarHeight
 end
 
+function TabView:update(dt)
+
+   View.update(self, dt)
+end
+
 function TabView:toString()
    return "TabView"
 end

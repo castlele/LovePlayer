@@ -4,7 +4,6 @@ local View = require("src.ui.view")
 ---@field action fun()?
 local Button = View()
 
-
 function Button:load()
    View.load(self)
 
@@ -31,6 +30,5 @@ end
 function Button:toString()
    return "Button"
 end
-
 
 return Button

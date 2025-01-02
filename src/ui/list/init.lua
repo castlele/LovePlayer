@@ -3,12 +3,14 @@ local colors = require("src.ui.colors")
 local EmptyView = require("src.ui.list.emptylist")
 local NavBar = require("src.ui.navbar")
 local View = require("src.ui.view")
+local SongsList = require("src.ui.list.songs_list_view")
 local Interactor = require("src.domain.lists")
 local storage = require("src.ui.list.media_storage")
 
 ---@class List : View, FolderPickerDelegate
 ---@field private state ListState
 ---@field private navBar NavBar
+---@field private songsList SongsList
 ---@field private emptyStateView EmptyView
 ---@field private interactor ListsInteractor
 local List = View()
@@ -19,49 +21,52 @@ local ListState = {
    SONGS = 2,
 }
 
-
 function List:load()
    ---@diagnostic disable-next-line
    View.load(self)
 
+   self.songsList = SongsList()
    self.state = ListState.NO_FOLDER
    self.backgroundColor = colors.background
-   self.interactor = Interactor(
-      storage.mediaRepository(storage.mediaDataStore())
-   )
-   -- TODO: Nav bar should have link to parent to automatically fill width?
-   self.navBar = NavBar()
+   self.interactor =
+      Interactor(storage.mediaRepository(storage.mediaDataStore()))
    local reloadButton = Button()
-   reloadButton:addTapAction(function ()
+   reloadButton:addTapAction(function()
       self.interactor:reload()
+      self.songsList:addSongs(self.interactor:getSongs())
    end)
    reloadButton.backgroundColor = colors.green
    reloadButton.size.width = 50
    reloadButton.size.height = 50
 
-   self.navBar.trailingView = reloadButton
-   self.navBar:addSubview(reloadButton)
+   self.navBar = NavBar(reloadButton)
    self.emptyStateView = EmptyView()
    self.emptyStateView.interactor = self.interactor
 
    ---@type fun(isSuccess: boolean)
-   self.onFolderPicked = function (isSuccess)
+   self.onFolderPicked = function(isSuccess)
       if isSuccess then
+         self.songsList:addSongs(self.interactor:getSongs())
          self.state = ListState.SONGS
       end
    end
 
    self.emptyStateView.folderPickerDelegate = self
    self:addSubview(self.emptyStateView)
+   self:addSubview(self.songsList)
    self:addSubview(self.navBar)
 end
 
 function List:update(dt)
    self:updateState()
+
    self.emptyStateView.size = self.size
 
    self.navBar.size.width = self.size.width
    self.navBar.backgroundColor = colors.secondary
+
+   self.songsList.size = self.size
+   self.songsList.origin.y = self.navBar.size.height
 
    View.update(self, dt)
 end
@@ -78,12 +83,13 @@ function List:updateState()
 
    if self.state == ListState.NO_FOLDER then
       self.emptyStateView.isHidden = false
+      self.songsList.isHidden = true
       self.navBar.isHidden = true
    elseif self.state == ListState.SONGS then
       self.emptyStateView.isHidden = true
+      self.songsList.isHidden = false
       self.navBar.isHidden = false
    end
 end
-
 
 return List

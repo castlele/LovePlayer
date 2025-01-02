@@ -15,17 +15,19 @@ local strutils = require("cluautils.string_utils")
 ---@field type AudioExt
 
 ---@class Artist
----@field name string
+---@field name string?
 
 ---@class Album
----@field author Artist
----@field songs Song[]
+---@field name string?
+---@field artist Artist?
+---@field discnumber integer?
+---@field tracknumber integer?
 
 ---@class Song
 ---@field title string
 ---@field genre string?
----@field album Album?
----@field artist Artist?
+---@field album Album
+---@field artist Artist
 ---@field file MediaFile
 
 ---@param path string

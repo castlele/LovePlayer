@@ -130,17 +130,17 @@ t.describe("ListInteractor tests", function ()
          local songs = sut:getSongs()
 
          for _, s in ipairs(songs) do
-            if song.file.type == ext.FLAC then
+            if s.file.type == ext.FLAC then
                song = s
-               break
+               return
             end
          end
       end)
 
-      t.expect("Животные" == song.title)
-      t.expect("Скриптонит" == song.artist.name)
-      t.expect("Уроборос: Улица 36" == song.album)
-      t.expect("1" == song.discnumber)
-      t.expect("2" == song.tracknumber)
+      t.expect("Животные" == song.title, "Wrong title, got: " .. song.title)
+      t.expect("Скриптонит" == song.artist.name, "Wrong artist's name, got: " .. song.artist.name)
+      t.expect("Уроборос: Улица 36" == song.album.name, "Wrong album name, got: " .. song.album.name)
+      t.expect(1 == song.album.discnumber, "Wrong discnumber, got: " .. song.album.discnumber)
+      t.expect(2 == song.album.tracknumber, "Wrong tracknumber, got: " .. song.album.tracknumber)
    end)
 end)

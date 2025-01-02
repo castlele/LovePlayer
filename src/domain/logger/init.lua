@@ -1,15 +1,15 @@
 local json = require("cluautils.json")
 
 ---@class Logger
----@filed default Logger
+---@field default Logger
 local Logger = class()
 
----@enum (key) LogLevel
+---@enum (value) LogLevel
 local LogLevel = {
-    DEBUG = "DEBUG",
-    INFO = "INFO",
-    WARN = "WARN",
-    ERROR = "ERROR",
+   DEBUG = "DEBUG",
+   INFO = "INFO",
+   WARN = "WARN",
+   ERROR = "ERROR",
 }
 
 ---@type encode_options
@@ -18,20 +18,23 @@ local jsonOpts = {
    indent = "    ",
 }
 
-
 ---@param message any
 ---@param level LogLevel?
-function Logger.log(message, level)
+---@param args ...?
+function Logger.log(message, level, args)
    local lvl = level or LogLevel.INFO
    local msg = json.encode(message, jsonOpts)
 
+   if args then
+      msg = string.format(msg, json.encode(args))
+   end
+
    print("[" .. lvl .. "]: " .. msg)
 end
-
 
 Logger.default = Logger()
 
 return {
    logger = Logger,
-   level = LogLevel
+   level = LogLevel,
 }

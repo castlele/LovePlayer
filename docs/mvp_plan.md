@@ -11,7 +11,6 @@ kanban-plugin: board
 - [ ] Fix tests using luarocks as build system #1_5h #backend
 - [ ] Implement searching in Interactor to support navigation #1_5h #backend #lists
 - [ ] Cache system implementation #backend #lists #2h
-- [ ] Create generic list view #ui #2h #lists
 - [ ] Create songs list screen #1h #lists #ui
 - [ ] Create tabs view for switching between songs, albums and authors #1_5h #lists #ui
 - [ ] Implement navigation between tabs #2h #lists #ui
@@ -19,11 +18,13 @@ kanban-plugin: board
 - [ ] Implement albums list view #1_5h #lists #ui
 - [ ] Implement album's songs view #1_5h #lists #ui
 - [ ] Implement authors list view #1h #lists #ui
+- [ ] Implement methods of getting albums from Interactor #1h #backend #lists
+- [ ] Implement methods of getting artists from Interactor #1h #backend #lists
 
 
 ## In Progress
 
-- [ ] Implement methods of getting songs, albums, and authors from Interactor #2h  #backend #lists
+- [ ] Create generic list view #ui #2h #lists
 
 
 ## Done
@@ -37,6 +38,7 @@ kanban-plugin: board
 - [x] Implement folder saving #backend #music_folder_picker #1h
 - [x] Implement folder syncing #backend #music_folder_picker #1_5h
 - [x] Resolve todoes #backend #1h
+- [x] Implement methods of getting songs, albums from Interactor #2h  #backend #lists
 
 
 

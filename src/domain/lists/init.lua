@@ -26,7 +26,45 @@ function ListsInteractor:init(repo)
 end
 
 ---@return Song[]
-function ListsInteractor:getSongs() end
+function ListsInteractor:getSongs()
+   ---@type Song[]
+   local songs = {}
+   local mediaList = self.mediaRepository:getMedia()
+
+   if not mediaList then
+      return songs
+   end
+
+   for _, media in ipairs(mediaList) do
+      local metadata = self.mediaLoader.loadMetadata(media)
+
+      if metadata then
+         ---@type Artist
+         local artist = {
+            name = metadata.artist,
+         }
+         ---@type Song
+         local song = {
+            title = metadata.title,
+            genre = metadata.genre,
+            album = {
+               name = metadata.album,
+               discnumber = tonumber(metadata.discnumber),
+               tracknumber = tonumber(metadata.tracknumber),
+               artist = artist,
+            },
+            artist = artist,
+            file = media,
+         }
+
+         log.logger.default.log("Processing song: %s", log.level.INFO, song)
+
+         table.insert(songs, song)
+      end
+   end
+
+   return songs
+end
 
 ---@return Album[]
 function ListsInteractor:getAlbums() end

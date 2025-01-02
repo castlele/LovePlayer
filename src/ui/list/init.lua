@@ -60,12 +60,15 @@ end
 function List:update(dt)
    self:updateState()
 
-   self.emptyStateView.size = self.size
+   self.emptyStateView.origin.y = self.navBar.origin.y
+   self.emptyStateView.size.width = self.size.width
+   self.emptyStateView.size.height = self.size.height - self.navBar.size.height
 
    self.navBar.size.width = self.size.width
    self.navBar.backgroundColor = colors.secondary
 
-   self.songsList.size = self.size
+   self.songsList.size.width = self.size.width
+   self.songsList.size.height = self.size.height - self.navBar.size.height
    self.songsList.origin.y = self.navBar.size.height
 
    View.update(self, dt)

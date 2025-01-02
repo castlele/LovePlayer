@@ -32,7 +32,7 @@ end
 
 ---@param view View
 function TabView:push(view)
-   self:addSubview(view, 1)
+   self:addSubview(view, 0)
 
    view.size = self.size
    view.size.height = view.size.height - tabBarHeight

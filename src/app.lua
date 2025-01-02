@@ -2,6 +2,7 @@ require("src.utils.class")
 require("src.configfile")
 
 local navigatorModule = require("src.ui.navigator")
+---@type Navigator
 local navigator = navigatorModule.navigator()
 
 function love.load()
@@ -14,6 +15,12 @@ end
 ---@param isTouch boolean: True if the mouse button press originated from a touchscreen touch-press
 function love.mousepressed(x, y, mouse, isTouch)
    navigator:mousepressed(x, y, mouse, isTouch)
+end
+
+---@param x number
+---@param y number
+function love.wheelmoved(x, y)
+   navigator:wheelmoved(x, y)
 end
 
 function love.update(dt)

@@ -18,6 +18,25 @@ local jsonOpts = {
    indent = "    ",
 }
 
+---@param lhs LogLevel
+---@param rhs LogLevel
+---@return boolean
+local function less(lhs, rhs)
+   if lhs == rhs then
+      return false
+   end
+
+   if lhs == LogLevel.DEBUG then
+      return lhs ~= rhs
+   elseif lhs == LogLevel.INFO then
+      return rhs == LogLevel.DEBUG
+   elseif lhs == LogLevel.WARN then
+      return rhs == LogLevel.DEBUG or rhs == LogLevel.INFO
+   end
+
+   return false
+end
+
 ---@param message any
 ---@param level LogLevel?
 ---@param args ...?
@@ -29,7 +48,10 @@ function Logger.log(message, level, args)
       msg = string.format(msg, json.encode(args))
    end
 
-   print("[" .. lvl .. "]: " .. msg)
+   ---@diagnostic disable-next-line
+   if not less(level, Config.logging.minLevel) then
+      print("[" .. lvl .. "]: " .. msg)
+   end
 end
 
 Logger.default = Logger()

@@ -79,13 +79,11 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 230.50043487548828,
-    "collapsed": true
+    "width": 230.50043487548828
   },
   "right": {
     "id": "75ff9a8d2812c2a0",
@@ -203,9 +201,9 @@
   },
   "active": "5c7554e56cdfd87d",
   "lastOpenFiles": [
+    "mindmap.canvas",
     "mvp_plan.md",
     "lists.md",
-    "mindmap.canvas",
     "statistics.md",
     "player.md",
     "music_folder_picker.md",

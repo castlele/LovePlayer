@@ -1,5 +1,8 @@
 ---@class Config
 Config = {
+   logging = {
+      minLevel = "INFO",
+   },
    navBar = {
       height = 50,
       horizontalPadding = 10,
@@ -10,6 +13,11 @@ Config = {
    lists = {
       rows = {
          height = 50,
+         sep = {
+            padding = {
+               x = 10,
+            }
+         }
       },
    },
 

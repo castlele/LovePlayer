@@ -3,7 +3,7 @@ local View = require("src.ui.view")
 local TabView = require("src.ui.tabview")
 local geom = require("src.ui.geometry")
 
----@enum (key) Flow
+---@enum (value) Flow
 local Flow = {
    INITIAL = 0,
 }
@@ -15,7 +15,6 @@ local Flow = {
 ---@field private isFlowChanged boolean
 local Navigator = View()
 
-
 ---@param flow Flow
 function Navigator:startFlow(flow)
    self.currentFlow = flow
@@ -24,16 +23,14 @@ end
 
 function Navigator:load()
    View.load(self)
-   self.size = geom.Size(
-      love.graphics.getWidth(),
-      love.graphics.getHeight()
-   )
    self.tabView = TabView()
    self:addSubview(self.tabView)
 end
 
 ---@param dt number
 function Navigator:update(dt)
+   self.size = geom.Size(love.graphics.getWidth(), love.graphics.getHeight())
+
    if self.isFlowChanged then
       if self.currentFlow == Flow.INITIAL then
          self:startInitialFlow()
@@ -56,7 +53,6 @@ end
 function Navigator:startInitialFlow()
    self.currentView = List()
 end
-
 
 return {
    navigator = Navigator,

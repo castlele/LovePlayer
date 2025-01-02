@@ -67,9 +67,9 @@ end
 ---@param isTouch boolean: True if the mouse button press originated from a touchscreen touch-press
 ---@return boolean
 function View:mousepressed(x, y, mouse, isTouch)
-   log.logger.default.log("Touch: %s", log.level.DEBUG, self:toString())
+   log.logger.default.log("Touch: %s", log.level.INFO, self:toString())
 
-   if not self:isPointInside(x, y) then
+   if not self:isPointInside(x, y) or self.isHidden then
       return false
    end
 
@@ -85,6 +85,14 @@ function View:mousepressed(x, y, mouse, isTouch)
    end
 
    return true
+end
+
+---@param x number
+---@param y number
+function View:wheelmoved(x, y)
+   for _, subview in pairs(self.subviews) do
+      subview:wheelmoved(x, y)
+   end
 end
 
 ---@param dt number

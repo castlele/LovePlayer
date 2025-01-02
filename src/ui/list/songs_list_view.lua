@@ -5,19 +5,31 @@ local log = require("src.domain.logger")
 ---@class SongsList : View
 ---@field private rows ListRow[]
 ---@field private songs Song[]
+---@field private offset number
 local SongsList = View()
 
 function SongsList:init()
    View.init(self)
    self.songs = {}
    self.rows = {}
+   self.offset = 0
+end
+
+function SongsList:wheelmoved(_, y)
+   local cursorX, cursorY = love.mouse.getX(), love.mouse.getY()
+
+   if not self:isPointInside(cursorX, cursorY) then
+      return
+   end
+
+   self.offset = self.origin.y + (self.origin.y * y)
 end
 
 function SongsList:update(dt)
    self:updateSongsList()
 
    for index, row in pairs(self.rows) do
-      row.origin.y = self.origin.y * index
+      row.origin.y = self.origin.y * index + self.offset
       log.logger.log(
          string.format(
             "%s; %s; %s",

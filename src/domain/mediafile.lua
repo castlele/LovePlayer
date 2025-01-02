@@ -1,6 +1,6 @@
 local AudioExt = require("src.domain.audioext")
 
-require("cluautils.string_utils")
+local strutils = require("cluautils.string_utils")
 
 ---@class MediaFileMetadata
 ---@field title string
@@ -31,8 +31,7 @@ require("cluautils.string_utils")
 ---@param path string
 ---@return MediaFile?
 local function createMediaFile(path)
-   ---@diagnostic disable-next-line
-   local components = string.split(path, "%.")
+   local components = strutils.split(path, "%.")
 
    if #components < 2 then
       return nil

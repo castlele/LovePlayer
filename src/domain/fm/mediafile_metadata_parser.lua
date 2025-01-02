@@ -1,4 +1,4 @@
-require("cluautils.string_utils")
+local strutils = require("cluautils.string_utils")
 local ext = require("src.domain.audioext")
 local flac = require("luaflac")
 
@@ -13,8 +13,7 @@ local M = {
             return nil
          end
 
-         ---@diagnostic disable-next-line
-         local fileComponents = string.split(media.path, "%/")
+         local fileComponents = strutils.split(media.path, "%/")
          local metadata = {
             title = fileComponents[#fileComponents]
          }
@@ -34,7 +33,7 @@ local M = {
             end
 
             for _, value in ipairs(meta.vorbis_comment.comments) do
-               local keyValue = string.split(value, "=")
+               local keyValue = strutils.split(value, "=")
 
                metadata[keyValue[1]] = keyValue[2]
             end
@@ -57,10 +56,9 @@ local M = {
 
       ---@type fun(media: MediaFile): MediaFileMetadata
       default = function(media)
-         ---@diagnostic disable-next-line
-         local fileComponents = string.split(media.path, "%/")
+         local fileComponents = strutils.split(media.path, "%/")
          local file = fileComponents[#fileComponents]
-         local fileName = string.split(file, "%.")[1]
+         local fileName = strutils.split(file, "%.")[1]
          ---@type MediaFileMetadata
          local metadata = {
             title = fileName

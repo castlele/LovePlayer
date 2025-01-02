@@ -9,7 +9,7 @@ local mocks = require("tests.utils.mocks")
 local FM = require("cluautils.file_manager")
 local ext = require("src.domain.audioext")
 
-require("cluautils.string_utils")
+local strutils = require("cluautils.string_utils")
 require("cluautils.table_utils")
 
 
@@ -97,7 +97,7 @@ t.describe("ListInteractor tests", function ()
 
          sut:reload()
 
-         local comps = string.split(file, "%/")
+         local comps = strutils.split(file, "%/")
          os.execute("mv ../" .. comps[#comps] .. " " .. file)
 
          finalResult = #dataStore:getAll()

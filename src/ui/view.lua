@@ -97,6 +97,28 @@ function View:wheelmoved(x, y)
    end
 end
 
+---@param x number
+---@param y number
+function View:mousemoved(x, y)
+   if self:isHoovered(x, y) then
+      self:onHoover(x, y)
+   end
+
+   if Config.debug.isDebug then
+      local stack = self:getViewsStack(x, y)
+      local last = stack[#stack]
+
+      if not last then
+         Tooltip.title = ""
+         return
+      end
+
+      Tooltip.text = last:debugInfo()
+      Tooltip.x = x
+      Tooltip.y = y
+   end
+end
+
 ---@param dt number
 function View:update(dt)
    if self.isHidden then
@@ -146,6 +168,14 @@ function View:draw()
    self:drawSubviews()
 end
 
+---@param x number
+---@param y number
+function View:onHoover(x, y)
+   if Config.debug.isDebug then
+      log.logger.log(self:debugInfo(), log.level.DEBUG)
+   end
+end
+
 ---@param view View
 ---@param index integer?
 function View:addSubview(view, index)
@@ -181,6 +211,32 @@ function View:debugInfo()
    )
 end
 
+---@protected
+---@param x number
+---@param y number
+---@return boolean
+function View:isHoovered(x, y)
+   return self:isPointInside(x, y) and not love.mouse.isDown(1)
+end
+
+---@pritected
+---@param x number
+---@param y number
+---@return View?
+function View:getTopHovered(x, y)
+   for _, subview in pairs(self.subviews) do
+      if subview:isPointInside(x, y) then
+         return subview:getTopHovered(x, y)
+      end
+   end
+
+   if not self:isPointInside(x, y) then
+      return nil
+   end
+
+   return self
+end
+
 ---@private
 function View:updateSubviews(dt)
    for _, subview in pairs(self.subviews) do
@@ -193,6 +249,49 @@ function View:drawSubviews()
    for _, subview in pairs(self.subviews) do
       subview:draw()
    end
+end
+
+---@private
+---@param x number
+---@param y number
+---@return View[]
+function View:getViewsStack(x, y)
+   local stack = {}
+
+   if not self:isPointInside(x, y) then
+      return stack
+   end
+
+   table.insert(stack, self)
+
+   for _, subview in pairs(self.subviews) do
+      --[[
+   TabView 1
+   List    1
+   View    1
+   NavBar  2
+   EmptyView       2
+   Button  1
+   Image   1
+   Bottom tabView  4
+      --]]
+      if subview:isPointInside(x, y) then
+         local subviewStack = subview:getViewsStack(x, y)
+
+         print(subview:toString(), #subviewStack)
+
+         if #subviewStack == 1 then
+            table.insert(stack, subviewStack[1])
+            return stack
+         end
+
+         for _, s in pairs(subviewStack) do
+            table.insert(stack, s)
+         end
+      end
+   end
+
+   return stack
 end
 
 return View

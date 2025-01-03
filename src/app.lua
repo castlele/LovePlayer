@@ -5,6 +5,12 @@ local navigatorModule = require("src.ui.navigator")
 ---@type Navigator
 local navigator = navigatorModule.navigator()
 
+Tooltip = {}
+
+if Config.debug.isDebug then
+   Tooltip = require("src.ui.debugtooltip")
+end
+
 function love.load()
    navigator:startFlow(navigatorModule.flow.INITIAL)
 end
@@ -23,10 +29,17 @@ function love.wheelmoved(x, y)
    navigator:wheelmoved(x, y)
 end
 
+---@param x number
+---@param y number
+function love.mousemoved(x, y, ...)
+   navigator:mousemoved(x, y)
+end
+
 function love.update(dt)
    navigator:update(dt)
 end
 
 function love.draw()
    navigator:draw()
+   Tooltip.draw()
 end

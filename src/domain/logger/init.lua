@@ -4,7 +4,7 @@ local json = require("cluautils.json")
 ---@field default Logger
 local Logger = class()
 
----@enum (value) LogLevel
+---@enum (key) log.LogLevel
 local LogLevel = {
    DEBUG = "DEBUG",
    INFO = "INFO",
@@ -18,8 +18,8 @@ local jsonOpts = {
    indent = "    ",
 }
 
----@param lhs LogLevel
----@param rhs LogLevel
+---@param lhs log.LogLevel
+---@param rhs log.LogLevel
 ---@return boolean
 local function less(lhs, rhs)
    if lhs == rhs then
@@ -38,7 +38,7 @@ local function less(lhs, rhs)
 end
 
 ---@param message any
----@param level LogLevel?
+---@param level log.LogLevel?
 ---@param args ...?
 function Logger.log(message, level, args)
    local lvl = level or LogLevel.INFO

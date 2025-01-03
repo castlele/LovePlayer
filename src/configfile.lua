@@ -11,6 +11,7 @@ Config = {
       height = 80,
    },
    lists = {
+      scrollingVelocity = 15,
       rows = {
          height = 50,
          sep = {

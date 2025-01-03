@@ -6,6 +6,7 @@ local log = require("src.domain.logger")
 ---@field private rows ListRow[]
 ---@field private songs Song[]
 ---@field private offset number
+---@field private maxY number
 local SongsList = View()
 
 function SongsList:init()
@@ -13,6 +14,7 @@ function SongsList:init()
    self.songs = {}
    self.rows = {}
    self.offset = 0
+   self.maxY = 0
 end
 
 function SongsList:wheelmoved(_, y)
@@ -22,7 +24,17 @@ function SongsList:wheelmoved(_, y)
       return
    end
 
-   self.offset = self.origin.y + (self.origin.y * y)
+   self.offset = self.offset + Config.lists.scrollingVelocity * y
+
+   if self.offset > 0 then
+      self.offset = 0
+   end
+
+   local n = self.maxY / self.size.height
+
+   if math.abs(self.offset * n) > self.maxY then
+      self.offset = -1 * self.size.height
+   end
 end
 
 function SongsList:update(dt)
@@ -30,6 +42,12 @@ function SongsList:update(dt)
 
    for index, row in pairs(self.rows) do
       row.origin.y = self.origin.y * index + self.offset
+      local maxY = row.origin.y + row.size.height
+
+      if self.maxY < maxY then
+         self.maxY = maxY
+      end
+
       log.logger.log(
          string.format(
             "%s; %s; %s",

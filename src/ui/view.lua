@@ -1,6 +1,7 @@
 local colors = require("src.ui.colors")
 local geom = require("src.ui.geometry")
 local log = require("src.domain.logger")
+local memory = require("cluautils.memory")
 
 ---@class Event
 ---@field name string
@@ -13,17 +14,25 @@ local log = require("src.domain.logger")
 ---@field origin Point
 ---@field size Size
 ---@field backgroundColor Color
+---@field private addr string
+---@field private debugBorderColor Color
 local View = class()
 
 ---@diagnostic disable-next-line
 function View:init()
    self:load()
+
+   self.addr = memory.get(self)
 end
 
----@param view View
----@param index integer?
-function View:addSubview(view, index)
-   table.insert(self.subviews, index or #self.subviews, view)
+function View:load()
+   self.subviews = {}
+   self.isHidden = false
+   self.backgroundColor = colors.white
+   self.origin = geom.Point(0, 0)
+   self.size = geom.Size(0, 0)
+   self.debugBorderColor =
+      colors.color(math.random(), math.random(), math.random(), 1)
 end
 
 ---@return boolean
@@ -53,21 +62,13 @@ end
 ---@diagnostic disable-next-line
 function View:handleMousePressed(x, y, mouse, isTouch) end
 
-function View:load()
-   self.subviews = {}
-   self.isHidden = false
-   self.backgroundColor = colors.white
-   self.origin = geom.Point(0, 0)
-   self.size = geom.Size(0, 0)
-end
-
 ---@param x number
 ---@param y number
 ---@param mouse number: The button index that was pressed. 1 is the primary mouse button, 2 is the secondary mouse button and 3 is the middle button. Further buttons are mouse dependent.
 ---@param isTouch boolean: True if the mouse button press originated from a touchscreen touch-press
 ---@return boolean
 function View:mousepressed(x, y, mouse, isTouch)
-   log.logger.default.log("Touch: %s", log.level.INFO, self:toString())
+   log.logger.default.log("Touch: %s", log.level.INFO, self:debugInfo())
 
    if not self:isPointInside(x, y) or self.isHidden then
       return false
@@ -79,6 +80,7 @@ function View:mousepressed(x, y, mouse, isTouch)
             return true
          end
       end
+
       return false
    else
       self:handleMousePressed(x, y, mouse, isTouch)
@@ -123,13 +125,60 @@ function View:draw()
       self.size.width,
       self.size.height
    )
+
+   if Config.debug.isDebug and Config.debug.isRainbowBorders then
+      love.graphics.setColor(
+         self.debugBorderColor.red,
+         self.debugBorderColor.green,
+         self.debugBorderColor.blue,
+         self.debugBorderColor.alpha
+      )
+      love.graphics.rectangle(
+         "line",
+         self.origin.x,
+         self.origin.y,
+         self.size.width,
+         self.size.height
+      )
+   end
    love.graphics.pop()
 
    self:drawSubviews()
 end
 
+---@param view View
+---@param index integer?
+function View:addSubview(view, index)
+   local i = 1
+
+   if index then
+      i = index
+   elseif #self.subviews ~= 0 then
+      i = #self.subviews
+   end
+
+   table.insert(self.subviews, i, view)
+end
+
 function View:toString()
    return "View"
+end
+
+---@protected
+---@return string
+function View:debugInfo()
+   local o = self.origin
+   local s = self.size
+
+   return string.format(
+      "(%s:%s); origin: (%i;%i); size: (%i;%i)",
+      self:toString(),
+      self.addr,
+      o.x,
+      o.y,
+      s.width,
+      s.height
+   )
 end
 
 ---@private

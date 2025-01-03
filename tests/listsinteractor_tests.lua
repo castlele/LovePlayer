@@ -1,3 +1,7 @@
+if not Config then
+   require("src.configfile")
+end
+
 if not class then
    require("src.utils.class")
 end
@@ -10,7 +14,7 @@ local FM = require("cluautils.file_manager")
 local ext = require("src.domain.audioext")
 
 local strutils = require("cluautils.string_utils")
-require("cluautils.table_utils")
+local tableutils = require("cluautils.table_utils")
 
 
 t.describe("ListInteractor tests", function ()
@@ -29,7 +33,7 @@ t.describe("ListInteractor tests", function ()
          sut:requestMedia(cwd)
       end)
 
-      t.expect(table.is_empty(dataStore:getAll()))
+      t.expect(tableutils.is_empty(dataStore:getAll()))
    end)
 
    t.it("Songs are parsed if they are in the folder", function ()
@@ -41,7 +45,7 @@ t.describe("ListInteractor tests", function ()
          sut:requestMedia(cwd)
       end)
 
-      t.expect(not table.is_empty(dataStore:getAll()))
+      t.expect(not tableutils.is_empty(dataStore:getAll()))
    end)
 
    t.it("If on after reloading folder doesn't changed data store doesn't change too", function ()

@@ -1,3 +1,7 @@
+if not Config then
+   require("src.configfile")
+end
+
 if not class then
    require("src.utils.class")
 end
@@ -7,7 +11,7 @@ local t = require("cluautils.tests")
 local utils = require("tests.utils.fmutils")
 local ext = require("src.domain.audioext")
 
-require("cluautils.table_utils")
+local tableutils = require("cluautils.table_utils")
 
 t.describe("Load media tests", function()
    t.it("No media is provided if directory is empty", function()
@@ -18,7 +22,7 @@ t.describe("Load media tests", function()
          result = sut.loadMedia(cwd)
       end)
 
-      t.expect(table.is_empty(result))
+      t.expect(tableutils.is_empty(result))
    end)
 
    t.it("MediaFiles is parsed if they are in the folder", function()
@@ -33,7 +37,7 @@ t.describe("Load media tests", function()
          result = sut.loadMedia(cwd)
       end)
 
-      t.expect(not table.is_empty(result))
+      t.expect(not tableutils.is_empty(result))
    end)
 end)
 

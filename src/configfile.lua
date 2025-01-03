@@ -1,7 +1,7 @@
 ---@class Config
 Config = {
    logging = {
-      minLevel = "INFO",
+      minLevel = "DEBUG",
    },
    navBar = {
       height = 50,
@@ -28,8 +28,14 @@ Config = {
       }
    },
 
-   mock = {
-      isMocking = true,
-      folderPath = "$HOME/Music/"
+   debug = {
+      isDebug = true,
+      isRainbowBorders = false,
+      isDebugTooltip = true,
+
+      mock = {
+         isMocking = true,
+         folderPath = "$HOME/Music/"
+      },
    },
 }

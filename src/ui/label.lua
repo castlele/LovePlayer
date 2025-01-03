@@ -4,6 +4,7 @@ local View = require("src.ui.view")
 ---@field title string
 ---@field textColor Color
 ---@field font love.Font
+---@field private fontPath string
 local Label = View()
 
 ---@param title string
@@ -11,7 +12,8 @@ function Label:init(title)
    View.init(self)
 
    self.title = title
-   self.font = love.graphics.newFont(Config.res.fonts.regular)
+   self.fontPath = Config.res.fonts.regular
+   self.font = love.graphics.newFont(self.fontPath)
 end
 
 function Label:draw()
@@ -27,6 +29,17 @@ function Label:draw()
    love.graphics.setFont(self.font)
    love.graphics.print(self.title, self.origin.x, self.origin.y)
    love.graphics.pop()
+end
+
+function Label:toString()
+   return "Label"
+end
+
+---@protected
+function Label:debugInfo()
+   local info = View.debugInfo(self)
+
+   return info .. string.format("text=%s; fontPath=%s", self.title, self.fontPath)
 end
 
 return Label

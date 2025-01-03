@@ -47,16 +47,6 @@ function SongsList:update(dt)
       if self.maxY < maxY then
          self.maxY = maxY
       end
-
-      log.logger.log(
-         string.format(
-            "%s; %s; %s",
-            row.title,
-            row.size:toString(),
-            row.origin:toString()
-         ),
-         log.level.DEBUG
-      )
    end
 
    View.update(self, dt)

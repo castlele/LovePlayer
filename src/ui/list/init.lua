@@ -80,7 +80,9 @@ end
 
 ---@private
 function List:updateState()
-   if Config.mock.isMocking and Config.mock.folderPath then
+   local d = Config.debug
+
+   if d.isDebug and d.mock.isMocking and d.mock.folderPath then
       self.state = ListState.SONGS
    end
 

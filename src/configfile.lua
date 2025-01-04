@@ -14,9 +14,15 @@ Config = {
       scrollingVelocity = 15,
       rows = {
          height = 50,
+         padding = {
+            l = 10,
+            r = 0,
+         },
          sep = {
+            height = 2,
             padding = {
-               x = 10,
+               l = 10,
+               r = 0,
             }
          }
       },
@@ -25,12 +31,22 @@ Config = {
    res = {
       fonts = {
          regular = "res/fonts/ubuntu-regular.ttf",
+         italic = "res/fonts/ubuntu-italic.ttf",
+         bold = "res/fonts/ubuntu-bold.ttf",
+         boldItalic = "res/fonts/ubuntu-bold-italic.ttf",
+
+         size = {
+            header1 = 24,
+            header2 = 16,
+            header3 = 14,
+            body = 8,
+         }
       }
    },
 
    debug = {
       isDebug = true,
-      isRainbowBorders = true,
+      isRainbowBorders = false,
       isDebugTooltip = true,
 
       mock = {

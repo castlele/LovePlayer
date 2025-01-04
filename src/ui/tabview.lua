@@ -1,6 +1,5 @@
 local View = require("src.ui.view")
 local colors = require("src.ui.colors")
-local geom = require("src.ui.geometry")
 
 local tabBarHeight = Config.tabBar.height
 
@@ -8,22 +7,16 @@ local tabBarHeight = Config.tabBar.height
 ---@field private tabView View
 local TabView = View()
 
-
 function TabView:load()
    ---@diagnostic disable-next-line
    View.load(self)
 
-   self.size = geom.Size(
-      love.graphics.getWidth(),
-      love.graphics.getHeight()
-   )
-
    local tabView = View()
+   self.tabView = tabView
 
-   tabView.origin = geom.Point(0, love.graphics.getHeight() - tabBarHeight)
-   tabView.size = geom.Size(love.graphics.getWidth(), tabBarHeight)
+   tabView.size.height = tabBarHeight
    tabView.backgroundColor = colors.secondary
-   tabView.toString = function (_)
+   tabView.toString = function(_)
       return "Bottom tabView"
    end
 
@@ -39,13 +32,18 @@ function TabView:push(view)
 end
 
 function TabView:update(dt)
-
    View.update(self, dt)
+
+   self.size.width = love.graphics.getWidth()
+   self.size.height = love.graphics.getHeight()
+
+   self.tabView.size.width = self.size.width
+   self.tabView.size.height = tabBarHeight
+   self.tabView.origin.y = self.origin.y + self.size.height - tabBarHeight
 end
 
 function TabView:toString()
    return "TabView"
 end
-
 
 return TabView

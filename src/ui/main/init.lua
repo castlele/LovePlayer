@@ -24,8 +24,6 @@ local ListState = {
 }
 
 function MainView:init()
-   View.init(self)
-
    self.songs = {}
    self.state = ListState.NO_FOLDER
    self.interactor =
@@ -37,6 +35,10 @@ function MainView:init()
          self.state = ListState.SONGS
       end
    end
+
+   View.init(self, {
+      backgroundColor = colors.background,
+   })
 end
 
 function MainView:load()
@@ -44,11 +46,9 @@ function MainView:load()
    View.load(self)
 
    self:setupListView()
-   self.backgroundColor = colors.background
    local reloadButton = Button()
    reloadButton:addTapAction(function()
-      self.interactor:reload()
-      self.songs = self.interactor:getSongs()
+      self:updateSongsList()
    end)
    reloadButton.backgroundColor = colors.green
    reloadButton.size.width = 50
@@ -62,6 +62,8 @@ function MainView:load()
    self:addSubview(self.emptyStateView)
    self:addSubview(self.songsList)
    self:addSubview(self.navBar)
+
+   self:updateSongsList()
 end
 
 function MainView:update(dt)
@@ -82,29 +84,59 @@ function MainView:update(dt)
 end
 
 function MainView:toString()
-   return "Main"
+   return "MainView"
 end
 
 function MainView:rowsCount()
    return #self.songs
 end
 
+---@param index integer
 ---@return Row
-function MainView:onRowCreate()
-   return Row()
+function MainView:onRowCreate(index)
+   local l = Config.lists
+   local s = l.rows.sep
+   return Row {
+      backgroundColor = colors.background,
+      height = l.rows.height,
+      contentPaddingLeft = l.rows.padding.l,
+      contentPaddingRight = l.rows.padding.r,
+      sep = {
+         height = s.height,
+         paddingLeft = s.padding.l,
+         paddingRight = s.padding.r,
+         color = colors.green,
+      },
+      title = {
+         backgroundColor = colors.background,
+         title = self.songs[index].title,
+         fontPath = Config.res.fonts.bold,
+         fontSize = Config.res.fonts.size.header2,
+      },
+   }
 end
 
 ---@param row Row
 ---@param index integer
 function MainView:onRowSetup(row, index)
-   row.title = self.songs[index].title
+   row:updateLabel {
+      title = self.songs[index].title,
+      backgroundColor = colors.background,
+   }
 end
 
 ---@private
 function MainView:setupListView()
    self.songsList = List {
       dataSourceDelegate = self,
+      backgroundColor = colors.background,
    }
+end
+
+---@private
+function MainView:updateSongsList()
+   self.interactor:reload()
+   self.songs = self.interactor:getSongs()
 end
 
 ---@private

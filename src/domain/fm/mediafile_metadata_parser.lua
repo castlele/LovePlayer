@@ -2,7 +2,6 @@ local strutils = require("cluautils.string_utils")
 local ext = require("src.domain.audioext")
 local flac = require("luaflac")
 
-
 local M = {
    parsers = {
       ---@type fun(media: MediaFile): MediaFileMetadata?
@@ -15,7 +14,7 @@ local M = {
 
          local fileComponents = strutils.split(media.path, "%/")
          local metadata = {
-            title = fileComponents[#fileComponents]
+            title = fileComponents[#fileComponents],
          }
 
          local decoder = flac.FLAC__stream_decoder_new()
@@ -61,7 +60,7 @@ local M = {
          local fileName = strutils.split(file, "%.")[1]
          ---@type MediaFileMetadata
          local metadata = {
-            title = fileName
+            title = fileName,
          }
 
          return metadata

@@ -1,7 +1,7 @@
 local View = require("src.ui.view")
 
 ---@class ListDataSourceDelegate
----@field onRowCreate fun(self: ListDataSourceDelegate): Row
+---@field onRowCreate fun(self: ListDataSourceDelegate, index: integer): Row
 ---@field onRowSetup fun(self: ListDataSourceDelegate, row: Row, index: integer)
 ---@field rowsCount fun(self: ListDataSourceDelegate): integer
 
@@ -12,7 +12,7 @@ local View = require("src.ui.view")
 ---@field dataSourceDelegate ListDataSourceDelegate?
 local List = View()
 
----@class ListOpts
+---@class ListOpts : ViewOpts
 ---@field dataSourceDelegate ListDataSourceDelegate?
 ---@param opts ListOpts
 function List:init(opts)
@@ -20,10 +20,12 @@ function List:init(opts)
    self.rows = {}
    self.offset = 0
    self.maxY = 0
-   self.dataSourceDelegate = opts.dataSourceDelegate
+
+   self:updateOpts(opts or {})
 end
 
 function List:wheelmoved(_, y)
+   print(self:debugInfo())
    local cursorX, cursorY = love.mouse.getX(), love.mouse.getY()
 
    if not self:isPointInside(cursorX, cursorY) then
@@ -62,6 +64,13 @@ function List:draw()
    View.draw(self)
 end
 
+---@param opts ListOpts
+function List:updateOpts(opts)
+   View.updateOpts(self, opts)
+
+   self.dataSourceDelegate = opts.dataSourceDelegate
+end
+
 function List:toString()
    return "List"
 end
@@ -87,7 +96,7 @@ function List:updateValueList()
       index = i
 
       if i > #self.rows then
-         local row = d:onRowCreate()
+         local row = d:onRowCreate(i)
          self:addSubview(row, i)
       else
          d:onRowSetup(self.rows[i], i)

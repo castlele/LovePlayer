@@ -18,21 +18,24 @@ local memory = require("cluautils.memory")
 ---@field private debugBorderColor Color
 local View = class()
 
----@diagnostic disable-next-line
-function View:init()
-   self:load()
-
+---@class ViewOpts
+---@field backgroundColor Color?
+---@param opts ViewOpts?
+function View:init(opts) ---@diagnostic disable-line
    self.addr = memory.get(self)
+   self.origin = geom.Point(0, 0)
+   self.size = geom.Size(0, 0)
+   self.isHidden = false
+   self.backgroundColor = nil
+   self.debugBorderColor =
+      colors.color(math.random(), math.random(), math.random(), 1)
+   self:updateOpts(opts or {})
+
+   self:load()
 end
 
 function View:load()
    self.subviews = {}
-   self.isHidden = false
-   self.backgroundColor = colors.white
-   self.origin = geom.Point(0, 0)
-   self.size = geom.Size(0, 0)
-   self.debugBorderColor =
-      colors.color(math.random(), math.random(), math.random(), 1)
 end
 
 ---@return boolean
@@ -68,7 +71,10 @@ function View:handleMousePressed(x, y, mouse, isTouch) end
 ---@param isTouch boolean: True if the mouse button press originated from a touchscreen touch-press
 ---@return boolean
 function View:mousepressed(x, y, mouse, isTouch)
-   log.logger.default.log(string.format("Touch: %s", self:debugInfo()), log.level.DEBUG)
+   log.logger.default.log(
+      string.format("Touch: %s", self:debugInfo()),
+      log.level.DEBUG
+   )
 
    if not self:isPointInside(x, y) or self.isHidden then
       return false
@@ -145,6 +151,13 @@ function View:draw()
    love.graphics.pop()
 
    self:drawSubviews()
+end
+
+---@param opts ViewOpts
+function View:updateOpts(opts)
+   self.backgroundColor = opts.backgroundColor
+      or self.backgroundColor
+      or colors.white
 end
 
 ---@param view View

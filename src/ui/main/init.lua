@@ -1,19 +1,21 @@
 local Button = require("src.ui.button")
 local colors = require("src.ui.colors")
-local EmptyView = require("src.ui.list.emptylist")
+local EmptyView = require("src.ui.main.emptylist")
 local NavBar = require("src.ui.navbar")
 local View = require("src.ui.view")
-local SongsList = require("src.ui.list.songs_list_view")
+local List = require("src.ui.list")
+local Row = require("src.ui.row")
 local Interactor = require("src.domain.lists")
-local storage = require("src.ui.list.media_storage")
+local storage = require("src.ui.main.media_storage")
 
----@class List : View, FolderPickerDelegate
+---@class MainView : View, FolderPickerDelegate, ListDataSourceDelegate
 ---@field private state ListState
 ---@field private navBar NavBar
----@field private songsList SongsList
+---@field private songsList List
 ---@field private emptyStateView EmptyView
 ---@field private interactor ListsInteractor
-local List = View()
+---@field private songs Song[]
+local MainView = View()
 
 ---@enum (value) ListState
 local ListState = {
@@ -21,19 +23,32 @@ local ListState = {
    SONGS = 2,
 }
 
-function List:load()
+function MainView:init()
+   View.init(self)
+
+   self.songs = {}
+   self.state = ListState.NO_FOLDER
+   self.interactor =
+      Interactor(storage.mediaRepository(storage.mediaDataStore()))
+   ---@type fun(isSuccess: boolean)
+   self.onFolderPicked = function(isSuccess)
+      if isSuccess then
+         self.songs = self.interactor:getSongs()
+         self.state = ListState.SONGS
+      end
+   end
+end
+
+function MainView:load()
    ---@diagnostic disable-next-line
    View.load(self)
 
-   self.songsList = SongsList()
-   self.state = ListState.NO_FOLDER
+   self:setupListView()
    self.backgroundColor = colors.background
-   self.interactor =
-      Interactor(storage.mediaRepository(storage.mediaDataStore()))
    local reloadButton = Button()
    reloadButton:addTapAction(function()
       self.interactor:reload()
-      self.songsList:addSongs(self.interactor:getSongs())
+      self.songs = self.interactor:getSongs()
    end)
    reloadButton.backgroundColor = colors.green
    reloadButton.size.width = 50
@@ -43,21 +58,13 @@ function List:load()
    self.emptyStateView = EmptyView()
    self.emptyStateView.interactor = self.interactor
 
-   ---@type fun(isSuccess: boolean)
-   self.onFolderPicked = function(isSuccess)
-      if isSuccess then
-         self.songsList:addSongs(self.interactor:getSongs())
-         self.state = ListState.SONGS
-      end
-   end
-
    self.emptyStateView.folderPickerDelegate = self
    self:addSubview(self.emptyStateView)
    self:addSubview(self.songsList)
    self:addSubview(self.navBar)
 end
 
-function List:update(dt)
+function MainView:update(dt)
    self:updateState()
 
    self.emptyStateView.origin.y = self.navBar.origin.y
@@ -74,12 +81,34 @@ function List:update(dt)
    View.update(self, dt)
 end
 
-function List:toString()
-   return "List"
+function MainView:toString()
+   return "Main"
+end
+
+function MainView:rowsCount()
+   return #self.songs
+end
+
+---@return Row
+function MainView:onRowCreate()
+   return Row()
+end
+
+---@param row Row
+---@param index integer
+function MainView:onRowSetup(row, index)
+   row.title = self.songs[index].title
 end
 
 ---@private
-function List:updateState()
+function MainView:setupListView()
+   self.songsList = List {
+      dataSourceDelegate = self,
+   }
+end
+
+---@private
+function MainView:updateState()
    local d = Config.debug
 
    if d.isDebug and d.mock.isMocking and d.mock.folderPath then
@@ -97,4 +126,4 @@ function List:updateState()
    end
 end
 
-return List
+return MainView

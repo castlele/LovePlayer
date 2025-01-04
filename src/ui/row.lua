@@ -1,17 +1,17 @@
-local Label = require("src.ui.label")
 local View = require("src.ui.view")
+local Label = require("src.ui.label")
 local colors = require("src.ui.colors")
 
----@class ListRow : View
+---@class Row : View
 ---@field title string
 ---@field private label Label
 ---@field private sep View
-local ListRow = View()
+local Row = View()
 
 ---@return View
 local function initSeparator()
    local v = View()
-   v.toString = function (_) return "ListRowSeparator" end
+   v.toString = function (_) return "RowSeparator" end
 
    v.size.height = 2
    v.backgroundColor = colors.red
@@ -19,13 +19,13 @@ local function initSeparator()
    return v
 end
 
----@param title string
-function ListRow:init(title)
+---@param title string?
+function Row:init(title)
    View.init(self)
-   self.title = title
+   self.title = title or ""
 end
 
-function ListRow:load()
+function Row:load()
    View.load(self)
 
    self.label = Label(self.title)
@@ -40,7 +40,7 @@ function ListRow:load()
    self:addSubview(self.sep)
 end
 
-function ListRow:update(dt)
+function Row:update(dt)
    self.label.title = self.title
    self.label.size.width = self.size.width
    self.label.origin = self.origin
@@ -52,8 +52,8 @@ function ListRow:update(dt)
    View.update(self, dt)
 end
 
-function ListRow:toString()
-   return "ListRow"
+function Row:toString()
+   return "Row"
 end
 
-return ListRow
+return Row

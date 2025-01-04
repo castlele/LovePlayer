@@ -1,4 +1,4 @@
-local List = require("src.ui.list")
+local MainView = require("src.ui.main")
 local View = require("src.ui.view")
 local TabView = require("src.ui.tabview")
 local geom = require("src.ui.geometry")
@@ -51,7 +51,7 @@ end
 
 ---@private
 function Navigator:startInitialFlow()
-   self.currentView = List()
+   self.currentView = MainView()
 end
 
 return {

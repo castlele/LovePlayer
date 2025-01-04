@@ -1,23 +1,29 @@
-local ListRow = require("src.ui.list.list_row_view")
 local View = require("src.ui.view")
-local log = require("src.domain.logger")
 
----@class SongsList : View
----@field private rows ListRow[]
----@field private songs Song[]
+---@class ListDataSourceDelegate
+---@field onRowCreate fun(self: ListDataSourceDelegate): Row
+---@field onRowSetup fun(self: ListDataSourceDelegate, row: Row, index: integer)
+---@field rowsCount fun(self: ListDataSourceDelegate): integer
+
+---@class List : View
+---@field private rows Row[]
 ---@field private offset number
 ---@field private maxY number
-local SongsList = View()
+---@field dataSourceDelegate ListDataSourceDelegate?
+local List = View()
 
-function SongsList:init()
+---@class ListOpts
+---@field dataSourceDelegate ListDataSourceDelegate?
+---@param opts ListOpts
+function List:init(opts)
    View.init(self)
-   self.songs = {}
    self.rows = {}
    self.offset = 0
    self.maxY = 0
+   self.dataSourceDelegate = opts.dataSourceDelegate
 end
 
-function SongsList:wheelmoved(_, y)
+function List:wheelmoved(_, y)
    local cursorX, cursorY = love.mouse.getX(), love.mouse.getY()
 
    if not self:isPointInside(cursorX, cursorY) then
@@ -37,8 +43,8 @@ function SongsList:wheelmoved(_, y)
    end
 end
 
-function SongsList:update(dt)
-   self:updateSongsList()
+function List:update(dt)
+   self:updateValueList()
 
    for index, row in pairs(self.rows) do
       row.origin.y = self.origin.y * index + self.offset
@@ -52,34 +58,39 @@ function SongsList:update(dt)
    View.update(self, dt)
 end
 
-function SongsList:draw()
+function List:draw()
    View.draw(self)
 end
 
----@param songs Song[]
-function SongsList:addSongs(songs)
-   self.songs = songs
+function List:toString()
+   return "List"
 end
 
-function SongsList:addSubview(view, index)
+function List:addSubview(view, index)
    View.addSubview(self, view, index)
 
-   if view:toString() == "ListRow" then
+   if view:toString() == "Row" then
       table.insert(self.rows, view)
    end
 end
 
 ---@private
-function SongsList:updateSongsList()
+function List:updateValueList()
+   local d = self.dataSourceDelegate
    local index = 1
 
-   for i = 1, self:rowsLen() do
+   if not d then
+      return
+   end
+
+   for i = 1, d:rowsCount() do
       index = i
 
       if i > #self.rows then
-         self:addSubview(ListRow(self.songs[i].title), i)
+         local row = d:onRowCreate()
+         self:addSubview(row, i)
       else
-         self.rows[i].title = self.songs[i].title
+         d:onRowSetup(self.rows[i], i)
       end
 
       self.rows[i].size.width = self.size.width
@@ -93,9 +104,4 @@ function SongsList:updateSongsList()
    end
 end
 
----@private
-function SongsList:rowsLen()
-   return #self.songs
-end
-
-return SongsList
+return List

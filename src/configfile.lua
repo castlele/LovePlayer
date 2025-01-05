@@ -13,7 +13,7 @@ Config = {
    lists = {
       scrollingVelocity = 15,
       rows = {
-         height = 50,
+         height = 60,
          padding = {
             l = 10,
             r = 0,
@@ -29,6 +29,9 @@ Config = {
    },
 
    res = {
+      images = {
+         noFolder = "res/no_folder.png",
+      },
       fonts = {
          regular = "res/fonts/ubuntu-regular.ttf",
          italic = "res/fonts/ubuntu-italic.ttf",
@@ -45,7 +48,7 @@ Config = {
    },
 
    debug = {
-      isDebug = true,
+      isDebug = false,
       isRainbowBorders = false,
       isDebugTooltip = true,
 

@@ -57,6 +57,7 @@ t.describe("Metadata parsing tests", function ()
       t.expect("Уроборос: Улица 36" == result.album)
       t.expect("1" == result.discnumber)
       t.expect("2" == result.tracknumber)
+      t.expect(result.picture)
    end)
 
    t.it("Unsupported media parses file name as song's name", function ()

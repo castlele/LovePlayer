@@ -1,41 +1,60 @@
 local View = require("src.ui.view")
 
 ---@class Image : View
----@field image love.Image
----@field private imagePath string
+---@field image love.Image?
+---@field private autoResizing boolean
+---@field private imageData image.ImageData?
 local Image = View()
 
-function Image:init()
-   View.init(self)
-
-   self.imagePath = ""
-end
-
----@param path string
-function Image:addImage(path)
-   self.image = love.graphics.newImage(path)
-   self.imagePath = path
+---@class ImageOpts : ViewOpts
+---@field width number?
+---@field height number?
+---@field imageData image.ImageData?
+---@field autoResizing boolean?
+---@param opts ImageOpts
+function Image:init(opts)
+   View.init(self, opts)
 end
 
 function Image:update(dt)
-   local imageWidth = self.image:getWidth()
-   local imageHeight = self.image:getHeight()
-
-   if imageWidth ~= self.size.width then
-      self.size.width = imageWidth
-   end
-
-   if imageHeight ~= self.size.height then
-      self.size.height = imageHeight
-   end
-
    View.update(self, dt)
+
+   if self.autoResizing and self.image then
+      local imageW, imageH = self.image:getWidth(), self.image:getHeight()
+
+      self.size.width, self.size.height = imageW, imageH
+   end
 end
 
 function Image:draw()
    View.draw(self)
 
-   love.graphics.draw(self.image, self.origin.x, self.origin.y)
+   if self.image then
+      local imageW, imageH = self.image:getWidth(), self.image:getHeight()
+
+      love.graphics.draw(
+         self.image,
+         self.origin.x,
+         self.origin.y,
+         nil,
+         self.size.width / imageW,
+         self.size.height / imageH
+      )
+   end
+end
+
+---@param opts ImageOpts
+function Image:updateOpts(opts)
+   View.updateOpts(self, opts)
+
+   self.imageData = opts.imageData or self.imageData
+   self.size.width = opts.width or self.size.width or 0
+   self.size.height = opts.height or self.size.height or 0
+   self.autoResizing = opts.autoResizing or self.autoResizing or false
+
+   if self.imageData then
+      self.image = self.imageData:getImage()
+   end
 end
 
 function Image:toString()

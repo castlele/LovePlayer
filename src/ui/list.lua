@@ -24,8 +24,8 @@ function List:init(opts)
    self:updateOpts(opts or {})
 end
 
+-- BUG: this method produces from offset with different window/row sizes
 function List:wheelmoved(_, y)
-   print(self:debugInfo())
    local cursorX, cursorY = love.mouse.getX(), love.mouse.getY()
 
    if not self:isPointInside(cursorX, cursorY) then
@@ -48,8 +48,9 @@ end
 function List:update(dt)
    self:updateValueList()
 
-   for index, row in pairs(self.rows) do
-      row.origin.y = self.origin.y * index + self.offset
+   -- TODO: Is it possible to move this logig into `List:updateValueList()`
+   for index, row in ipairs(self.rows) do
+      row.origin.y = self.origin.y + (row.size.height * (index - 1)) + self.offset
       local maxY = row.origin.y + row.size.height
 
       if self.maxY < maxY then

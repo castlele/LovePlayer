@@ -13,41 +13,51 @@ local M = {
          end
 
          local fileComponents = strutils.split(media.path, "%/")
+         ---@type MediaFileMetadata
          local metadata = {
             title = fileComponents[#fileComponents],
          }
 
          local decoder = flac.FLAC__stream_decoder_new()
-         ---@type MediaFileMetadata
 
-         decoder:set_metadata_respond(flac.FLAC__METADATA_TYPE_VORBIS_COMMENT)
+         decoder:set_metadata_respond_all()
 
          local function decoder_read_callback(_, size)
             return file:read(size)
          end
 
          local function decoder_metadata_callback(_, meta)
-            if meta.type ~= flac.FLAC__METADATA_TYPE_VORBIS_COMMENT then
-               return
+            if meta.type == flac.FLAC__METADATA_TYPE_PICTURE then
+               local picture = meta.picture
+
+               if not picture then
+                  return
+               end
+
+               metadata.picture = picture.data
+               metadata.pictureWidth = picture.width
+               metadata.pictureHeight = picture.height
             end
 
-            for _, value in ipairs(meta.vorbis_comment.comments) do
-               local keyValue = strutils.split(value, "=")
+            if meta.type == flac.FLAC__METADATA_TYPE_VORBIS_COMMENT then
+               for _, value in ipairs(meta.vorbis_comment.comments) do
+                  local keyValue = strutils.split(value, "=")
 
-               metadata[keyValue[1]] = keyValue[2]
+                  metadata[keyValue[1]] = keyValue[2]
+               end
             end
          end
 
          decoder:init_stream {
             read = decoder_read_callback,
-            write = function(...) end,
+            write = function(_) end,
             metadata = decoder_metadata_callback,
-            error = function(...)
+            error = function(_)
                file:close()
             end,
          }
 
-         decoder:process_until_end_of_metadata()
+         decoder:process_until_end_of_stream()
          file:close()
 
          return metadata

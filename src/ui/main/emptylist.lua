@@ -3,6 +3,7 @@ local Button = require("src.ui.button")
 local Image = require("src.ui.image")
 local colors = require("src.ui.colors")
 local geom = require("src.ui.geometry")
+local imageDataModule = require("src.ui.imagedata")
 
 ---@class FolderPickerDelegate
 ---@field onFolderPicked fun(isSuccess: boolean)
@@ -14,21 +15,26 @@ local geom = require("src.ui.geometry")
 ---@field private folderPickerButton Button
 local EmptyView = View()
 
-
 function EmptyView:load()
    View.load(self)
 
    self.backgroundColor = colors.background
 
-   local path = "res/no_folder.png"
-   self.noFolderImage = Image()
-   self.noFolderImage.backgroundColor = colors.background
-   self.noFolderImage:addImage(path)
+   self.noFolderImage = Image {
+      autoResizing = true,
+      backgroundColor = colors.background,
+      imageData = imageDataModule.imageData:new(
+         Config.res.images.noFolder,
+         imageDataModule.imageDataType.PATH
+      ),
+   }
 
    self.folderPickerButton = Button()
    self.folderPickerButton.size = geom.Size(100, 50)
    self.folderPickerButton.backgroundColor = colors.blue
-   self.folderPickerButton:addTapAction(function () self:openFolder() end)
+   self.folderPickerButton:addTapAction(function()
+      self:openFolder()
+   end)
 
    self:addSubview(self.noFolderImage)
    self:addSubview(self.folderPickerButton)
@@ -42,9 +48,9 @@ function EmptyView:openFolder()
       return
    end
 
-   self:onFolderPicked(true)
-
    i:requestMedia(path)
+
+   self:onFolderPicked(true)
 end
 
 function EmptyView:update(dt)
@@ -53,8 +59,10 @@ function EmptyView:update(dt)
    self.folderPickerButton.origin.x = buttonX
    self.folderPickerButton.origin.y = buttonY
 
-   local noFolderImageX = self.size.width / 2 - self.noFolderImage.size.width / 2
-   local noFolderImageY = self.size.height / 2 - self.noFolderImage.size.height / 2
+   local noFolderImageX = self.size.width / 2
+      - self.noFolderImage.size.width / 2
+   local noFolderImageY = self.size.height / 2
+      - self.noFolderImage.size.height / 2
    self.noFolderImage.origin.x = noFolderImageX
    self.noFolderImage.origin.y = noFolderImageY
 
@@ -72,6 +80,5 @@ function EmptyView:onFolderPicked(isSuccess)
       self.folderPickerDelegate.onFolderPicked(isSuccess)
    end
 end
-
 
 return EmptyView()

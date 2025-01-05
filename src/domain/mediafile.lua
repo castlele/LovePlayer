@@ -9,6 +9,9 @@ local strutils = require("cluautils.string_utils")
 ---@field genre string?
 ---@field discnumber integer?
 ---@field tracknumber integer?
+---@field picture string?
+---@field pictureWidth number?
+---@field pictureHeight number?
 
 ---@class MediaFile
 ---@field path string
@@ -23,12 +26,18 @@ local strutils = require("cluautils.string_utils")
 ---@field discnumber integer?
 ---@field tracknumber integer?
 
+---@class Picture
+---@field data string
+---@field width number
+---@field height number
+
 ---@class Song
 ---@field title string
 ---@field genre string?
 ---@field album Album
 ---@field artist Artist
 ---@field file MediaFile
+---@field picture Picture?
 
 ---@param path string
 ---@return MediaFile?

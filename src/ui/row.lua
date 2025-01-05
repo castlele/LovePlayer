@@ -1,8 +1,10 @@
 local View = require("src.ui.view")
 local Label = require("src.ui.label")
+local Image = require("src.ui.image")
 local colors = require("src.ui.colors")
 
 ---@class Row : View
+---@field leadingImage Image
 ---@field private label Label
 ---@field private sep Separator
 ---@field private contentPaddingLeft number?
@@ -47,10 +49,12 @@ end
 ---@field contentPaddingRight number?
 ---@field height number?
 ---@field sep SeparatorOpts?
+---@field leadingImage ImageOpts?
 ---@field title LabelOpts?
 ---@param opts RowOpts?
 function Row:init(opts)
    local o = opts or {}
+   self:updateImage(o.leadingImage or {})
    self:updateLabel(o.title or {})
    self:updateSeparator(o.sep or {})
 
@@ -62,12 +66,15 @@ function Row:load()
 
    self.label.textColor = colors.black
 
+   self:addSubview(self.leadingImage)
    self:addSubview(self.label)
    self:addSubview(self.sep)
 end
 
 function Row:update(dt)
    View.update(self, dt)
+
+   self.leadingImage.origin = self.origin
 
    self.label.size.width = self.size.width
       - self.contentPaddingLeft
@@ -92,6 +99,9 @@ end
 ---@param opts RowOpts
 function Row:updateOpts(opts)
    View.updateOpts(self, opts)
+   self:updateImage(opts.leadingImage or {})
+   self:updateLabel(opts.title or {})
+   self:updateSeparator(opts.sep or {})
 
    self.size.height = opts.height or 0
    self.contentPaddingLeft = opts.contentPaddingLeft or 0
@@ -106,6 +116,15 @@ function Row:updateLabel(opts)
    end
 
    self.label = Label(opts)
+end
+
+---@param opts ImageOpts
+function Row:updateImage(opts)
+   if self.leadingImage then
+      self.leadingImage:updateOpts(opts)
+   end
+
+   self.leadingImage = Image(opts)
 end
 
 ---@param opts SeparatorOpts

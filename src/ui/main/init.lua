@@ -6,6 +6,7 @@ local View = require("src.ui.view")
 local List = require("src.ui.list")
 local Row = require("src.ui.row")
 local Interactor = require("src.domain.lists")
+local imageDataModule = require("src.ui.imagedata")
 local storage = require("src.ui.main.media_storage")
 
 ---@class MainView : View, FolderPickerDelegate, ListDataSourceDelegate
@@ -96,6 +97,22 @@ end
 function MainView:onRowCreate(index)
    local l = Config.lists
    local s = l.rows.sep
+   ---@type ImageOpts?
+   local leadingImage = nil
+
+   if self.songs[index].picture then
+      local imageData = imageDataModule.imageData:new(
+         self.songs[index].picture.data,
+         imageDataModule.imageDataType.DATA
+      )
+      leadingImage = {
+         imageData = imageData,
+         width = 20,
+         height = 20,
+         autoResizing = false,
+      }
+   end
+
    return Row {
       backgroundColor = colors.background,
       height = l.rows.height,
@@ -107,6 +124,7 @@ function MainView:onRowCreate(index)
          paddingRight = s.padding.r,
          color = colors.green,
       },
+      leadingImage = leadingImage,
       title = {
          backgroundColor = colors.background,
          title = self.songs[index].title,

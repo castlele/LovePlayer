@@ -43,6 +43,17 @@ function ListsInteractor:getSongs()
          local artist = {
             name = metadata.artist,
          }
+         ---@type Picture?
+         local picture = nil
+
+         if metadata.picture then
+            picture = {
+               data = metadata.picture,
+               width = metadata.pictureWidth or 0,
+               height = metadata.pictureHeight or 0,
+            }
+         end
+
          ---@type Song
          local song = {
             title = metadata.title,
@@ -55,6 +66,7 @@ function ListsInteractor:getSongs()
             },
             artist = artist,
             file = media,
+            picture = picture,
          }
 
          log.logger.default.log("Processing song: %s", log.level.INFO, song)

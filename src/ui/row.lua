@@ -14,6 +14,9 @@ local HStack = require("src.ui.hstack")
 ---@field private sep Separator
 ---@field private contentPaddingLeft number?
 ---@field private contentPaddingRight number?
+---@field private isTapped boolean
+---@field private animState number
+---@field private shader love.Shader?
 local Row = View()
 
 ---@class Separator : View
@@ -62,10 +65,15 @@ end
 ---@param opts RowOpts?
 function Row:init(opts)
    View.init(self, opts)
+
+   self.tapped = false
+   self.animState = 0
+   self.shader = Config.res.shaders.highlighting()
 end
 
 function Row:load()
    View.load(self)
+
 
    self:addSubview(self.leadingImage)
    self:addSubview(self.leadingHStack)
@@ -86,10 +94,18 @@ function Row:update(dt)
    self.leadingHStack.origin.y = self.origin.y
       + self.size.height / 2
       - self.leadingHStack.size.height / 2
+
+   self:handleHighlighting(dt)
 end
 
-function Row:toString()
-   return "Row"
+function Row:draw()
+   love.graphics.setShader(self.shader)
+   View.draw(self)
+   love.graphics.setShader()
+end
+
+function Row:handleMousePressed(x, y, mouse, isTouch)
+   self.tapped = true
 end
 
 ---@param opts RowOpts
@@ -193,6 +209,23 @@ function Row:updateSeparator(opts)
    end
 
    self.sep = initSeparator(opts)
+end
+
+function Row:toString()
+   return "Row"
+end
+
+---@private
+---@param dt number
+function Row:handleHighlighting(dt)
+   if self.tapped and love.mouse.isDown(1) then
+      self.animState = 1
+   elseif self.animState > 0 then
+      self.tapped = false
+      self.animState = self.animState - dt
+   end
+
+   self.shader:send("progress", self.animState)
 end
 
 return Row

@@ -110,6 +110,7 @@ function MainView:onRowCreate(index)
    end
 
    return Row {
+      isUserInteractionEnabled = true,
       backgroundColor = colors.background,
       height = l.rows.height,
       contentPaddingLeft = l.rows.padding.l,

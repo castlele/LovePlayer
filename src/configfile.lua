@@ -29,6 +29,11 @@ Config = {
    },
 
    res = {
+      shaders = {
+         highlighting = function()
+            return love.graphics.newShader("res/shaders/highlighting.glsl")
+         end,
+      },
       images = {
          noFolder = "res/no_folder.png",
       },

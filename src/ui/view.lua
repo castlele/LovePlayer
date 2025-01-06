@@ -14,11 +14,13 @@ local memory = require("cluautils.memory")
 ---@field origin Point
 ---@field size Size
 ---@field backgroundColor Color
+---@field private userIteractions boolean
 ---@field private addr string
 ---@field private debugBorderColor Color
 local View = class()
 
 ---@class ViewOpts
+---@field isUserInteractionEnabled boolean?
 ---@field backgroundColor Color?
 ---@param opts ViewOpts?
 function View:init(opts) ---@diagnostic disable-line
@@ -40,7 +42,7 @@ end
 
 ---@return boolean
 function View:isUserInteractionEnabled()
-   return false
+   return self.userIteractions
 end
 
 ---@param x number
@@ -155,6 +157,7 @@ end
 
 ---@param opts ViewOpts
 function View:updateOpts(opts)
+   self.userIteractions = opts.isUserInteractionEnabled or false
    self.backgroundColor = opts.backgroundColor
       or self.backgroundColor
       or colors.white

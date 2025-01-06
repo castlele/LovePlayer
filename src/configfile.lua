@@ -39,18 +39,19 @@ Config = {
          boldItalic = "res/fonts/ubuntu-bold-italic.ttf",
 
          size = {
-            header1 = 24,
-            header2 = 16,
-            header3 = 14,
-            body = 8,
+            header1 = 30,
+            header2 = 24,
+            header3 = 18,
+            body = 12,
          }
       }
    },
 
    debug = {
-      isDebug = false,
+      isDebug = true,
       isRainbowBorders = false,
       isDebugTooltip = true,
+      isDrawFPS = true,
 
       mock = {
          isMocking = true,

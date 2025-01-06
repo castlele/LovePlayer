@@ -29,13 +29,13 @@ function View:init(opts) ---@diagnostic disable-line
    self.backgroundColor = nil
    self.debugBorderColor =
       colors.color(math.random(), math.random(), math.random(), 1)
+   self.subviews = {}
    self:updateOpts(opts or {})
 
    self:load()
 end
 
 function View:load()
-   self.subviews = {}
 end
 
 ---@return boolean

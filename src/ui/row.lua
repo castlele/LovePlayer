@@ -2,10 +2,15 @@ local View = require("src.ui.view")
 local Label = require("src.ui.label")
 local Image = require("src.ui.image")
 local colors = require("src.ui.colors")
+local VStack = require("src.ui.vstack")
+local HStack = require("src.ui.hstack")
 
 ---@class Row : View
 ---@field leadingImage Image
----@field private label Label
+---@field private leadingHStack HStack
+---@field private titlesVStack VStack
+---@field private titleLabel Label
+---@field private subtitleLabel Label
 ---@field private sep Separator
 ---@field private contentPaddingLeft number?
 ---@field private contentPaddingRight number?
@@ -50,36 +55,27 @@ end
 ---@field height number?
 ---@field sep SeparatorOpts?
 ---@field leadingImage ImageOpts?
+---@field leadingHStack HStackOpts?
+---@field titlesStack VStackOpts?
 ---@field title LabelOpts?
+---@field subtitle LabelOpts?
 ---@param opts RowOpts?
 function Row:init(opts)
-   local o = opts or {}
-   self:updateImage(o.leadingImage or {})
-   self:updateLabel(o.title or {})
-   self:updateSeparator(o.sep or {})
-
    View.init(self, opts)
 end
 
 function Row:load()
    View.load(self)
 
-   self.label.textColor = colors.black
-
    self:addSubview(self.leadingImage)
-   self:addSubview(self.label)
+   self:addSubview(self.leadingHStack)
    self:addSubview(self.sep)
 end
 
 function Row:update(dt)
    View.update(self, dt)
 
-   self.leadingImage.origin = self.origin
-
-   self.label.size.width = self.size.width
-      - self.contentPaddingLeft
-      - self.contentPaddingRight
-   self.label.origin.x = self.origin.x + self.contentPaddingLeft
+   self.leadingHStack.origin.x = self.origin.x + self.contentPaddingLeft
 
    self.sep.origin.x = self.sep.paddingLeft + self.origin.x
    self.sep.size.width = self.size.width
@@ -87,9 +83,9 @@ function Row:update(dt)
       - self.sep.paddingRight
    self.sep.origin.y = self.origin.y + self.size.height - self.sep.size.height
 
-   self.label.origin.y = self.origin.y
+   self.leadingHStack.origin.y = self.origin.y
       + self.size.height / 2
-      - self.label.size.height / 2
+      - self.leadingHStack.size.height / 2
 end
 
 function Row:toString()
@@ -99,8 +95,14 @@ end
 ---@param opts RowOpts
 function Row:updateOpts(opts)
    View.updateOpts(self, opts)
-   self:updateImage(opts.leadingImage or {})
-   self:updateLabel(opts.title or {})
+
+   self:updateLeadingStack(
+      opts.leadingHStack or {},
+      opts.titlesStack or {},
+      opts.leadingImage or {},
+      opts.title or {},
+      opts.subtitle or {}
+   )
    self:updateSeparator(opts.sep or {})
 
    self.size.height = opts.height or 0
@@ -108,14 +110,69 @@ function Row:updateOpts(opts)
    self.contentPaddingRight = opts.contentPaddingRight or 0
 end
 
----@param opts LabelOpts
-function Row:updateLabel(opts)
-   if self.label then
-      self.label:updateOpts(opts)
+---@param opts HStackOpts
+---@param stack VStackOpts
+---@param title LabelOpts
+---@param subtitle LabelOpts
+function Row:updateLeadingStack(opts, stack, image, title, subtitle)
+   self:updateTitlesStack(stack, title, subtitle)
+   self:updateImage(image)
+
+   if self.leadingHStack then
+      self.leadingHStack:updateOpts(opts)
       return
    end
 
-   self.label = Label(opts)
+   if not opts.views then
+      opts.views = {}
+   end
+
+   table.insert(opts.views, self.titlesVStack)
+   table.insert(opts.views, self.leadingImage)
+
+   self.leadingHStack = HStack(opts)
+end
+
+---@param opts VStackOpts
+---@param title LabelOpts
+---@param subtitle LabelOpts
+function Row:updateTitlesStack(opts, title, subtitle)
+   self:updateTitle(title)
+   self:updateSubtitle(subtitle)
+
+   if self.titlesVStack then
+      self.titlesVStack:updateOpts(opts)
+      return
+   end
+
+   if not opts.views then
+      opts.views = {}
+   end
+
+   table.insert(opts.views, self.subtitleLabel)
+   table.insert(opts.views, self.titleLabel)
+
+   self.titlesVStack = VStack(opts)
+end
+
+---@param opts LabelOpts
+function Row:updateTitle(opts)
+   if self.titleLabel then
+      self.titleLabel:updateOpts(opts)
+      return
+   end
+
+   self.titleLabel = Label(opts)
+end
+---
+---@param opts LabelOpts
+function Row:updateSubtitle(opts)
+   if self.subtitleLabel then
+      self.subtitleLabel:updateOpts(opts)
+      return
+   end
+
+   self.subtitleLabel = Label(opts)
 end
 
 ---@param opts ImageOpts

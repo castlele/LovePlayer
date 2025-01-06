@@ -1,5 +1,6 @@
 require("src.utils.class")
 require("src.configfile")
+local debugView = require("src.ui.debugView")
 
 local navigatorModule = require("src.ui.navigator")
 ---@type Navigator
@@ -29,4 +30,5 @@ end
 
 function love.draw()
    navigator:draw()
+   debugView.fpsView.draw(Config.debug.isDrawFPS, 0, 0, 1, 1, 1, 1)
 end

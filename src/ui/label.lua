@@ -10,6 +10,7 @@ local Label = View()
 
 ---@class LabelOpts : ViewOpts
 ---@field title string?
+---@field textColor Color?
 ---@field fontPath string?
 ---@field fontSize number?
 ---@param opts LabelOpts
@@ -46,6 +47,7 @@ function Label:updateOpts(opts)
 
    self.title = opts.title or ""
    self.fontPath = opts.fontPath
+   self.textColor = opts.textColor or self.textColor or colors.black
 
    if self.fontPath then
       local f = love.graphics.newFont(self.fontPath, opts.fontSize)

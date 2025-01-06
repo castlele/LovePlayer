@@ -107,8 +107,8 @@ function MainView:onRowCreate(index)
       )
       leadingImage = {
          imageData = imageData,
-         width = 20,
-         height = 20,
+         width = 40,
+         height = 40,
          autoResizing = false,
       }
    end
@@ -125,11 +125,26 @@ function MainView:onRowCreate(index)
          color = colors.green,
       },
       leadingImage = leadingImage,
+      titlesStack = {
+         backgroundColor = colors.background,
+      },
+      leadingHStack = {
+         backgroundColor = colors.background,
+         spacing = 10,
+      },
       title = {
          backgroundColor = colors.background,
          title = self.songs[index].title,
          fontPath = Config.res.fonts.bold,
+         textColor = colors.white,
          fontSize = Config.res.fonts.size.header2,
+      },
+      subtitle = {
+         backgroundColor = colors.background,
+         title = self.songs[index].artist.name,
+         fontPath = Config.res.fonts.regular,
+         textColor = colors.white,
+         fontSize = Config.res.fonts.size.body,
       },
    }
 end
@@ -137,9 +152,11 @@ end
 ---@param row Row
 ---@param index integer
 function MainView:onRowSetup(row, index)
-   row:updateLabel {
+   row:updateTitle {
       title = self.songs[index].title,
-      backgroundColor = colors.background,
+   }
+   row:updateSubtitle {
+      title = self.songs[index].artist.name,
    }
 end
 

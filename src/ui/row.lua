@@ -179,6 +179,7 @@ end
 function Row:updateImage(opts)
    if self.leadingImage then
       self.leadingImage:updateOpts(opts)
+      return
    end
 
    self.leadingImage = Image(opts)

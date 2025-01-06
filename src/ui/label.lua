@@ -22,6 +22,7 @@ function Label:draw()
    View.draw(self)
 
    love.graphics.push()
+
    love.graphics.setColor(
       self.textColor.red,
       self.textColor.green,

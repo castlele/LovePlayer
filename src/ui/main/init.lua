@@ -6,7 +6,6 @@ local View = require("src.ui.view")
 local List = require("src.ui.list")
 local Row = require("src.ui.row")
 local Interactor = require("src.domain.lists")
-local imageDataModule = require("src.ui.imagedata")
 local storage = require("src.ui.main.media_storage")
 
 ---@class MainView : View, FolderPickerDelegate, ListDataSourceDelegate
@@ -100,11 +99,8 @@ function MainView:onRowCreate(index)
    ---@type ImageOpts?
    local leadingImage = nil
 
-   if self.songs[index].picture then
-      local imageData = imageDataModule.imageData:new(
-         self.songs[index].picture.data,
-         imageDataModule.imageDataType.DATA
-      )
+   if self.songs[index].imageData then
+      local imageData = self.songs[index].imageData
       leadingImage = {
          imageData = imageData,
          width = 40,
@@ -122,7 +118,7 @@ function MainView:onRowCreate(index)
          height = s.height,
          paddingLeft = s.padding.l,
          paddingRight = s.padding.r,
-         color = colors.green,
+         color = colors.secondary,
       },
       leadingImage = leadingImage,
       titlesStack = {
@@ -152,11 +148,18 @@ end
 ---@param row Row
 ---@param index integer
 function MainView:onRowSetup(row, index)
+   local song = self.songs[index]
+
+   assert(song, "Update row that shouldn't exist")
+
    row:updateTitle {
-      title = self.songs[index].title,
+      title = song.title,
    }
    row:updateSubtitle {
-      title = self.songs[index].artist.name,
+      title = song.artist.name,
+   }
+   row:updateImage {
+      imageData = song.imageData,
    }
 end
 

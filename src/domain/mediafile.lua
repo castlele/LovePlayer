@@ -37,7 +37,7 @@ local strutils = require("cluautils.string_utils")
 ---@field album Album
 ---@field artist Artist
 ---@field file MediaFile
----@field picture Picture?
+---@field imageData image.ImageData
 
 ---@param path string
 ---@return MediaFile?

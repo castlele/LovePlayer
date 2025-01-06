@@ -2,6 +2,7 @@
 --- Its main goal it to sort, filter and combine lists of songs.
 
 local log = require("src.domain.logger.init")
+local imageDataModule = require("src.ui.imagedata")
 
 ---@class MediaDataStore
 ---@field save fun(self: MediaDataStore, item: MediaFile[])
@@ -10,7 +11,9 @@ local log = require("src.domain.logger.init")
 
 ---@class MediaRepository
 ---@field saveMedia fun(self: MediaRepository, items: MediaFile[])
+---@field saveSongs fun(self: MediaRepository, items: Song[])
 ---@field getMedia fun(self: MediaRepository): MediaFile[]
+---@field getSong fun(self: MediaRepository, item: MediaFile): Song?
 ---@field saveMediaFolderPath fun(self: MediaRepository, path: string)
 ---@field getMediaFolderPath fun(self: MediaRepository): string?
 
@@ -36,44 +39,52 @@ function ListsInteractor:getSongs()
    end
 
    for _, media in ipairs(mediaList) do
-      local metadata = self.mediaLoader.loadMetadata(media)
+      local song = self.mediaRepository:getSong(media)
 
-      if metadata then
-         ---@type Artist
-         local artist = {
-            name = metadata.artist,
-         }
-         ---@type Picture?
-         local picture = nil
-
-         if metadata.picture then
-            picture = {
-               data = metadata.picture,
-               width = metadata.pictureWidth or 0,
-               height = metadata.pictureHeight or 0,
-            }
-         end
-
-         ---@type Song
-         local song = {
-            title = metadata.title,
-            genre = metadata.genre,
-            album = {
-               name = metadata.album,
-               discnumber = tonumber(metadata.discnumber),
-               tracknumber = tonumber(metadata.tracknumber),
-               artist = artist,
-            },
-            artist = artist,
-            file = media,
-            picture = picture,
-         }
-
-         log.logger.default.log("Processing song: %s", log.level.INFO, song)
-
+      if song then
          table.insert(songs, song)
+      else
+         local metadata = self.mediaLoader.loadMetadata(media)
+
+         if metadata then
+            ---@type Artist
+            local artist = {
+               name = metadata.artist,
+            }
+            ---@type image.ImageData?
+            local imageData = nil
+
+            if metadata.picture then
+               imageData = imageDataModule.imageData:new(
+                  metadata.picture,
+                  imageDataModule.imageDataType.DATA,
+                  media.path
+               )
+            end
+
+            ---@type Song
+            local song = {
+               title = metadata.title,
+               genre = metadata.genre,
+               album = {
+                  name = metadata.album,
+                  discnumber = tonumber(metadata.discnumber),
+                  tracknumber = tonumber(metadata.tracknumber),
+                  artist = artist,
+               },
+               artist = artist,
+               file = media,
+               imageData = imageData,
+            }
+
+            log.logger.default.log("Processing song: %s", log.level.INFO, song)
+
+            table.insert(songs, song)
+         end
       end
    end
+
+   self.mediaRepository:saveSongs(songs)
 
    return songs
 end

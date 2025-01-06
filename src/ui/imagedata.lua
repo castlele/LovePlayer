@@ -7,16 +7,19 @@ local ImageDataType = {
 ---@class image.ImageData
 ---@field type ImageDataType
 ---@field data any
+---@field id string
 local ImageData = {}
 
 ---@param data any
 ---@param type ImageDataType
+---@param id string?
 ---@return image.ImageData
-function ImageData:new(data, type)
+function ImageData:new(data, type, id)
    ---@type image.ImageData
    local this = {
       type = type,
       data = data,
+      id = id or "", -- TODO: UUID Module should exist btw :)
    }
 
    setmetatable(this, { __index = self })

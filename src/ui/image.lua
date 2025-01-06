@@ -47,13 +47,29 @@ end
 function Image:updateOpts(opts)
    View.updateOpts(self, opts)
 
-   self.imageData = opts.imageData or self.imageData
+   local shouldUpdateImage = false
+
+   if
+      opts.imageData
+      and (not self.imageData or self.imageData.id ~= opts.imageData.id)
+   then
+      shouldUpdateImage = true
+      self.imageData = opts.imageData or self.imageData
+   elseif not opts.imageData and self.imageData then
+      shouldUpdateImage = true
+      self.imageData = nil
+   end
+
    self.size.width = opts.width or self.size.width or 0
    self.size.height = opts.height or self.size.height or 0
    self.autoResizing = opts.autoResizing or self.autoResizing or false
 
-   if self.imageData then
-      self.image = self.imageData:getImage()
+   if shouldUpdateImage then
+      if self.imageData then
+         self.image = self.imageData:getImage()
+      else
+         self.image = nil
+      end
    end
 end
 

@@ -7,6 +7,7 @@ local navigatorModule = require("src.ui.navigator")
 local navigator = navigatorModule.navigator()
 
 function love.load()
+   love.graphics.setDefaultFilter("nearest", "nearest")
    navigator:startFlow(navigatorModule.flow.INITIAL)
 end
 

@@ -35,7 +35,8 @@ Config = {
          end,
       },
       images = {
-         noFolder = "res/no_folder.png",
+         noFolder = "res/images/no_folder.png",
+         audioPlaceholder = "res/images/audio_placeholder.png",
       },
       fonts = {
          regular = "res/fonts/ubuntu-regular.ttf",
@@ -54,7 +55,7 @@ Config = {
 
    debug = {
       isDebug = true,
-      isRainbowBorders = false,
+      isRainbowBorders = true,
       isDebugTooltip = true,
       isDrawFPS = true,
 

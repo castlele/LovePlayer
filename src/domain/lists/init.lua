@@ -40,47 +40,10 @@ function ListsInteractor:getSongs()
 
    for _, media in ipairs(mediaList) do
       local song = self.mediaRepository:getSong(media)
+         or self:createSongFromMedia(media)
 
       if song then
          table.insert(songs, song)
-      else
-         local metadata = self.mediaLoader.loadMetadata(media)
-
-         if metadata then
-            ---@type Artist
-            local artist = {
-               name = metadata.artist,
-            }
-            ---@type image.ImageData?
-            local imageData = nil
-
-            if metadata.picture then
-               imageData = imageDataModule.imageData:new(
-                  metadata.picture,
-                  imageDataModule.imageDataType.DATA,
-                  media.path
-               )
-            end
-
-            ---@type Song
-            local song = {
-               title = metadata.title,
-               genre = metadata.genre,
-               album = {
-                  name = metadata.album,
-                  discnumber = tonumber(metadata.discnumber),
-                  tracknumber = tonumber(metadata.tracknumber),
-                  artist = artist,
-               },
-               artist = artist,
-               file = media,
-               imageData = imageData,
-            }
-
-            log.logger.default.log("Processing song: %s", log.level.INFO, song)
-
-            table.insert(songs, song)
-         end
       end
    end
 
@@ -126,6 +89,51 @@ end
 
 function ListsInteractor:reload()
    self:requestMedia()
+end
+
+---@private
+---@param media MediaFile
+---@return Song?
+function ListsInteractor:createSongFromMedia(media)
+   local metadata = self.mediaLoader.loadMetadata(media)
+
+   if not metadata then
+      return nil
+   end
+
+   ---@type Artist
+   local artist = {
+      name = metadata.artist,
+   }
+   ---@type image.ImageData?
+   local imageData = nil
+
+   if metadata.picture then
+      imageData = imageDataModule.imageData:new(
+         metadata.picture,
+         imageDataModule.imageDataType.DATA,
+         media.path
+      )
+   else
+      imageData = imageDataModule.imageData.placeholder
+   end
+
+   ---@type Song
+   local song = {
+      title = metadata.title,
+      genre = metadata.genre,
+      album = {
+         name = metadata.album,
+         discnumber = tonumber(metadata.discnumber),
+         tracknumber = tonumber(metadata.tracknumber),
+         artist = artist,
+      },
+      artist = artist,
+      file = media,
+      imageData = imageData,
+   }
+
+   return song
 end
 
 return ListsInteractor

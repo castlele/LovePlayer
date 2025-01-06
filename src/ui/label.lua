@@ -46,11 +46,11 @@ end
 function Label:updateOpts(opts)
    View.updateOpts(self, opts)
 
-   self.title = opts.title or ""
-   self.fontPath = opts.fontPath
+   self.title = opts.title or self.title or ""
+   self.fontPath = opts.fontPath or self.fontPath or nil
    self.textColor = opts.textColor or self.textColor or colors.black
 
-   if self.fontPath then
+   if self.fontPath and not self.font then
       local f = love.graphics.newFont(self.fontPath, opts.fontSize)
       self.size.width = f:getWidth(self.title)
       self.size.height = f:getHeight()

@@ -1,30 +1,55 @@
 local View = require("src.ui.view")
 
 ---@class NavBar : View
----@field trailingView View
+---@field trailingView View?
+---@field leadingView View?
 local NavBar = View()
 
----@param trailingView View
-function NavBar:init(trailingView)
-   View.init(self)
-   self.trailingView = trailingView
-
-   self:addSubview(self.trailingView)
+---@class NavBarOpts : ViewOpts
+---@field leadingView View?
+---@field trailingView View?
+---@param opts NavBarOpts?
+function NavBar:init(opts)
+   View.init(self, opts)
 end
 
 function NavBar:load()
    View.load(self)
 
    self.size.height = Config.navBar.height
+
+   if self.leadingView then
+      self:addSubview(self.leadingView)
+   end
+
+   if self.trailingView then
+      self:addSubview(self.trailingView)
+   end
 end
 
 function NavBar:update(dt)
+   View.update(self, dt)
+
    local padding = Config.navBar.horizontalPadding
+
+   self.leadingView.origin.x = self.origin.x + padding
+
    self.trailingView.origin.x = self.size.width
       - padding
       - self.trailingView.size.width
+end
 
-   View.update(self, dt)
+---@param opts NavBarOpts
+function NavBar:updateOpts(opts)
+   View.updateOpts(self, opts)
+
+   if opts.leadingView then
+      self.leadingView = opts.leadingView or self.leadingView
+   end
+
+   if opts.trailingView then
+      self.trailingView = opts.trailingView or self.trailingView
+   end
 end
 
 ---@return string

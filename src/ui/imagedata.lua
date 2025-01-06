@@ -48,6 +48,9 @@ function ImageData:getImage()
    end
 end
 
+ImageData.placeholder =
+   ImageData:new(Config.res.images.audioPlaceholder, ImageDataType.PATH, "placeholder")
+
 return {
    imageDataType = ImageDataType,
    imageData = ImageData,

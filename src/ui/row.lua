@@ -143,8 +143,8 @@ function Row:updateLeadingStack(opts, stack, image, title, subtitle)
       opts.views = {}
    end
 
-   table.insert(opts.views, self.titlesVStack)
    table.insert(opts.views, self.leadingImage)
+   table.insert(opts.views, self.titlesVStack)
 
    self.leadingHStack = HStack(opts)
 end

@@ -31,5 +31,13 @@ end
 
 function love.draw()
    navigator:draw()
-   debugView.fpsView.draw(Config.debug.isDrawFPS, 0, 0, 1, 1, 1, 1)
+   debugView.fpsView.draw(
+      Config.debug.isDrawFPS,
+      0,
+      love.graphics.getHeight() - 20,
+      1,
+      1,
+      1,
+      1
+   )
 end

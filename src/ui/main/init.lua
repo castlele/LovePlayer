@@ -1,3 +1,4 @@
+local SelectionView = require("src.ui.selectionview")
 local Button = require("src.ui.button")
 local colors = require("src.ui.colors")
 local EmptyView = require("src.ui.main.emptylist")
@@ -54,7 +55,20 @@ function MainView:load()
    reloadButton.size.width = 50
    reloadButton.size.height = 50
 
-   self.navBar = NavBar(reloadButton)
+   self.navBar = NavBar {
+      leadingView = SelectionView {
+         container = {
+            spacing = 10
+         },
+         items = {
+            "songs",
+            "albums",
+            "artists",
+         },
+         selected = 1,
+      },
+      trailingView = reloadButton,
+   }
    self.emptyStateView = EmptyView()
    self.emptyStateView.interactor = self.interactor
 
@@ -107,6 +121,10 @@ function MainView:onRowCreate(index)
          height = 40,
          autoResizing = false,
       }
+
+      if imageData.id == "placeholder" then
+         leadingImage.backgroundColor = colors.background
+      end
    end
 
    return Row {

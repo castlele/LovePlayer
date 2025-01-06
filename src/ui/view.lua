@@ -22,11 +22,12 @@ local View = class()
 ---@class ViewOpts
 ---@field isUserInteractionEnabled boolean?
 ---@field backgroundColor Color?
+---@field width number?
+---@field height number?
 ---@param opts ViewOpts?
 function View:init(opts) ---@diagnostic disable-line
    self.addr = memory.get(self)
    self.origin = geom.Point(0, 0)
-   self.size = geom.Size(0, 0)
    self.isHidden = false
    self.backgroundColor = nil
    self.debugBorderColor =
@@ -37,8 +38,7 @@ function View:init(opts) ---@diagnostic disable-line
    self:load()
 end
 
-function View:load()
-end
+function View:load() end
 
 ---@return boolean
 function View:isUserInteractionEnabled()
@@ -157,7 +157,13 @@ end
 
 ---@param opts ViewOpts
 function View:updateOpts(opts)
-   self.userIteractions = opts.isUserInteractionEnabled or false
+   if not self.size or not self.size.width or not self.size.height then
+      self.size = geom.Size(opts.width or 0, opts.height or 0)
+   else
+      self.size.height = opts.height or self.size.height
+      self.size.width = opts.width or self.size.width
+   end
+   self.userIteractions = opts.isUserInteractionEnabled or self.userIteractions or false
    self.backgroundColor = opts.backgroundColor
       or self.backgroundColor
       or colors.white
@@ -171,9 +177,12 @@ function View:addSubview(view, index)
    if index then
       i = index
    elseif #self.subviews ~= 0 then
-      i = #self.subviews
+      i = #self.subviews + 1
    end
 
+   if view:toString() == "Label" then
+   print(i, view:debugInfo())
+   end
    table.insert(self.subviews, i, view)
 end
 

@@ -22,7 +22,6 @@ kanban-plugin: board
 ## In Progress
 
 - [ ] Caching #backend #lists #2h
-- [ ] Create songs list screen #1h #lists #ui
 - [ ] Create tabs view for switching between songs, albums and authors #1_5h #lists #ui
 
 
@@ -39,6 +38,7 @@ kanban-plugin: board
 - [x] Resolve todoes #backend #1h
 - [x] Implement methods of getting songs, albums from Interactor #2h  #backend #lists
 - [x] Create generic list view #ui #2h #lists
+- [x] Create songs list screen #1h #lists #ui
 
 
 

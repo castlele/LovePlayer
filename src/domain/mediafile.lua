@@ -19,12 +19,14 @@ local strutils = require("cluautils.string_utils")
 
 ---@class Artist
 ---@field name string?
+---@field imageData image.ImageData
 
 ---@class Album
 ---@field name string?
 ---@field artist Artist?
 ---@field discnumber integer?
 ---@field tracknumber integer?
+---@field imageData image.ImageData
 
 ---@class Picture
 ---@field data string

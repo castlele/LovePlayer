@@ -21,7 +21,9 @@ local MainView = View()
 ---@enum (value) ListState
 local ListState = {
    NO_FOLDER = 0,
-   SONGS = 2,
+   SONGS = 1,
+   ALBUMS = 2,
+   ARTISTS = 3,
 }
 
 function MainView:init()
@@ -93,6 +95,15 @@ function MainView:load()
          selected = 1,
          height = 50,
          backgroundColor = colors.secondary,
+         onItemSelected = function(item, index)
+            if item == "songs" then
+               self.state = ListState.SONGS
+            elseif item == "albums" then
+               self.state = ListState.ALBUMS
+            elseif item == "artists" then
+               self.state = ListState.ARTISTS
+            end
+         end,
       },
       trailingView = reloadButton,
    }
@@ -124,17 +135,134 @@ function MainView:update(dt)
    View.update(self, dt)
 end
 
-function MainView:toString()
-   return "MainView"
-end
-
 function MainView:rowsCount()
-   return #self.songs
+   local count = 0
+   if self.state == ListState.SONGS then
+      count = #self.interactor:getSongs()
+   elseif self.state == ListState.ALBUMS then
+      count = #self.interactor:getAlbums()
+   elseif self.state == ListState.ARTISTS then
+      count = #self.interactor:getArtists()
+   end
+
+   return count
 end
 
 ---@param index integer
 ---@return Row
 function MainView:onRowCreate(index)
+   ---@type Row
+   local row = nil
+   if self.state == ListState.SONGS then
+      row = self:createSongsRow(index)
+   elseif self.state == ListState.ALBUMS then
+      row = self:createAlbumsRow(index)
+   elseif self.state == ListState.ARTISTS then
+      row = self:createArtistsRow(index)
+   end
+
+   assert(row, "Unknown state: " .. self.state)
+
+   return row
+end
+
+---@param row Row
+---@param index integer
+function MainView:onRowSetup(row, index)
+   if self.state == ListState.SONGS then
+      ---@type Song
+      local song = self.interactor:getSongs()[index]
+
+      assert(song, "Update row that shouldn't exist")
+
+      row:updateTitle {
+         title = song.title,
+      }
+      row:updateSubtitle {
+         title = song.artist.name,
+         isHidden = false,
+      }
+      row:updateImage {
+         imageData = song.imageData,
+      }
+   elseif self.state == ListState.ALBUMS then
+      ---@type Album
+      local album = self.interactor:getAlbums()[index]
+
+      assert(album, "Update row that shouldn't exist")
+
+      row:updateTitle {
+         title = album.name,
+      }
+      row:updateSubtitle {
+         isHidden = true,
+      }
+      row:updateImage {
+         imageData = album.imageData,
+      }
+   elseif self.state == ListState.ARTISTS then
+      ---@type Artist
+      local artist = self.interactor:getArtists()[index]
+
+      assert(artist, "Update row that shouldn't exist")
+
+      row:updateTitle {
+         title = artist.name,
+      }
+      row:updateSubtitle {
+         isHidden = true,
+      }
+      row:updateImage {
+         imageData = artist.imageData,
+      }
+   end
+end
+
+function MainView:toString()
+   return "MainView"
+end
+
+---@private
+function MainView:setupListView()
+   self.songsList = List {
+      dataSourceDelegate = self,
+      backgroundColor = colors.background,
+   }
+end
+
+---@private
+function MainView:updateSongsList()
+   self.interactor:reload()
+   self.songs = self.interactor:getSongs()
+end
+
+---@private
+function MainView:updateState()
+   local d = Config.debug
+
+   if
+      d.isDebug
+      and d.mock.isMocking
+      and d.mock.folderPath
+      and self.state == ListState.NO_FOLDER
+   then
+      self.state = ListState.SONGS
+   end
+
+   if self.state == ListState.NO_FOLDER then
+      self.emptyStateView.isHidden = false
+      self.songsList.isHidden = true
+      self.navBar.isHidden = true
+   elseif self.state == ListState.SONGS then
+      self.emptyStateView.isHidden = true
+      self.songsList.isHidden = false
+      self.navBar.isHidden = false
+   end
+end
+
+---@private
+---@param index integer
+function MainView:createSongsRow(index)
    local l = Config.lists
    local s = l.rows.sep
    ---@type ImageOpts?
@@ -191,55 +319,107 @@ function MainView:onRowCreate(index)
    }
 end
 
----@param row Row
+---@private
 ---@param index integer
-function MainView:onRowSetup(row, index)
-   local song = self.songs[index]
+function MainView:createAlbumsRow(index)
+   local l = Config.lists
+   local s = l.rows.sep
+   ---@type ImageOpts?
+   local leadingImage = nil
+   ---@type Album
+   local album = self.interactor:getAlbums()[index]
 
-   assert(song, "Update row that shouldn't exist")
+   leadingImage = {
+      imageData = album.imageData,
+      width = 40,
+      height = 40,
+      autoResizing = false,
+   }
 
-   row:updateTitle {
-      title = song.title,
-   }
-   row:updateSubtitle {
-      title = song.artist.name,
-   }
-   row:updateImage {
-      imageData = song.imageData,
-   }
-end
+   if album.imageData.id == "placeholder" then
+      leadingImage.backgroundColor = colors.background
+   end
 
----@private
-function MainView:setupListView()
-   self.songsList = List {
-      dataSourceDelegate = self,
+   return Row {
+      isUserInteractionEnabled = true,
       backgroundColor = colors.background,
+      height = l.rows.height,
+      contentPaddingLeft = l.rows.padding.l,
+      contentPaddingRight = l.rows.padding.r,
+      sep = {
+         height = s.height,
+         paddingLeft = s.padding.l,
+         paddingRight = s.padding.r,
+         color = colors.secondary,
+      },
+      leadingImage = leadingImage,
+      titlesStack = {
+         backgroundColor = colors.background,
+      },
+      leadingHStack = {
+         backgroundColor = colors.background,
+         spacing = 10,
+      },
+      title = {
+         backgroundColor = colors.background,
+         title = album.name,
+         fontPath = Config.res.fonts.bold,
+         textColor = colors.white,
+         fontSize = Config.res.fonts.size.header2,
+      },
    }
 end
 
 ---@private
-function MainView:updateSongsList()
-   self.interactor:reload()
-   self.songs = self.interactor:getSongs()
-end
+---@param index integer
+function MainView:createArtistsRow(index)
+   local l = Config.lists
+   local s = l.rows.sep
+   ---@type ImageOpts?
+   local leadingImage = nil
+   ---@type Artist
+   local artist = self.interactor:getArtists()[index]
 
----@private
-function MainView:updateState()
-   local d = Config.debug
+   local imageData = artist.imageData
+   leadingImage = {
+      imageData = imageData,
+      width = 40,
+      height = 40,
+      autoResizing = false,
+   }
 
-   if d.isDebug and d.mock.isMocking and d.mock.folderPath then
-      self.state = ListState.SONGS
+   if imageData.id == "placeholder" then
+      leadingImage.backgroundColor = colors.background
    end
 
-   if self.state == ListState.NO_FOLDER then
-      self.emptyStateView.isHidden = false
-      self.songsList.isHidden = true
-      self.navBar.isHidden = true
-   elseif self.state == ListState.SONGS then
-      self.emptyStateView.isHidden = true
-      self.songsList.isHidden = false
-      self.navBar.isHidden = false
-   end
+   return Row {
+      isUserInteractionEnabled = true,
+      backgroundColor = colors.background,
+      height = l.rows.height,
+      contentPaddingLeft = l.rows.padding.l,
+      contentPaddingRight = l.rows.padding.r,
+      sep = {
+         height = s.height,
+         paddingLeft = s.padding.l,
+         paddingRight = s.padding.r,
+         color = colors.secondary,
+      },
+      leadingImage = leadingImage,
+      titlesStack = {
+         backgroundColor = colors.background,
+      },
+      leadingHStack = {
+         backgroundColor = colors.background,
+         spacing = 10,
+      },
+      title = {
+         backgroundColor = colors.background,
+         title = artist.name,
+         fontPath = Config.res.fonts.bold,
+         textColor = colors.white,
+         fontSize = Config.res.fonts.size.header2,
+      },
+   }
 end
 
 return MainView

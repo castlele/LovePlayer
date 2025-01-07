@@ -74,7 +74,6 @@ end
 function Row:load()
    View.load(self)
 
-
    self:addSubview(self.leadingImage)
    self:addSubview(self.leadingHStack)
    self:addSubview(self.sep)

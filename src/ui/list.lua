@@ -46,6 +46,8 @@ function List:wheelmoved(_, y)
 end
 
 function List:update(dt)
+   View.update(self, dt)
+
    self:updateValueList()
 
    -- TODO: Is it possible to move this logig into `List:updateValueList()`
@@ -57,8 +59,6 @@ function List:update(dt)
          self.maxY = maxY
       end
    end
-
-   View.update(self, dt)
 end
 
 function List:draw()

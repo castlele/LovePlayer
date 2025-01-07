@@ -17,6 +17,7 @@ local Selection = View()
 ---@field container HStackOpts?
 ---@field items string[]?
 ---@field selected integer?
+---@field onItemSelected fun(item: string, index: integer)?
 ---@param opts SelectionOpts?
 function Selection:init(opts)
    View.init(self, opts)
@@ -90,6 +91,9 @@ function Selection:createLabels(opts)
 
       label.handleMousePressed = function(x, y, mouse, isTouch)
          self.selected = index
+         if opts.onItemSelected then
+            opts.onItemSelected(item, index)
+         end
       end
 
       table.insert(labels, label)

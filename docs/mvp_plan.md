@@ -10,19 +10,14 @@ kanban-plugin: board
 - [ ] [Android] Implement flow of picking folder #music_folder_picker  #ui
 - [ ] Fix tests using luarocks as build system #1_5h #backend
 - [ ] Implement searching in Interactor to support navigation #1_5h #backend #lists
-- [ ] Implement navigation between tabs #2h #lists #ui
-- [ ] Implement navigation between screens #4h #lists #ui
-- [ ] Implement albums list view #1_5h #lists #ui
-- [ ] Implement album's songs view #1_5h #lists #ui
-- [ ] Implement authors list view #1h #lists #ui
 - [ ] Implement methods of getting albums from Interactor #1h #backend #lists
 - [ ] Implement methods of getting artists from Interactor #1h #backend #lists
 
 
 ## In Progress
 
-- [ ] Caching #backend #lists #2h
-- [ ] Create tabs view for switching between songs, albums and authors #1_5h #lists #ui
+- [ ] Implement navigation between screens #4h #lists #ui
+- [ ] Implement album's songs view #1_5h #lists #ui
 
 
 ## Done
@@ -39,6 +34,11 @@ kanban-plugin: board
 - [x] Implement methods of getting songs, albums from Interactor #2h  #backend #lists
 - [x] Create generic list view #ui #2h #lists
 - [x] Create songs list screen #1h #lists #ui
+- [x] Create tabs view for switching between songs, albums and authors #1_5h #lists #ui
+- [x] Implement albums list view #1_5h #lists #ui
+- [x] Implement authors list view #1h #lists #ui
+- [x] Implement navigation between tabs #2h #lists #ui
+- [x] Caching #backend #lists #2h
 
 
 

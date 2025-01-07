@@ -53,10 +53,42 @@ function ListsInteractor:getSongs()
 end
 
 ---@return Album[]
-function ListsInteractor:getAlbums() end
+function ListsInteractor:getAlbums()
+   local songs = self:getSongs()
+   ---@type Album[]
+   local albums = {}
+   local set = {}
+
+   for _, song in pairs(songs) do
+      local album = song.album
+
+      if album.name and not set[album.name] then
+         set[album.name] = 1
+         table.insert(albums, album)
+      end
+   end
+
+   return albums
+end
 
 ---@return Artist[]
-function ListsInteractor:getArtists() end
+function ListsInteractor:getArtists()
+   local songs = self:getSongs()
+   ---@type Artist[]
+   local artists = {}
+   local set = {}
+
+   for _, song in pairs(songs) do
+      local artist = song.artist
+
+      if artist.name and not set[artist.name] then
+         set[artist.name] = 1
+         table.insert(artists, artist)
+      end
+   end
+
+   return artists
+end
 
 ---@return string?
 function ListsInteractor:requestFilePicker()
@@ -100,11 +132,6 @@ function ListsInteractor:createSongFromMedia(media)
    if not metadata then
       return nil
    end
-
-   ---@type Artist
-   local artist = {
-      name = metadata.artist,
-   }
    ---@type image.ImageData?
    local imageData = nil
 
@@ -118,6 +145,12 @@ function ListsInteractor:createSongFromMedia(media)
       imageData = imageDataModule.imageData.placeholder
    end
 
+   ---@type Artist
+   local artist = {
+      name = metadata.artist,
+      imageData = imageData,
+   }
+
    ---@type Song
    local song = {
       title = metadata.title,
@@ -127,6 +160,7 @@ function ListsInteractor:createSongFromMedia(media)
          discnumber = tonumber(metadata.discnumber),
          tracknumber = tonumber(metadata.tracknumber),
          artist = artist,
+         imageData = imageData,
       },
       artist = artist,
       file = media,

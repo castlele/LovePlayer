@@ -57,8 +57,33 @@ function MainView:load()
 
    self.navBar = NavBar {
       leadingView = SelectionView {
+         selectedLabelOpts = {
+            backgroundColor = colors.accent,
+            fontPath = Config.res.fonts.regular,
+            textColor = colors.black,
+            fontSize = Config.res.fonts.size.header3,
+            cornerRadius = 8,
+            paddingTop = 5,
+            paddingBottom = 5,
+            paddingLeft = 5,
+            paddingRight = 5,
+         },
+         deselectedLabelOpts = {
+            backgroundColor = colors.white,
+            fontPath = Config.res.fonts.regular,
+            textColor = colors.black,
+            fontSize = Config.res.fonts.size.header3,
+            cornerRadius = 8,
+            paddingTop = 5,
+            paddingBottom = 5,
+            paddingLeft = 5,
+            paddingRight = 5,
+         },
          container = {
-            spacing = 10
+            maxHeight = 50,
+            alignment = "center",
+            spacing = 5,
+            backgroundColor = colors.secondary,
          },
          items = {
             "songs",
@@ -66,6 +91,8 @@ function MainView:load()
             "artists",
          },
          selected = 1,
+         height = 50,
+         backgroundColor = colors.secondary,
       },
       trailingView = reloadButton,
    }

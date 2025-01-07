@@ -1,3 +1,4 @@
+require("src.loveext")
 require("src.utils.class")
 require("src.configfile")
 local debugView = require("src.ui.debugView")

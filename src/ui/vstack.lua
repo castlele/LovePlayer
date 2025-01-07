@@ -56,7 +56,7 @@ function VStack:updateOpts(opts)
    self.spacing = opts.spacing or self.spacing or 0
 
    if opts.views then
-      for _, view in pairs(opts.views) do
+      for _, view in ipairs(opts.views) do
          self:addSubview(view)
       end
    end

@@ -2,10 +2,14 @@ local View = require("src.ui.view")
 
 ---@class HStack : View
 ---@field spacing number
+---@field maxHeight number?
+---@field alignment "center" | "top" | "bottom"
 local HStack = View()
 
 ---@class HStackOpts : ViewOpts
+---@field alignment ("center" | "top" | "bottom")?
 ---@field spacing number?
+---@field maxHeight number?
 ---@field views View[]?
 ---@param opts HStackOpts
 function HStack:init(opts)
@@ -15,7 +19,7 @@ end
 function HStack:update(dt)
    View.update(self, dt)
 
-   local maxH = 0
+   local maxH = self.maxHeight or 0
    local width = 0
 
    for index, subview in ipairs(self.subviews) do
@@ -23,7 +27,6 @@ function HStack:update(dt)
          maxH = subview.size.height
       end
 
-      subview.origin.y = self.origin.y
       local prevView = self.subviews[index - 1]
       local x = 0
 
@@ -47,6 +50,18 @@ function HStack:update(dt)
 
    self.size.width = width
    self.size.height = maxH
+
+   for _, subview in ipairs(self.subviews) do
+      local a = self.alignment
+
+      if a == "top" then
+         subview.origin.y = self.origin.y
+      elseif self.alignment == "center" then
+         subview.origin.y = self.origin.y + self.size.height / 2 - subview.size.height / 2
+      else
+         subview.origin.y = self.origin.y + self.size.height - subview.size.height
+      end
+   end
 end
 
 ---@param opts HStackOpts
@@ -54,7 +69,8 @@ function HStack:updateOpts(opts)
    View.updateOpts(self, opts)
 
    self.spacing = opts.spacing or self.spacing or 0
-
+   self.alignment = opts.alignment or self.alignment or "top"
+   self.maxHeight = opts.maxHeight or self.maxHeight
 
    if opts.views then
       self.subviews = {}

@@ -165,8 +165,8 @@ function Row:updateTitlesStack(opts, title, subtitle)
       opts.views = {}
    end
 
-   table.insert(opts.views, self.subtitleLabel)
    table.insert(opts.views, self.titleLabel)
+   table.insert(opts.views, self.subtitleLabel)
 
    self.titlesVStack = VStack(opts)
 end

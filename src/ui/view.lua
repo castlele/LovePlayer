@@ -14,12 +14,14 @@ local memory = require("cluautils.memory")
 ---@field origin Point
 ---@field size Size
 ---@field backgroundColor Color
+---@field cornerRadius number
 ---@field private userIteractions boolean
 ---@field private addr string
 ---@field private debugBorderColor Color
 local View = class()
 
 ---@class ViewOpts
+---@field cornerRadius number?
 ---@field isUserInteractionEnabled boolean?
 ---@field backgroundColor Color?
 ---@field width number?
@@ -127,13 +129,25 @@ function View:draw()
       self.backgroundColor.blue,
       self.backgroundColor.alpha
    )
-   love.graphics.rectangle(
-      "fill",
-      self.origin.x,
-      self.origin.y,
-      self.size.width,
-      self.size.height
-   )
+
+   if self.cornerRadius > 0 then
+      love.graphics.roundedRectangle(
+         "fill",
+         self.origin.x,
+         self.origin.y,
+         self.size.width,
+         self.size.height,
+         self.cornerRadius
+      )
+   else
+      love.graphics.rectangle(
+         "fill",
+         self.origin.x,
+         self.origin.y,
+         self.size.width,
+         self.size.height
+      )
+   end
 
    if Config.debug.isDebug and Config.debug.isRainbowBorders then
       love.graphics.setColor(
@@ -163,7 +177,10 @@ function View:updateOpts(opts)
       self.size.height = opts.height or self.size.height
       self.size.width = opts.width or self.size.width
    end
-   self.userIteractions = opts.isUserInteractionEnabled or self.userIteractions or false
+   self.cornerRadius = opts.cornerRadius or self.cornerRadius or 0
+   self.userIteractions = opts.isUserInteractionEnabled
+      or self.userIteractions
+      or false
    self.backgroundColor = opts.backgroundColor
       or self.backgroundColor
       or colors.white
@@ -180,9 +197,6 @@ function View:addSubview(view, index)
       i = #self.subviews + 1
    end
 
-   if view:toString() == "Label" then
-   print(i, view:debugInfo())
-   end
    table.insert(self.subviews, i, view)
 end
 

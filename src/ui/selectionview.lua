@@ -1,20 +1,20 @@
 local Label = require("src.ui.label")
 local View = require("src.ui.view")
 local HStack = require("src.ui.hstack")
-local colors = require("src.ui.colors")
+local tableutils = require("cluautils.table_utils")
 
 ---@class SelectionView : View
----@field selectedColor Color
----@field deselectedColor Color
+---@field selectedOpts LabelOpts
+---@field deselectedOpts LabelOpts
 ---@field selected integer?
 ---@field private items string[]
 ---@field private stack HStack
 local Selection = View()
 
 ---@class SelectionOpts : ViewOpts
+---@field selectedLabelOpts LabelOpts?
+---@field deselectedLabelOpts LabelOpts?
 ---@field container HStackOpts?
----@field selectedColor Color?
----@field deselectedColor Color?
 ---@field items string[]?
 ---@field selected integer?
 ---@param opts SelectionOpts?
@@ -30,20 +30,18 @@ function Selection:update(dt)
    View.update(self, dt)
    for index, subview in ipairs(self.stack.subviews) do
       local selected = index == self.selected
-      local backgroundColor = self.deselectedColor
+      local opts = self.deselectedOpts
 
       if selected then
-         backgroundColor = self.selectedColor
+         opts = self.selectedOpts
       end
 
-      subview:updateOpts {
-         backgroundColor = backgroundColor
-      }
+      subview:updateOpts(opts)
    end
 
    self.stack.origin = self.origin
    self.size.width = self.stack.size.width
-   self.size.height = self.stack.size.height
+   self.stack.size.height = self.size.height
 end
 
 ---@param opts SelectionOpts
@@ -52,13 +50,11 @@ function Selection:updateOpts(opts)
 
    self:updateStackOpts(opts.container or {})
 
-   self.selectedColor = opts.selectedColor or self.selectedColor or colors.blue
-   self.deselectedColor = opts.deselectedColor
-      or self.deselectedColor
-      or colors.white
+   self.selectedOpts = opts.selectedLabelOpts or self.selectedOpts or {}
+   self.deselectedOpts = opts.deselectedLabelOpts or self.deselectedOpts or {}
    self.selected = opts.selected or self.selected or nil
 
-   self:createLabels(opts.items)
+   self:createLabels(opts or {})
 end
 
 ---@param opts HStackOpts
@@ -72,29 +68,25 @@ function Selection:updateStackOpts(opts)
 end
 
 ---@private
----@param items string[]?
-function Selection:createLabels(items)
-   if not items then
-      return
-   end
-
+---@param opts SelectionOpts
+function Selection:createLabels(opts)
    ---@type Label[]
    local labels = {}
 
-   for index, item in ipairs(items) do
+   for index, item in ipairs(opts.items or {}) do
       local selected = index == self.selected
-      local backgroundColor = self.deselectedColor
+      local labelOpts = self.deselectedOpts
 
       if selected then
-         backgroundColor = self.selectedColor
+         labelOpts = self.selectedOpts
       end
 
-      local label = Label {
+      local l = tableutils.concat({
          title = item,
-         backgroundColor = backgroundColor,
-         fontPath = Config.res.fonts.regular,
          isUserInteractionEnabled = true,
-      }
+      }, labelOpts)
+
+      local label = Label(l)
 
       label.handleMousePressed = function(x, y, mouse, isTouch)
          self.selected = index

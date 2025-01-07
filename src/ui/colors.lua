@@ -27,5 +27,5 @@ return {
    background = Color(39 / 255, 43 / 255, 52 / 255, 1),
    secondary = Color(20 / 255, 20 / 255, 20 / 255, 1),
    -- primary = Color(),
-   -- accent = Color(),
+   accent = Color(254 / 255, 255 / 255, 173 / 255, 1),
 }

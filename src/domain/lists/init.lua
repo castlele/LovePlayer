@@ -71,6 +71,23 @@ function ListsInteractor:getAlbums()
    return albums
 end
 
+function ListsInteractor:getAlbumSongs(album)
+   local albumName = album.name
+   local albumSongs = {}
+
+   if not albumName then
+      return albumSongs
+   end
+
+   for _, song in pairs(self:getSongs()) do
+      if song.album.name == albumName then
+         table.insert(albumSongs, song)
+      end
+   end
+
+   return albumSongs
+end
+
 ---@return Artist[]
 function ListsInteractor:getArtists()
    local songs = self:getSongs()
@@ -155,10 +172,10 @@ function ListsInteractor:createSongFromMedia(media)
    local song = {
       title = metadata.title,
       genre = metadata.genre,
+      discnumber = tonumber(metadata.discnumber),
+      tracknumber = tonumber(metadata.tracknumber),
       album = {
          name = metadata.album,
-         discnumber = tonumber(metadata.discnumber),
-         tracknumber = tonumber(metadata.tracknumber),
          artist = artist,
          imageData = imageData,
       },

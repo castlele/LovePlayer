@@ -24,13 +24,13 @@ local View = class()
 ---@field cornerRadius number?
 ---@field isUserInteractionEnabled boolean?
 ---@field backgroundColor Color?
+---@field isHidden boolean?
 ---@field width number?
 ---@field height number?
 ---@param opts ViewOpts?
 function View:init(opts) ---@diagnostic disable-line
    self.addr = memory.get(self)
    self.origin = geom.Point(0, 0)
-   self.isHidden = false
    self.backgroundColor = nil
    self.debugBorderColor =
       colors.color(math.random(), math.random(), math.random(), 1)
@@ -176,6 +176,14 @@ function View:updateOpts(opts)
    else
       self.size.height = opts.height or self.size.height
       self.size.width = opts.width or self.size.width
+   end
+
+   if opts.isHidden ~= nil then
+      self.isHidden = opts.isHidden
+   elseif self.isHidden ~= nil then
+      self.isHidden = self.isHidden
+   else
+      self.isHidden = false
    end
    self.cornerRadius = opts.cornerRadius or self.cornerRadius or 0
    self.userIteractions = opts.isUserInteractionEnabled

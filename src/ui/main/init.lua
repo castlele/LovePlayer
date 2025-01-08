@@ -1,3 +1,4 @@
+local AlbumView = require("src.ui.main.albumview")
 local SelectionView = require("src.ui.selectionview")
 local Button = require("src.ui.button")
 local colors = require("src.ui.colors")
@@ -6,6 +7,7 @@ local NavBar = require("src.ui.navbar")
 local View = require("src.ui.view")
 local List = require("src.ui.list")
 local Row = require("src.ui.row")
+local songRow = require("src.ui.main.songrow")
 local Interactor = require("src.domain.lists")
 local storage = require("src.ui.main.media_storage")
 
@@ -14,6 +16,7 @@ local storage = require("src.ui.main.media_storage")
 ---@field private navBar NavBar
 ---@field private songsList List
 ---@field private emptyStateView EmptyView
+---@field private albumView AlbumView
 ---@field private interactor ListsInteractor
 ---@field private songs Song[]
 local MainView = View()
@@ -110,9 +113,15 @@ function MainView:load()
    self.emptyStateView = EmptyView()
    self.emptyStateView.interactor = self.interactor
 
+   self.albumView = AlbumView {
+      backgroundColor = colors.background,
+      isHidden = true,
+   }
+
    self.emptyStateView.folderPickerDelegate = self
    self:addSubview(self.emptyStateView)
    self:addSubview(self.songsList)
+   self:addSubview(self.albumView)
    self:addSubview(self.navBar)
 
    self:updateSongsList()
@@ -131,6 +140,16 @@ function MainView:update(dt)
    self.songsList.size.width = self.size.width
    self.songsList.size.height = self.size.height - self.navBar.size.height
    self.songsList.origin.y = self.navBar.size.height
+
+   if not self.albumView.isHidden then
+      local albumViewWidth = self.size.width / 2
+
+      self.albumView.size.width = albumViewWidth
+      self.albumView.origin.y = self.navBar.size.height
+      self.albumView.origin.x = self.origin.x + self.size.width - self.albumView.size.width
+      self.albumView.size.height = self.size.height - self.navBar.size.height
+      self.songsList.size.width = albumViewWidth
+   end
 
    View.update(self, dt)
 end
@@ -218,6 +237,20 @@ function MainView:onRowSetup(row, index)
    end
 end
 
+function MainView:onItemSelected(index)
+   if self.state == ListState.SONGS then
+   elseif self.state == ListState.ALBUMS then
+      local album = self.interactor:getAlbums()[index]
+      local albumSongs = self.interactor:getAlbumSongs(album)
+      self.albumView:updateOpts {
+         album = album,
+         songs = albumSongs,
+         isHidden = false,
+      }
+   elseif self.state == ListState.ARTISTS then
+   end
+end
+
 function MainView:toString()
    return "MainView"
 end
@@ -263,60 +296,9 @@ end
 ---@private
 ---@param index integer
 function MainView:createSongsRow(index)
-   local l = Config.lists
-   local s = l.rows.sep
-   ---@type ImageOpts?
-   local leadingImage = nil
+   local song = self.songs[index]
 
-   if self.songs[index].imageData then
-      local imageData = self.songs[index].imageData
-      leadingImage = {
-         imageData = imageData,
-         width = 40,
-         height = 40,
-         autoResizing = false,
-      }
-
-      if imageData.id == "placeholder" then
-         leadingImage.backgroundColor = colors.background
-      end
-   end
-
-   return Row {
-      isUserInteractionEnabled = true,
-      backgroundColor = colors.background,
-      height = l.rows.height,
-      contentPaddingLeft = l.rows.padding.l,
-      contentPaddingRight = l.rows.padding.r,
-      sep = {
-         height = s.height,
-         paddingLeft = s.padding.l,
-         paddingRight = s.padding.r,
-         color = colors.secondary,
-      },
-      leadingImage = leadingImage,
-      titlesStack = {
-         backgroundColor = colors.background,
-      },
-      leadingHStack = {
-         backgroundColor = colors.background,
-         spacing = 10,
-      },
-      title = {
-         backgroundColor = colors.background,
-         title = self.songs[index].title,
-         fontPath = Config.res.fonts.bold,
-         textColor = colors.white,
-         fontSize = Config.res.fonts.size.header2,
-      },
-      subtitle = {
-         backgroundColor = colors.background,
-         title = self.songs[index].artist.name,
-         fontPath = Config.res.fonts.regular,
-         textColor = colors.white,
-         fontSize = Config.res.fonts.size.body,
-      },
-   }
+   return songRow.factoryMethod(song)
 end
 
 ---@private

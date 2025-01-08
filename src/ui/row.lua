@@ -6,7 +6,8 @@ local VStack = require("src.ui.vstack")
 local HStack = require("src.ui.hstack")
 
 ---@class Row : View
----@field leadingImage Image
+---@field private shouldHighlight boolean
+---@field private leadingImage Image
 ---@field private leadingHStack HStack
 ---@field private titlesVStack VStack
 ---@field private titleLabel Label
@@ -17,6 +18,7 @@ local HStack = require("src.ui.hstack")
 ---@field private isTapped boolean
 ---@field private animState number
 ---@field private shader love.Shader?
+---@field onRowTapped fun()?
 local Row = View()
 
 ---@class Separator : View
@@ -53,6 +55,8 @@ local function initSeparator(opts)
 end
 
 ---@class RowOpts : ViewOpts
+---@field shouldHighlight boolean?
+---@field onItemSelected fun(index: integer)?
 ---@field contentPaddingLeft number?
 ---@field contentPaddingRight number?
 ---@field height number?
@@ -105,6 +109,10 @@ end
 
 function Row:handleMousePressed(x, y, mouse, isTouch)
    self.tapped = true
+
+   if self.onRowTapped then
+      self.onRowTapped()
+   end
 end
 
 ---@param opts RowOpts
@@ -120,9 +128,17 @@ function Row:updateOpts(opts)
    )
    self:updateSeparator(opts.sep or {})
 
+   if opts.shouldHighlight ~= nil then
+      self.shouldHighlight = opts.shouldHighlight
+   elseif self.shouldHighlight ~= nil then
+      self.shouldHighlight = self.shouldHighlight
+   else
+      self.shouldHighlight = true
+   end
+   self.onItemSelected = opts.onItemSelected or self.onItemSelected or nil
    self.size.height = opts.height or 0
-   self.contentPaddingLeft = opts.contentPaddingLeft or 0
-   self.contentPaddingRight = opts.contentPaddingRight or 0
+   self.contentPaddingLeft = opts.contentPaddingLeft or self.contentPaddingLeft or 0
+   self.contentPaddingRight = opts.contentPaddingRight or self.contentPaddingRight or 0
 end
 
 ---@param opts HStackOpts

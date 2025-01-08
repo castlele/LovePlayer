@@ -4,6 +4,7 @@ local View = require("src.ui.view")
 ---@field onRowCreate fun(self: ListDataSourceDelegate, index: integer): Row
 ---@field onRowSetup fun(self: ListDataSourceDelegate, row: Row, index: integer)
 ---@field rowsCount fun(self: ListDataSourceDelegate): integer
+---@field onItemSelected fun(self: ListDataSourceDelegate, index: integer)?
 
 ---@class List : View
 ---@field private rows Row[]
@@ -50,19 +51,30 @@ function List:update(dt)
 
    self:updateValueList()
 
-   -- TODO: Is it possible to move this logig into `List:updateValueList()`
+   -- TODO: Is it possible to move this logic into `List:updateValueList()`
    for index, row in ipairs(self.rows) do
-      row.origin.y = self.origin.y + (row.size.height * (index - 1)) + self.offset
+      row.origin.x = self.origin.x
+      row.origin.y = self.origin.y
+         + (row.size.height * (index - 1))
+         + self.offset
       local maxY = row.origin.y + row.size.height
+
+      row.onRowTapped = function()
+         if not self.dataSourceDelegate then
+            return
+         end
+
+         if not self.dataSourceDelegate.onItemSelected then
+            return
+         end
+
+         self.dataSourceDelegate:onItemSelected(index)
+      end
 
       if self.maxY < maxY then
          self.maxY = maxY
       end
    end
-end
-
-function List:draw()
-   View.draw(self)
 end
 
 ---@param opts ListOpts
@@ -72,16 +84,16 @@ function List:updateOpts(opts)
    self.dataSourceDelegate = opts.dataSourceDelegate
 end
 
-function List:toString()
-   return "List"
-end
-
 function List:addSubview(view, index)
    View.addSubview(self, view, index)
 
    if view:toString() == "Row" then
       table.insert(self.rows, view)
    end
+end
+
+function List:toString()
+   return "List"
 end
 
 ---@private

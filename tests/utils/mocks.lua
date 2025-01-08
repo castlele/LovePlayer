@@ -1,9 +1,8 @@
 local MockDataStore = {}
 
-
-function MockDataStore:new()
+function MockDataStore:new(storage)
    local this = {
-      storage = {}
+      storage = storage or {},
    }
 
    setmetatable(this, self)
@@ -25,13 +24,12 @@ function MockDataStore:clear()
    self.storage = {}
 end
 
-
 local MockMediaRepo = {}
 
-
-function MockMediaRepo:new(dataStore)
+function MockMediaRepo:new(dataStore, songs)
    local this = {
       dataStore = dataStore,
+      songs = songs or {},
    }
 
    setmetatable(this, self)
@@ -57,6 +55,15 @@ function MockMediaRepo:getMediaFolderPath()
    return self.path
 end
 
+function MockMediaRepo:saveSongs(items)
+   for _, song in pairs(items) do
+      self.songs[song.file.path] = song
+   end
+end
+
+function MockMediaRepo:getSong(item)
+   return self.songs[item.path]
+end
 
 return {
    dataStore = MockDataStore,

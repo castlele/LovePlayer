@@ -116,6 +116,7 @@ function MainView:load()
    self.albumView = AlbumView {
       backgroundColor = colors.background,
       isHidden = true,
+      parentSize = self.size,
    }
 
    self.emptyStateView.folderPickerDelegate = self
@@ -142,13 +143,18 @@ function MainView:update(dt)
    self.songsList.origin.y = self.navBar.size.height
 
    if not self.albumView.isHidden then
-      local albumViewWidth = self.size.width / 2
+      local albumViewWidth = self.albumView.size.width
 
-      self.albumView.size.width = albumViewWidth
+      if albumViewWidth == 0 then
+         self.albumView.size.width = self.size.width / 2
+      end
+
       self.albumView.origin.y = self.navBar.size.height
-      self.albumView.origin.x = self.origin.x + self.size.width - self.albumView.size.width
+      self.albumView.origin.x = self.origin.x
+         + self.size.width
+         - self.albumView.size.width
       self.albumView.size.height = self.size.height - self.navBar.size.height
-      self.songsList.size.width = albumViewWidth
+      self.songsList.size.width = self.size.width - albumViewWidth
    end
 
    View.update(self, dt)
@@ -246,6 +252,8 @@ function MainView:onItemSelected(index)
          album = album,
          songs = albumSongs,
          isHidden = false,
+         parentSize = self.size,
+         minWidth = self.size.width - self.size.width / 3,
       }
    elseif self.state == ListState.ARTISTS then
    end

@@ -15,12 +15,14 @@ local memory = require("cluautils.memory")
 ---@field size Size
 ---@field backgroundColor Color
 ---@field cornerRadius number
----@field private userIteractions boolean
----@field private addr string
----@field private debugBorderColor Color
+---@field protected parentSize Size?
+---@field protected userIteractions boolean
+---@field protected addr string
+---@field protected debugBorderColor Color
 local View = class()
 
 ---@class ViewOpts
+---@field parentSize Size?
 ---@field cornerRadius number?
 ---@field isUserInteractionEnabled boolean?
 ---@field backgroundColor Color?
@@ -192,6 +194,7 @@ function View:updateOpts(opts)
    self.backgroundColor = opts.backgroundColor
       or self.backgroundColor
       or colors.white
+   self.parentSize = opts.parentSize or self.parentSize or nil
 end
 
 ---@param view View
@@ -232,7 +235,9 @@ end
 ---@private
 function View:updateSubviews(dt)
    for _, subview in pairs(self.subviews) do
-      subview:update(dt)
+      if not subview.isHidden then
+         subview:update(dt)
+      end
    end
 end
 

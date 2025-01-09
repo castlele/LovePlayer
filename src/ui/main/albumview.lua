@@ -273,15 +273,6 @@ function AlbumView:updateResizingViewOpts(opts)
    end
 
    self.resizingView = View(opts)
-   self.resizingView.handleMousePressed = function(
-      self,
-      x,
-      y,
-      mouse,
-      isTouch
-   )
-   end
-
    self:addSubview(self.resizingView)
 end
 

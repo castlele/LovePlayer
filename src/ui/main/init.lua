@@ -52,13 +52,44 @@ function MainView:load()
    View.load(self)
 
    self:setupListView()
-   local reloadButton = Button()
-   reloadButton:addTapAction(function()
-      self:updateSongsList()
-   end)
-   reloadButton.backgroundColor = colors.green
-   reloadButton.size.width = 50
-   reloadButton.size.height = 50
+   local reloadButton = Button {
+      action = function()
+         self:updateSongsList()
+      end,
+      state = {
+         normal = {
+            backgroundColor = colors.accent,
+            cornerRadius = 8,
+         },
+         highlighted = {
+            backgroundColor = colors.black,
+         },
+      },
+      titleState = {
+         normal = {
+            title = "Reload",
+            textColor = colors.black,
+            fontPath = Config.res.fonts.regular,
+            fontSize = Config.res.fonts.size.header2,
+            paddingTop = 5,
+            paddingBottom = 5,
+            paddingLeft = 5,
+            paddingRight = 5,
+            backgroundColor = colors.clear,
+         },
+         highlighted = {
+            title = "Reload",
+            textColor = colors.accent,
+            fontPath = Config.res.fonts.regular,
+            fontSize = Config.res.fonts.size.header2,
+            paddingTop = 5,
+            paddingBottom = 5,
+            paddingLeft = 5,
+            paddingRight = 5,
+            backgroundColor = colors.clear,
+         },
+      },
+   }
 
    self.navBar = NavBar {
       leadingView = SelectionView {

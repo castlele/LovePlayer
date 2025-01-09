@@ -33,10 +33,12 @@ function NavBar:update(dt)
    local padding = Config.navBar.horizontalPadding
 
    self.leadingView.origin.x = self.origin.x + padding
+   self.leadingView.origin.y = self.origin.y + self.size.height / 2 - self.leadingView.size.height / 2
 
    self.trailingView.origin.x = self.size.width
       - padding
       - self.trailingView.size.width
+   self.trailingView.origin.y = self.origin.y + self.size.height / 2 - self.trailingView.size.height / 2
 end
 
 ---@param opts NavBarOpts

@@ -7,6 +7,11 @@ local View = require("src.ui.view")
 ---@field private state ViewState
 ---@field private titleState TitleState
 local Button = View()
+---@enum (value) ButtonState
+local State = {
+   NORMAL = 0,
+   HIGHLIGHTED = 1,
+}
 
 ---@class TitleState
 ---@field normal LabelOpts?
@@ -40,8 +45,7 @@ function Button:update(dt)
    self.label.origin = self.origin
 
    if not love.mouse.isDown(1) then
-      View.updateOpts(self, self.state.normal)
-      self:updateLabelOpts(self.titleState.normal)
+      self:updateState(State.NORMAL)
    end
 end
 
@@ -56,8 +60,7 @@ function Button:handleMousePressed(x, y, mouse, isTouch)
       self.action()
    end
 
-   View.updateOpts(self, self.state.highlighted or {})
-   self:updateLabelOpts(self.titleState.highlighted or {})
+   self:updateState(State.HIGHLIGHTED)
 end
 
 ---@param callback fun()
@@ -79,6 +82,18 @@ end
 
 function Button:toString()
    return "Button"
+end
+
+---@private
+---@parma state ButtonState
+function Button:updateState(state)
+   if state == State.NORMAL then
+      View.updateOpts(self, self.state.normal or {})
+      self:updateLabelOpts(self.titleState.normal or {})
+   elseif state == State.HIGHLIGHTED then
+      View.updateOpts(self, self.state.highlighted or {})
+      self:updateLabelOpts(self.titleState.highlighted or {})
+   end
 end
 
 ---@private

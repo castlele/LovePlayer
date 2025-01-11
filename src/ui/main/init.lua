@@ -130,6 +130,7 @@ function MainView:load()
          height = 50,
          backgroundColor = colors.secondary,
          onItemSelected = function(item, index)
+            self.songsList:resetScrollState()
             if item == "songs" then
                self.state = ListState.SONGS
             elseif item == "albums" then

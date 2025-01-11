@@ -1,28 +1,31 @@
 local View = require("src.ui.view")
+local sectionModule = require("src.ui.listsection")
 
 ---@class ListDataSourceDelegate
----@field onRowCreate fun(self: ListDataSourceDelegate, index: integer): Row
----@field onRowSetup fun(self: ListDataSourceDelegate, row: Row, index: integer)
----@field rowsCount fun(self: ListDataSourceDelegate): integer
+---@field onRowCreate fun(self: ListDataSourceDelegate, index: integer, sectionIndex: integer): Row
+---@field onRowSetup fun(self: ListDataSourceDelegate, row: Row, index: integer, sectionIndex: integer)
+---@field rowsCount fun(self: ListDataSourceDelegate, sectionIndex: integer): integer
+---@field onSectionCreate (fun(self: ListDataSourceDelegate, index: integer): Section)?
+---@field onSectionSetup (fun(self: ListDataSourceDelegate, section: Section, index: integer))?
+---@field sectionsCount (fun(self: ListDataSourceDelegate): integer)?
 ---@field onItemSelected fun(self: ListDataSourceDelegate, index: integer)?
 
 ---@class List : View
----@field private rows Row[]
+---@field dataSourceDelegate ListDataSourceDelegate?
 ---@field private offset number
 ---@field private maxY number
----@field dataSourceDelegate ListDataSourceDelegate?
+---@field private sections Section[]
 local List = View()
 
 ---@class ListOpts : ViewOpts
 ---@field dataSourceDelegate ListDataSourceDelegate?
 ---@param opts ListOpts
 function List:init(opts)
-   View.init(self)
-   self.rows = {}
+   self.sections = {}
    self.offset = 0
    self.maxY = 0
 
-   self:updateOpts(opts or {})
+   View.init(self, opts)
 end
 
 -- BUG: this method produces from offset with different window/row sizes
@@ -33,16 +36,17 @@ function List:wheelmoved(_, y)
       return
    end
 
-   self.offset = self.offset + Config.lists.scrollingVelocity * y
+   local offset = self.offset + Config.lists.scrollingVelocity * y
 
-   if self.offset > 0 then
+   if offset >= 0 or math.floor(self.maxY / self.size.height) == 1 then
       self.offset = 0
+      return
    end
 
-   local n = self.maxY / self.size.height
+   print(offset, math.abs(self.origin.y + offset) + self.size.height, self.maxY, self.size.height)
 
-   if math.abs(self.offset * n) > self.maxY then
-      self.offset = -1 * self.size.height
+   if math.abs(self.origin.y + offset) + self.size.height < self.maxY then
+      self.offset = offset
    end
 end
 
@@ -52,29 +56,20 @@ function List:update(dt)
    self:updateValueList()
 
    -- TODO: Is it possible to move this logic into `List:updateValueList()`
-   for index, row in ipairs(self.rows) do
-      row.origin.x = self.origin.x
-      row.origin.y = self.origin.y
-         + (row.size.height * (index - 1))
-         + self.offset
-      local maxY = row.origin.y + row.size.height
-
-      row.onRowTapped = function()
-         if not self.dataSourceDelegate then
-            return
-         end
-
-         if not self.dataSourceDelegate.onItemSelected then
-            return
-         end
-
-         self.dataSourceDelegate:onItemSelected(index)
+   for index, section in ipairs(self.sections) do
+      section.origin.x = self.origin.x
+      if index == 1 then
+         section.origin.y = self.origin.y + self.offset
+      else
+         section.origin.y = self.sections[index - 1].origin.y + self.sections[index - 1].size.height
       end
 
-      if self.maxY < maxY then
-         self.maxY = maxY
-      end
+      self.maxY = section.origin.y + section.size.height - self.offset
    end
+end
+
+function List:resetScrollState()
+   self.offset = 0
 end
 
 ---@param opts ListOpts
@@ -87,8 +82,8 @@ end
 function List:addSubview(view, index)
    View.addSubview(self, view, index)
 
-   if view:toString() == "Row" then
-      table.insert(self.rows, view)
+   if view:toString() == "ListSection" then
+      table.insert(self.sections, index, view)
    end
 end
 
@@ -99,31 +94,81 @@ end
 ---@private
 function List:updateValueList()
    local d = self.dataSourceDelegate
-   local index = 1
 
    if not d then
       return
    end
 
-   for i = 1, d:rowsCount() do
+   local sectionCreate = d.onSectionCreate or sectionModule.createEmpty
+
+   for sectionIndex = 1, self:getSectionsCount() do
+      if not self.sections[sectionIndex] then
+         local section = sectionCreate(d, sectionIndex)
+
+         self:addSubview(section, sectionIndex)
+      end
+
+      self.sections[sectionIndex].size.width = self.size.width
+
+      self:updateRowsForSection(d, sectionIndex)
+
+      if d.onSectionSetup then
+         d:onSectionSetup(self.sections[sectionIndex], sectionIndex)
+      end
+   end
+end
+
+---@private
+---@param d ListDataSourceDelegate
+---@param sectionIndex integer
+function List:updateRowsForSection(d, sectionIndex)
+   local index = 1
+   local section = self.sections[sectionIndex]
+
+   for i = 1, d:rowsCount(sectionIndex) do
       index = i
 
-      if i > #self.rows then
-         local row = d:onRowCreate(i)
-         self:addSubview(row, i)
+      if i > #section.rows then
+         local row = d:onRowCreate(i, sectionIndex)
+         section:addSubview(row, i)
       else
-         d:onRowSetup(self.rows[i], i)
+         if d.onSectionSetup then
+            d:onSectionSetup(section, sectionIndex)
+         end
+
+         d:onRowSetup(section.rows[i], i, sectionIndex)
       end
 
-      self.rows[i].size.width = self.size.width
+      section.rows[i].onRowTapped = function()
+         if not d.onItemSelected then
+            return
+         end
+
+         self.dataSourceDelegate:onItemSelected(i)
+      end
+
+      section.rows[i].size.width = self.size.width
    end
 
-   if index < #self.rows then
-      for i = index, #self.rows do
-         table.remove(self.rows, i)
-         table.remove(self.subviews, i)
+   if index < #self.sections[sectionIndex].rows then
+      for i = index, #section.rows do
+         table.remove(section.rows, i)
+         table.remove(section.subviews, i)
       end
    end
+end
+
+---@private
+function List:getSectionsCount()
+   local sectionsCount = 1
+
+   if self.dataSourceDelegate and self.dataSourceDelegate.sectionsCount then
+      sectionsCount = self.dataSourceDelegate:sectionsCount()
+   end
+
+   assert(sectionsCount >= 1, "Number of sections should be at leas one")
+
+   return sectionsCount
 end
 
 return List

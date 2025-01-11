@@ -5,6 +5,7 @@ local Label = require("src.ui.label")
 local List = require("src.ui.list")
 local songRow = require("src.ui.main.songrow")
 local colors = require("src.ui.colors")
+local sectionsModule = require("src.ui.listsection")
 local tableutils = require("cluautils.table_utils")
 
 ---@class AlbumView : View, ListDataSourceDelegate
@@ -100,9 +101,9 @@ function AlbumView:updateOpts(opts)
    View.updateOpts(self, opts)
 
    self.songs = opts.songs or self.songs or {}
-   tableutils.bubbleSort(self.songs, function(lhs, rhs)
-      return lhs.tracknumber < rhs.tracknumber
-   end)
+   -- tableutils.bubbleSort(self.songs, function(lhs, rhs)
+   --    return lhs.tracknumber < rhs.tracknumber
+   -- end)
    if not self.isResizing then
       self.isResizing = false
    end
@@ -163,15 +164,47 @@ function AlbumView:updateOpts(opts)
 end
 
 ---@param index integer
+---@return Section
+function AlbumView:onSectionCreate(index)
+   return sectionsModule.section {
+      backgroundColor = colors.clear,
+      header = Label {
+         title = string.format("%i Disk", index),
+         fontPath = Config.res.fonts.regular,
+         fontSize = Config.res.fonts.size.header2,
+         textColor = colors.white,
+         backgroundColor = colors.clear,
+         paddingLeft = 5,
+      },
+   }
+end
+
+---@param index integer
 ---@return Row
-function AlbumView:onRowCreate(index)
-   return songRow.factoryMethod(self.songs[index])
+function AlbumView:onRowCreate(index, sectionIndex)
+   local discSongs = {}
+
+   for _, song in pairs(self.songs) do
+      if song.discnumber == sectionIndex then
+         table.insert(discSongs, song)
+      end
+   end
+
+   return songRow.factoryMethod(discSongs[index])
 end
 
 ---@param row Row
 ---@param index integer
-function AlbumView:onRowSetup(row, index)
-   local song = self.songs[index]
+function AlbumView:onRowSetup(row, index, sectionIndex)
+   local discSongs = {}
+
+   for _, song in pairs(self.songs) do
+      if song.discnumber == sectionIndex then
+         table.insert(discSongs, song)
+      end
+   end
+
+   local song = discSongs[index]
 
    row:updateImage {
       imageData = song.imageData,
@@ -186,9 +219,31 @@ function AlbumView:onRowSetup(row, index)
    }
 end
 
+---@param sectionIndex integer
 ---@return integer
-function AlbumView:rowsCount()
-   return #self.songs
+function AlbumView:rowsCount(sectionIndex)
+   local count = 0
+
+   for _, song in pairs(self.songs) do
+      if song.discnumber == sectionIndex then
+         count = count + 1
+      end
+   end
+
+   return count
+end
+
+---@return integer
+function AlbumView:sectionsCount()
+   local maxDisnumber = 1
+
+   for _, song in pairs(self.songs) do
+      if song.discnumber and song.discnumber > maxDisnumber then
+         maxDisnumber = song.discnumber or maxDisnumber
+      end
+   end
+
+   return maxDisnumber
 end
 
 function AlbumView:toString()

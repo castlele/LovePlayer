@@ -28,7 +28,6 @@ function List:init(opts)
    View.init(self, opts)
 end
 
--- BUG: this method produces from offset with different window/row sizes
 function List:wheelmoved(_, y)
    local cursorX, cursorY = love.mouse.getX(), love.mouse.getY()
 
@@ -38,14 +37,12 @@ function List:wheelmoved(_, y)
 
    local offset = self.offset + Config.lists.scrollingVelocity * y
 
-   if offset >= 0 or math.floor(self.maxY / self.size.height) == 1 then
+   if offset >= 0 or self.maxY / self.size.height <= 1 then
       self.offset = 0
       return
    end
 
-   print(offset, math.abs(self.origin.y + offset) + self.size.height, self.maxY, self.size.height)
-
-   if math.abs(self.origin.y + offset) + self.size.height < self.maxY then
+   if -1 * (offset + self.origin.y) < self.maxY - self.size.height then
       self.offset = offset
    end
 end

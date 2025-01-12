@@ -11,7 +11,7 @@ Config = {
       height = 80,
    },
    lists = {
-      scrollingVelocity = 15,
+      scrollingVelocity = 20,
       rows = {
          height = 60,
          padding = {
@@ -55,7 +55,7 @@ Config = {
 
    debug = {
       isDebug = true,
-      isRainbowBorders = true,
+      isRainbowBorders = false,
       isDebugTooltip = true,
       isDrawFPS = true,
 

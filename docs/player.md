@@ -1,4 +1,4 @@
-**Resolution:** Not Started 🗂️
+**Resolution:** In Progress 🛠️
 
 **DOD**:
 1. Music can be played, paused

@@ -12,12 +12,16 @@ kanban-plugin: board
 - [ ] Implement searching in Interactor to support navigation #1_5h #backend #lists
 - [ ] Implement methods of getting albums from Interactor #1h #backend #lists
 - [ ] Implement methods of getting artists from Interactor #1h #backend #lists
+- [ ] Implement artists list view #4h #lists #ui
+- [ ] Create building with one command #2h #backend
+- [ ] Implement player view #2h #ui #player
+- [ ] Implement music queue logic #3h #backend #player
+- [ ] Implement player functions #2h #backend #player
+- [ ] Implement view with songs queue #3h #ui #player
 
 
 ## In Progress
 
-- [ ] Implement navigation between screens #4h #lists #ui
-- [ ] Implement album's songs view #1_5h #lists #ui
 
 
 ## Done
@@ -39,6 +43,8 @@ kanban-plugin: board
 - [x] Implement authors list view #1h #lists #ui
 - [x] Implement navigation between tabs #2h #lists #ui
 - [x] Caching #backend #lists #2h
+- [x] Implement album's songs view #1_5h #lists #ui
+- [x] Implement navigation between screens #4h #lists #ui
 
 
 

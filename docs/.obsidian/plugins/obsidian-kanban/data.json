@@ -20,6 +20,11 @@
       "tagKey": "#lists",
       "color": "rgba(255, 255, 255, 1)",
       "backgroundColor": "rgba(175, 219, 255, 0.63)"
+    },
+    {
+      "tagKey": "#player",
+      "color": "rgba(255, 255, 255, 1)",
+      "backgroundColor": "rgba(91, 255, 200, 0.58)"
     }
   ],
   "move-tags": true,

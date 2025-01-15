@@ -65,7 +65,22 @@ function MockMediaRepo:getSong(item)
    return self.songs[item.path]
 end
 
+local MockPlayer = {}
+
+function MockPlayer:new(opts)
+   local this = {}
+   this.play = opts.play or function() end
+   this.pause = opts.pause or function() end
+
+   setmetatable(this, self)
+
+   self.__index = self
+
+   return this
+end
+
 return {
    dataStore = MockDataStore,
    mediaRepo = MockMediaRepo,
+   player = MockPlayer,
 }

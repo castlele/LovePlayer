@@ -16,12 +16,12 @@ kanban-plugin: board
 - [ ] Create building with one command #2h #backend
 - [ ] Implement player view #2h #ui #player
 - [ ] Implement music queue logic #3h #backend #player
-- [ ] Implement player functions #2h #backend #player
 - [ ] Implement view with songs queue #3h #ui #player
 
 
 ## In Progress
 
+- [ ] Implement player functions #2h #backend #player
 
 
 ## Done

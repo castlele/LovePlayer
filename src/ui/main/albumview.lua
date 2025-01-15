@@ -101,9 +101,9 @@ function AlbumView:updateOpts(opts)
    View.updateOpts(self, opts)
 
    self.songs = opts.songs or self.songs or {}
-   -- tableutils.bubbleSort(self.songs, function(lhs, rhs)
-   --    return lhs.tracknumber < rhs.tracknumber
-   -- end)
+   table.sort(self.songs, function(lhs, rhs)
+      return lhs.tracknumber < rhs.tracknumber
+   end)
    if not self.isResizing then
       self.isResizing = false
    end

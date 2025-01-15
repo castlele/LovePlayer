@@ -42,7 +42,7 @@ function List:wheelmoved(_, y)
       return
    end
 
-   if -1 * (offset + self.origin.y) < self.maxY - self.size.height then
+   if math.abs(offset + self.origin.y) < self.maxY - self.size.height then
       self.offset = offset
    end
 end
@@ -79,7 +79,9 @@ end
 function List:addSubview(view, index)
    View.addSubview(self, view, index)
 
-   if view:toString() == "ListSection" then
+   local section = sectionModule.section.toString(sectionModule.section)
+
+   if view:toString() == section then
       table.insert(self.sections, index, view)
    end
 end
@@ -148,10 +150,8 @@ function List:updateRowsForSection(d, sectionIndex)
    end
 
    if index < #self.sections[sectionIndex].rows then
-      for i = index, #section.rows do
-         table.remove(section.rows, i)
-         table.remove(section.subviews, i)
-      end
+      table.remove(self.sections, sectionIndex)
+      table.remove(self.subviews, sectionIndex)
    end
 end
 

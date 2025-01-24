@@ -7,7 +7,27 @@ local function getCurrentFileName()
    return pathComponents[#pathComponents]
 end
 
-local love = "/Applications/love.app/Contents/MacOS/love"
+local function getLove()
+   local osname = require("cluautils.os").getName()
+
+   if osname == "Linux" then
+      return "~/Downloads/love-11.5-x86_64.AppImage"
+   elseif osname == "MacOS" then
+      return "/Applications/love.app/Contents/MacOS/love"
+   end
+
+   assert(false, "Unsupported OS type")
+end
+
+local function getOpenCmd()
+   local osname = require("cluautils.os").getName()
+
+   if osname == "Linux" then
+      return "xdg-open"
+   elseif osname == "MacOS" then
+      return "open"
+   end
+end
 
 conf = {
    install = "make install",
@@ -25,7 +45,7 @@ conf = {
    ]],
    testAll = "./run_tests.sh \"*\"",
    testListsInteractor = "./run_tests.sh \"listsinteractor_tests\"",
-   run = love .. " .",
+   run = getLove() .. " .",
    currentTest = string.format("./run_tests.sh \"%s\"", getCurrentFileName()),
-   docs = "open obsidian://vault/docs"
+   docs = getOpenCmd() .. " obsidian://vault/docs",
 }

@@ -2,5 +2,10 @@
 
 ## Run Application
 
-Dependencies:
-- `cluautils` luarock
+### Linux
+
+- luaflac
+    - libFLAC
+- nativefiledialog
+    - gtk-3.0
+- cluautils

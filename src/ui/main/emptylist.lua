@@ -21,6 +21,7 @@ function EmptyView:load()
    self.backgroundColor = colors.background
 
    self.noFolderImage = Image {
+      isUserInteractionEnabled = true,
       autoResizing = true,
       backgroundColor = colors.background,
       imageData = imageDataModule.imageData:new(
@@ -28,6 +29,10 @@ function EmptyView:load()
          imageDataModule.imageDataType.PATH
       ),
    }
+
+   self.noFolderImage.handleMousePressed = function (...)
+      self:openFolder()
+   end
 
    self.folderPickerButton = Button()
    self.folderPickerButton.size = geom.Size(100, 50)

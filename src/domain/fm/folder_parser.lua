@@ -10,7 +10,7 @@ local Parser = {}
 function Parser.parse(path)
    local content = FM.get_dir_content {
       dir_path = path,
-      file_type = "file",
+      file_type = "f",
    }
 
    log.logger.default.log(content)

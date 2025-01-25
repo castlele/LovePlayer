@@ -2,6 +2,7 @@ local View = require("src.ui.view")
 
 ---@class Image : View
 ---@field image love.Image?
+---@field protected imageShader love.Shader?
 ---@field private autoResizing boolean
 ---@field private imageData image.ImageData?
 local Image = View()
@@ -32,6 +33,7 @@ function Image:draw()
    if self.image then
       local imageW, imageH = self.image:getWidth(), self.image:getHeight()
 
+      love.graphics.setShader(self.imageShader)
       love.graphics.draw(
          self.image,
          self.origin.x,
@@ -40,12 +42,18 @@ function Image:draw()
          self.size.width / imageW,
          self.size.height / imageH
       )
+      love.graphics.setShader()
    end
 end
 
 ---@param opts ImageOpts
 function Image:updateOpts(opts)
    View.updateOpts(self, opts)
+
+   if self.shader then
+      self.imageShader = self.shader
+      self.shader = nil
+   end
 
    local shouldUpdateImage = false
 
@@ -66,7 +74,7 @@ function Image:updateOpts(opts)
 
    if shouldUpdateImage then
       if self.imageData then
-         self.image = self.imageData:getImage()
+         self.image = self.imageData.image
       else
          self.image = nil
       end

@@ -1,3 +1,6 @@
 [submodule "libs/nativefiledialog"]
 	path = libs/nativefiledialog
 	url = git@github.com:Alloyed/nativefiledialog.git
+[submodule "libs/luajit"]
+	path = libs/luajit
+	url = https://luajit.org/git/luajit.git

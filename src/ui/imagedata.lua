@@ -8,6 +8,7 @@ local ImageDataType = {
 ---@field type ImageDataType
 ---@field data any
 ---@field id string
+---@field image love.Image?
 local ImageData = {}
 
 ---@param data any
@@ -15,7 +16,6 @@ local ImageData = {}
 ---@param id string?
 ---@return image.ImageData
 function ImageData:new(data, type, id)
-   ---@type image.ImageData
    local this = {
       type = type,
       data = data,
@@ -23,6 +23,8 @@ function ImageData:new(data, type, id)
    }
 
    setmetatable(this, { __index = self })
+
+   this.image = this:getImage()
 
    return this
 end

@@ -28,6 +28,8 @@ end
 
 function love.update(dt)
    navigator:update(dt)
+
+   love.quitIfNeeded()
 end
 
 function love.draw()

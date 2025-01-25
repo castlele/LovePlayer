@@ -19,6 +19,7 @@ local memory = require("cluautils.memory")
 ---@field protected userIteractions boolean
 ---@field protected addr string
 ---@field protected debugBorderColor Color
+---@field protected shader love.Shader?
 local View = class()
 
 ---@class ViewOpts
@@ -26,6 +27,7 @@ local View = class()
 ---@field cornerRadius number?
 ---@field isUserInteractionEnabled boolean?
 ---@field backgroundColor Color?
+---@field shader love.Shader?
 ---@field isHidden boolean?
 ---@field width number?
 ---@field height number?
@@ -124,6 +126,7 @@ function View:draw()
       return
    end
 
+   love.graphics.setShader(self.shader)
    love.graphics.push()
    love.graphics.setColor(
       self.backgroundColor.red,
@@ -167,6 +170,7 @@ function View:draw()
       )
    end
    love.graphics.pop()
+   love.graphics.setShader()
 
    self:drawSubviews()
 end
@@ -195,6 +199,7 @@ function View:updateOpts(opts)
       or self.backgroundColor
       or colors.white
    self.parentSize = opts.parentSize or self.parentSize or nil
+   self.shader = opts.shader or self.shader or nil
 end
 
 ---@param view View

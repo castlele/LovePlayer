@@ -1,9 +1,11 @@
 local Label = require("src.ui.label")
+local Image = require("src.ui.image")
 local View = require("src.ui.view")
 
 ---@class Button : View
 ---@field action fun()?
----@field private label Label
+---@field private label Label?
+---@field private image Image?
 ---@field private state ViewState
 ---@field private titleState TitleState
 local Button = View()
@@ -13,9 +15,21 @@ local State = {
    HIGHLIGHTED = 1,
 }
 
+---@param state ButtonState
+local function getStateName(state)
+   if state == State.NORMAL then
+      return "normal"
+   elseif state == State.HIGHLIGHTED then
+      return "highlighted"
+   end
+
+   assert(false, "Unknown state")
+end
+
 ---@class TitleState
----@field normal LabelOpts?
----@field highlighted LabelOpts?
+---@field type "label"|"image"?
+---@field normal (LabelOpts|ImageOpts)?
+---@field highlighted (LabelOpts|ImageOpts)?
 
 ---@class ViewState
 ---@field normal ViewOpts?
@@ -33,16 +47,31 @@ end
 function Button:update(dt)
    View.update(self, dt)
 
-   if self.size.width == 0 then
+   if self.size.width == 0 and self.label then
       self.size.width = self.label.size.width
    end
 
-   if self.size.height == 0 then
-      self.size.height = self.label.size.height
+   if self.size.height == 0 and self.image then
+      self.size.height = self.image.size.height
    end
 
-   self.label.size = self.size
-   self.label.origin = self.origin
+   if self.size.width == 0 and self.label then
+      self.size.width = self.label.size.width
+   end
+
+   if self.size.height == 0 and self.image then
+      self.size.height = self.image.size.height
+   end
+
+   if self.label then
+      self.label.size = self.size
+      self.label.origin = self.origin
+   end
+
+   if self.image then
+      self.image.size = self.size
+      self.image.origin = self.origin
+   end
 
    if not love.mouse.isDown(1) then
       self:updateState(State.NORMAL)
@@ -76,8 +105,7 @@ function Button:updateOpts(opts)
    self.action = opts.action or self.action or nil
    self.titleState = opts.titleState or self.titleState or {}
 
-   local labelOpts = self.titleState.normal or { isHidden = false }
-   self:updateLabelOpts(labelOpts)
+   self:updateTitleOpts(self.titleState, State.NORMAL)
 end
 
 function Button:toString()
@@ -85,14 +113,33 @@ function Button:toString()
 end
 
 ---@private
----@parma state ButtonState
+---@param state ButtonState
 function Button:updateState(state)
    if state == State.NORMAL then
       View.updateOpts(self, self.state.normal or {})
-      self:updateLabelOpts(self.titleState.normal or {})
    elseif state == State.HIGHLIGHTED then
       View.updateOpts(self, self.state.highlighted or {})
-      self:updateLabelOpts(self.titleState.highlighted or {})
+   end
+
+   self:updateTitleOpts(self.titleState, state)
+end
+
+---@private
+---@param opts TitleState
+---@param state ButtonState
+function Button:updateTitleOpts(opts, state)
+   if opts.type == "label" then
+      ---@type LabelOpts
+      ---@diagnostic disable-next-line
+      local labelOpts = self.titleState[getStateName(state)]
+         or { isHidden = false }
+      self:updateLabelOpts(labelOpts)
+   elseif opts.type == "image" then
+      ---@type ImageOpts
+      ---@diagnostic disable-next-line
+      local imageOpts = self.titleState[getStateName(state)]
+         or { isHidden = false }
+      self:updateImageOpts(imageOpts)
    end
 end
 
@@ -106,6 +153,18 @@ function Button:updateLabelOpts(opts)
 
    self.label = Label(opts)
    self:addSubview(self.label)
+end
+
+---@private
+---@param opts ImageOpts
+function Button:updateImageOpts(opts)
+   if self.image then
+      self.image:updateOpts(opts)
+      return
+   end
+
+   self.image = Image(opts)
+   self:addSubview(self.image)
 end
 
 return Button

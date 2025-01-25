@@ -16,6 +16,15 @@ function Color:init(r, g, b, a)
    self.alpha = a
 end
 
+function Color:asVec4()
+   return {
+      self.red,
+      self.green,
+      self.blue,
+      self.alpha,
+   }
+end
+
 return {
    color = Color,
    clear = Color(0, 0, 0, 0),

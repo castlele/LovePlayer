@@ -5,6 +5,7 @@ local colors = require("src.ui.colors")
 local EmptyView = require("src.ui.main.emptylist")
 local NavBar = require("src.ui.navbar")
 local View = require("src.ui.view")
+local PlayerView = require("src.ui.player.playerview")
 local List = require("src.ui.list")
 local Row = require("src.ui.row")
 local songRow = require("src.ui.main.songrow")
@@ -66,6 +67,7 @@ function MainView:load()
          },
       },
       titleState = {
+         type = "label",
          normal = {
             title = "Reload",
             textColor = colors.black,
@@ -140,6 +142,7 @@ function MainView:load()
             end
          end,
       },
+      centerView = PlayerView(),
       trailingView = reloadButton,
    }
    self.emptyStateView = EmptyView()

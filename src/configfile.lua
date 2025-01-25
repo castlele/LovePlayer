@@ -28,14 +28,23 @@ Config = {
       },
    },
 
+   keymap = {
+      quit = "lctrl+q"
+   },
+
    res = {
       shaders = {
          highlighting = function()
             return love.graphics.newShader("res/shaders/highlighting.glsl")
          end,
+         coloring = function()
+            return love.graphics.newShader("res/shaders/coloring.glsl")
+         end,
       },
       images = {
          noFolder = "res/images/no_folder.png",
+         play = "res/images/play.png",
+         pause = "res/images/pause.png",
          audioPlaceholder = "res/images/audio_placeholder.png",
       },
       fonts = {

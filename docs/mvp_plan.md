@@ -6,10 +6,11 @@ kanban-plugin: board
 
 ## Tasks
 
+- [ ] Make project buildable for macos/linux with no makefile changes #2h #backend
+- [ ] Create building with one command #2h #backend
+- [ ] Fix tests using luarocks as build system #1_5h #backend
 - [ ] [iOS/iPadOS] Implement flow of picking folder #music_folder_picker  #ui
 - [ ] [Android] Implement flow of picking folder #music_folder_picker  #ui
-- [ ] Fix tests using luarocks as build system #1_5h #backend
-- [ ] Create building with one command #2h #backend
 - [ ] Implement searching in Interactor to support navigation #1_5h #backend #lists
 - [ ] Implement methods of getting albums from Interactor #1h #backend #lists
 - [ ] Implement methods of getting artists from Interactor #1h #backend #lists

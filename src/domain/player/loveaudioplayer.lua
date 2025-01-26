@@ -1,10 +1,11 @@
----@class MiniaudioPlayer : MusicPlayer
+local nativefs = require("nativefs")
+
+---@class LoveAudioPlayer : MusicPlayer
 ---@field private queue Song[]
 local Player = class()
 
 function Player:init()
    self.queue = {}
-   self.audio = require("libs.luaminiaudio").init()
 end
 
 function Player:play()
@@ -12,12 +13,23 @@ function Player:play()
       return
    end
 
+   if self.currentSource then
+      love.audio.play(self.currentSource)
+      return
+   end
+
    local song = self.queue[1]
-   self.audio:play(song.file.path)
+   local fileData = nativefs.newFileData(song.file.path)
+
+   -- TODO: Error handling!
+   if fileData then
+      self.currentSource = love.audio.newSource(fileData, "static")
+      love.audio.play(self.currentSource)
+   end
 end
 
 function Player:pause()
-   self.audio:pause()
+   love.audio.pause()
 end
 
 ---@param queue Song[]

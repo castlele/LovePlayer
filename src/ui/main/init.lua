@@ -12,7 +12,7 @@ local songRow = require("src.ui.main.songrow")
 local Interactor = require("src.domain.lists")
 local storage = require("src.ui.main.media_storage")
 
----@class MainView : View, FolderPickerDelegate, ListDataSourceDelegate
+---@class MainView : View, FolderPickerDelegate, ListDataSourceDelegate, PlayerViewDelegate
 ---@field private state ListState
 ---@field private navBar NavBar
 ---@field private songsList List
@@ -93,6 +93,9 @@ function MainView:load()
       },
    }
 
+   local playerView = PlayerView()
+   playerView.delegate = self
+
    self.navBar = NavBar {
       leadingView = SelectionView {
          selectedLabelOpts = {
@@ -142,7 +145,7 @@ function MainView:load()
             end
          end,
       },
-      centerView = PlayerView(),
+      centerView = playerView,
       trailingView = reloadButton,
    }
    self.emptyStateView = EmptyView()
@@ -292,6 +295,10 @@ function MainView:onItemSelected(index)
       }
    elseif self.state == ListState.ARTISTS then
    end
+end
+
+function MainView:getQueue()
+   return self.interactor:getSongs()
 end
 
 function MainView:toString()

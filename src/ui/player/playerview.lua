@@ -3,7 +3,8 @@ local PlayButton = require("src.ui.player.playbutton")
 local HStack = require("src.ui.hstack")
 local colors = require("src.ui.colors")
 local playerModule = require("src.domain.player")
-local miniaudioPlayer = require("src.domain.player.miniaudioplayer")
+-- local miniaudioPlayer = require("src.domain.player.miniaudioplayer")
+local loveAudioPlayer = require("src.domain.player.loveaudioplayer")
 
 ---@class PlayerViewDelegate
 ---@field getQueue fun(self: PlayerViewDelegate): Song[]
@@ -22,7 +23,7 @@ function PlayerView:init(opts)
 
    self.interactor = playerModule.interactor {
       initialState = playerModule.state.PLAYING,
-      player = miniaudioPlayer(),
+      player = loveAudioPlayer(),
    }
 end
 

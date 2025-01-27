@@ -1,5 +1,6 @@
 ---@class Config
 Config = {
+   backend = "love",-- "love"|"miniaudio"
    logging = {
       minLevel = "DEBUG",
    },

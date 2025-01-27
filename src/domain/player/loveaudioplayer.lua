@@ -1,15 +1,14 @@
 local nativefs = require("nativefs")
 
 ---@class LoveAudioPlayer : MusicPlayer
----@field private queue Song[]
+---@field private currentSource love.Source
 local Player = class()
 
-function Player:init()
-   self.queue = {}
-end
-
-function Player:play()
-   if self:isQueueEmpty() then
+---@param song Song?
+function Player:play(song)
+   if not song then
+      self.currentSource = nil
+      love.audio.stop()
       return
    end
 
@@ -18,7 +17,6 @@ function Player:play()
       return
    end
 
-   local song = self.queue[1]
    local fileData = nativefs.newFileData(song.file.path)
 
    -- TODO: Error handling!
@@ -30,16 +28,6 @@ end
 
 function Player:pause()
    love.audio.pause()
-end
-
----@param queue Song[]
-function Player:setQueue(queue)
-   self.queue = queue
-end
-
----@return boolean
-function Player:isQueueEmpty()
-   return #self.queue == 0
 end
 
 return Player

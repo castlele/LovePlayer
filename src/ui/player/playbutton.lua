@@ -17,7 +17,8 @@ local pauseImage = imageDataModule.imageData:new(
 )
 
 ---@class PlayButtonOpts : ViewOpts
----@field action fun(isPaused: boolean)
+---@field action fun(self: PlayButton)
+---@field isPaused boolean?
 ---@param opts PlayButtonOpts
 function PlayButton:init(opts)
    local shader = Config.res.shaders.coloring()
@@ -25,8 +26,7 @@ function PlayButton:init(opts)
 
    self.opts = {
       action = function()
-         self.isPaused = not self.isPaused
-         opts.action(self.isPaused)
+         opts.action(self)
       end,
       state = {
          normal = {
@@ -47,19 +47,23 @@ function PlayButton:init(opts)
 
    Button.init(self, self.opts)
 
-   self.isPaused = false
+   self.isPaused = opts.isPaused or true
 end
 
 function PlayButton:update(dt)
    Button.update(self, dt)
 
    if self.isPaused then
-      self.opts.titleState.normal.imageData = pauseImage
-   else
       self.opts.titleState.normal.imageData = playImage
+   else
+      self.opts.titleState.normal.imageData = pauseImage
    end
 
    self:updateOpts(self.opts)
+end
+
+function PlayButton:toString()
+   return "PlayButton"
 end
 
 return PlayButton

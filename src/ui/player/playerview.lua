@@ -3,8 +3,17 @@ local PlayButton = require("src.ui.player.playbutton")
 local HStack = require("src.ui.hstack")
 local colors = require("src.ui.colors")
 local playerModule = require("src.domain.player")
--- local miniaudioPlayer = require("src.domain.player.miniaudioplayer")
-local loveAudioPlayer = require("src.domain.player.loveaudioplayer")
+
+---@type MusicPlayer
+local audioPlayer
+
+if Config.backend == "love" then
+   audioPlayer = require("src.domain.player.loveaudioplayer")
+elseif Config.backend == "miniaudio" then
+   audioPlayer = require("src.domain.player.miniaudioplayer")
+else
+   assert(false, "Unsupported backend: " .. Config.backend)
+end
 
 ---@class PlayerViewDelegate
 ---@field getQueue fun(self: PlayerViewDelegate): Song[]
@@ -22,8 +31,8 @@ function PlayerView:init(opts)
    View.init(self, opts)
 
    self.interactor = playerModule.interactor {
-      initialState = playerModule.state.PLAYING,
-      player = loveAudioPlayer(),
+      initialState = playerModule.state.PAUSED,
+      player = audioPlayer(),
    }
 end
 
@@ -64,12 +73,15 @@ function PlayerView:updatePlayButtonOpts()
    end
 
    self.playButton = PlayButton {
-      action = function()
+      action = function(playButton)
          if self.interactor:isQueueEmpty() and self.delegate then
             self.interactor:setQueue(self.delegate:getQueue())
          end
 
          self.interactor:toggle()
+
+         playButton.isPaused = self.interactor:getState()
+            == playerModule.state.PAUSED
       end,
    }
    self.contentView:addSubview(self.playButton)

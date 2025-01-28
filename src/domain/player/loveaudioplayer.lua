@@ -12,9 +12,11 @@ function Player:play(song)
       return
    end
 
-   if self.currentSource then
+   if self.currentSource and not song then
       love.audio.play(self.currentSource)
       return
+   elseif self.currentSource and song then
+      self:play(nil)
    end
 
    local fileData = nativefs.newFileData(song.file.path)

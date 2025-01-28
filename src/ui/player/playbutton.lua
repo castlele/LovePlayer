@@ -36,8 +36,8 @@ function PlayButton:init(opts)
       titleState = {
          type = "image",
          normal = {
-            width = 40,
-            height = 40,
+            width = 30,
+            height = 30,
             imageData = playImage,
             backgroundColor = colors.clear,
             shader = shader,

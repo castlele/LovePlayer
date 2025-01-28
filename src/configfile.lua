@@ -44,8 +44,10 @@ Config = {
       },
       images = {
          noFolder = "res/images/no_folder.png",
-         play = "res/images/play.png",
          pause = "res/images/pause.png",
+         prev = "res/images/prev.png",
+         play = "res/images/play.png",
+         next = "res/images/next.png",
          audioPlaceholder = "res/images/audio_placeholder.png",
       },
       fonts = {

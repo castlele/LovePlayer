@@ -17,6 +17,7 @@ kanban-plugin: board
 - [ ] Implement artists list view #4h #lists #ui
 - [ ] Implement music queue logic #3h #backend #player
 - [ ] Implement view with songs queue #3h #ui #player
+- [ ] Implement mini player view #6h #ui #player
 
 
 ## In Progress

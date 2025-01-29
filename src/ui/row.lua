@@ -17,7 +17,6 @@ local HStack = require("src.ui.hstack")
 ---@field private contentPaddingRight number?
 ---@field private isTapped boolean
 ---@field private animState number
----@field private shader love.Shader?
 ---@field onRowTapped fun()?
 local Row = View()
 
@@ -68,11 +67,12 @@ end
 ---@field subtitle LabelOpts?
 ---@param opts RowOpts?
 function Row:init(opts)
+   self.shader = Config.res.shaders.highlighting()
+
    View.init(self, opts)
 
    self.tapped = false
    self.animState = 0
-   self.shader = Config.res.shaders.highlighting()
 end
 
 function Row:load()
@@ -99,12 +99,6 @@ function Row:update(dt)
       - self.leadingHStack.size.height / 2
 
    self:handleHighlighting(dt)
-end
-
-function Row:draw()
-   love.graphics.setShader(self.shader)
-   View.draw(self)
-   love.graphics.setShader()
 end
 
 function Row:handleMousePressed(x, y, mouse, isTouch)
@@ -146,6 +140,12 @@ end
 ---@param title LabelOpts
 ---@param subtitle LabelOpts
 function Row:updateLeadingStack(opts, stack, image, title, subtitle)
+   opts.shader = self.shader
+   image.shader = self.shader
+   stack.shader = self.shader
+   title.shader = self.shader
+   subtitle.shader = self.shader
+
    self:updateTitlesStack(stack, title, subtitle)
    self:updateImage(image)
 

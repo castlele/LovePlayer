@@ -45,6 +45,7 @@ end
 function Label:draw()
    View.draw(self)
 
+   love.graphics.setShader(self.shader)
    love.graphics.push()
 
    love.graphics.setColor(
@@ -65,6 +66,7 @@ function Label:draw()
       self.origin.y + self.paddingTop
    )
    love.graphics.pop()
+   love.graphics.setShader()
 end
 
 ---@param opts LabelOpts

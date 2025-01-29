@@ -29,14 +29,14 @@ end
 ---@field private interactor PlayerInteractor
 local PlayerView = View()
 
-local shader = Config.res.shaders.coloring()
 
 ---@class PlayerViewOpts : ViewOpts
 ---@param opts PlayerViewOpts?
 function PlayerView:init(opts)
-   View.init(self, opts)
+   self.shader = Config.res.shaders.coloring()
+   self.shader:send("tocolor", colors.accent:asVec4())
 
-   shader:send("tocolor", colors.accent:asVec4())
+   View.init(self, opts)
 
    self.interactor = playerModule.interactor {
       initialState = playerModule.state.PAUSED,
@@ -62,7 +62,7 @@ function PlayerView:updateOpts(opts)
    }
    self:updatePrevButtonOpts()
    self:updatePlayButtonOpts()
-   self:updatenextButtonOpts()
+   self:updateNextButtonOpts()
 end
 
 ---@param opts HStackOpts
@@ -100,7 +100,7 @@ function PlayerView:updatePrevButtonOpts()
                Config.res.images.prev,
                imageDataModule.imageDataType.PATH
             ),
-            shader = shader,
+            shader = self.shader,
          },
       }
    }
@@ -123,11 +123,14 @@ function PlayerView:updatePlayButtonOpts()
          playButton.isPaused = self.interactor:getState()
             == playerModule.state.PAUSED
       end,
+      width = 30,
+      height = 30,
+      shader = self.shader,
    }
    self.contentView:addSubview(self.playButton)
 end
 
-function PlayerView:updatenextButtonOpts()
+function PlayerView:updateNextButtonOpts()
    if self.nextButton then
       return
    end
@@ -151,7 +154,7 @@ function PlayerView:updatenextButtonOpts()
                Config.res.images.next,
                imageDataModule.imageDataType.PATH
             ),
-            shader = shader,
+            shader = self.shader,
          },
       }
    }

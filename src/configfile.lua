@@ -1,6 +1,10 @@
 ---@class Config
 Config = {
-   backend = "love",-- "love"|"miniaudio"
+   backend = "love", -- "love"|"miniaudio"
+   app = {
+      state = "miniplayer", -- "normal"|"miniplayer"
+      isFlowChanged = false,
+   },
    logging = {
       minLevel = "DEBUG",
    },
@@ -14,6 +18,10 @@ Config = {
          height = 20,
       },
       loop = {
+         width = 25,
+         height = 20,
+      },
+      minimize = {
          width = 25,
          height = 20,
       }
@@ -65,6 +73,8 @@ Config = {
          loop_none = "res/images/loop_none.png",
          loop_queue = "res/images/loop_queue.png",
          loop_song = "res/images/loop_song.png",
+         minimize = "res/images/minimize.png",
+         expand = "res/images/expand.png",
          audioPlaceholder = "res/images/audio_placeholder.png",
       },
       fonts = {

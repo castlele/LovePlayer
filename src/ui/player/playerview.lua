@@ -11,12 +11,13 @@ local imageDataModule = require("src.ui.imagedata")
 ---@field getQueue fun(self: PlayerViewDelegate): Song[]
 
 ---@class PlayerView : View
----@field contentView HStack
----@field prevButton Button
----@field playButton PlayButton
----@field nextButton Button
----@field loopButton LoopButton
 ---@field delegate PlayerViewDelegate?
+---@field private contentView HStack
+---@field private prevButton Button
+---@field private playButton PlayButton
+---@field private nextButton Button
+---@field private loopButton LoopButton
+---@field private minimizeButton Button
 ---@field private interactor PlayerInteractor
 local PlayerView = View()
 
@@ -53,6 +54,7 @@ function PlayerView:updateOpts(opts)
    self:updatePlayButtonOpts()
    self:updateNextButtonOpts()
    self:updateLoopButtonOpts()
+   self:updateMinimizeButtonOpts()
 end
 
 ---@param opts HStackOpts
@@ -162,6 +164,38 @@ function PlayerView:updateLoopButtonOpts()
       shader = self.shader,
    }
    self.contentView:addSubview(self.loopButton)
+end
+
+function PlayerView:updateMinimizeButtonOpts()
+   if self.minimizeButton then
+      return
+   end
+
+   self.minimizeButton = Button {
+      action = function()
+         Config.app.state = "miniplayer"
+         Config.app.isFlowChanged = true
+      end,
+      state = {
+         normal = {
+            backgroundColor = colors.secondary,
+         },
+      },
+      titleState = {
+         type = "image",
+         normal = {
+            width = Config.buttons.minimize.width,
+            height = Config.buttons.minimize.height,
+            backgroundColor = colors.clear,
+            imageData = imageDataModule.imageData:new(
+               Config.res.images.minimize,
+               imageDataModule.imageDataType.PATH
+            ),
+            shader = self.shader,
+         },
+      },
+   }
+   self.contentView:addSubview(self.minimizeButton)
 end
 
 function PlayerView:toString()

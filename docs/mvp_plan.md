@@ -15,15 +15,14 @@ kanban-plugin: board
 - [ ] Implement methods of getting albums from Interactor #1h #backend #lists
 - [ ] Implement methods of getting artists from Interactor #1h #backend #lists
 - [ ] Implement artists list view #4h #lists #ui
-- [ ] Implement music queue logic #3h #backend #player
 - [ ] Implement view with songs queue #3h #ui #player
-- [ ] Implement mini player view #6h #ui #player
 
 
 ## In Progress
 
 - [ ] Implement player functions #2h #backend #player
 - [ ] Implement player view #2h #ui #player
+- [ ] Implement mini player view #6h #ui #player
 
 
 ## Done
@@ -47,6 +46,7 @@ kanban-plugin: board
 - [x] Caching #backend #lists #2h
 - [x] Implement album's songs view #1_5h #lists #ui
 - [x] Implement navigation between screens #4h #lists #ui
+- [x] Implement music queue logic #3h #backend #player
 
 
 

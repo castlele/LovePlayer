@@ -34,6 +34,7 @@ end
 
 function love.draw()
    navigator:draw()
+
    debugView.fpsView.draw(
       Config.debug.isDrawFPS,
       0,

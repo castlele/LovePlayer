@@ -11,6 +11,18 @@ local Row = require("src.ui.row")
 local songRow = require("src.ui.main.songrow")
 local Interactor = require("src.domain.lists")
 local storage = require("src.ui.main.media_storage")
+local playerModule = require("src.domain.player")
+
+---@type MusicPlayer
+local audioPlayer
+
+if Config.backend == "love" then
+   audioPlayer = require("src.domain.player.loveaudioplayer")
+elseif Config.backend == "miniaudio" then
+   audioPlayer = require("src.domain.player.miniaudioplayer")
+else
+   assert(false, "Unsupported backend: " .. Config.backend)
+end
 
 ---@class MainView : View, FolderPickerDelegate, ListDataSourceDelegate, PlayerViewDelegate
 ---@field private state ListState
@@ -93,7 +105,14 @@ function MainView:load()
       },
    }
 
-   local playerView = PlayerView()
+   local playerInteractor = playerModule.interactor {
+      initialState = playerModule.state.PAUSED,
+      player = audioPlayer(),
+   }
+
+   local playerView = PlayerView {
+      interactor = playerInteractor,
+   }
    playerView.delegate = self
 
    self.navBar = NavBar {
@@ -152,6 +171,7 @@ function MainView:load()
    self.emptyStateView.interactor = self.interactor
 
    self.albumView = AlbumView {
+      interactor = playerInteractor,
       backgroundColor = colors.background,
       isHidden = true,
       parentSize = self.size,

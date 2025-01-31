@@ -1,4 +1,5 @@
 local View = require("src.ui.view")
+local Button = require("src.ui.button")
 local Image = require("src.ui.image")
 local VStack = require("src.ui.vstack")
 local Label = require("src.ui.label")
@@ -6,23 +7,25 @@ local List = require("src.ui.list")
 local songRow = require("src.ui.main.songrow")
 local colors = require("src.ui.colors")
 local sectionsModule = require("src.ui.listsection")
-local tableutils = require("cluautils.table_utils")
 
 ---@class AlbumView : View, ListDataSourceDelegate
 ---@field private isResizing boolean
 ---@field private minWidth number
 ---@field private songs Song[]
 ---@field private album Album?
+---@field private interactor PlayerInteractor
 ---@field private headerView View
 ---@field private resizingView View
 ---@field private albumImage Image
 ---@field private titlesStack VStack
+---@field private playButton Button
 ---@field private albumNameLabel Label
 ---@field private artistNameLabel Label
 ---@field private songsList List
 local AlbumView = View()
 
 ---@class AlbumViewOpts : ViewOpts
+---@field interactor PlayerInteractor?
 ---@field minWidth number?
 ---@field songs Song[]?
 ---@field album Album?
@@ -82,6 +85,13 @@ function AlbumView:update(dt)
       + self.albumImage.size.height
       + 10
 
+   self.playButton.origin.x = self.headerView.origin.x
+      + self.headerView.size.width / 2
+      - self.playButton.size.width / 2
+   self.playButton.origin.y = self.titlesStack.origin.y
+      + self.titlesStack.size.height
+      + 10
+
    self.headerView.size.height = self.titlesStack.origin.y
       + self.titlesStack.size.height
       - 10
@@ -99,6 +109,10 @@ end
 ---@param opts AlbumViewOpts
 function AlbumView:updateOpts(opts)
    View.updateOpts(self, opts)
+
+   self.interactor = opts.interactor or self.interactor
+
+   assert(self.interactor, "AlbumView must have a PlayerInteractor, but got nil")
 
    self.songs = opts.songs or self.songs or {}
    table.sort(self.songs, function(lhs, rhs)
@@ -154,6 +168,32 @@ function AlbumView:updateOpts(opts)
       views = {
          self.albumNameLabel,
          self.artistNameLabel,
+      },
+   }
+   self:updatePlayButtonOpts {
+      action = function()
+         self.interactor:setQueue(self.songs)
+         self.interactor:play()
+      end,
+      state = {
+         normal = {
+            backgroundColor = colors.clear,
+         },
+      },
+      titleState = {
+         type = "label",
+         normal = {
+            title = "Play",
+            textColor = colors.black,
+            fontPath = Config.res.fonts.bold,
+            fontSize = Config.res.fonts.size.header2,
+            backgroundColor = colors.accent,
+            paddingTop = 5,
+            paddingBottom = 5,
+            paddingLeft = 5,
+            paddingRight = 5,
+            cornerRadius = 8,
+         },
       },
    }
    self:updateResizingViewOpts {
@@ -294,6 +334,18 @@ function AlbumView:updateTitlesStackOpts(opts)
 
    self.titlesStack = VStack(opts)
    self.headerView:addSubview(self.titlesStack)
+end
+
+---@private
+---@param opts ButtonOpts
+function AlbumView:updatePlayButtonOpts(opts)
+   if self.playButton then
+      self.playButton:updateOpts(opts)
+      return
+   end
+
+   self.playButton = Button(opts)
+   self.headerView:addSubview(self.playButton)
 end
 
 ---@private

@@ -7,17 +7,6 @@ local colors = require("src.ui.colors")
 local playerModule = require("src.domain.player")
 local imageDataModule = require("src.ui.imagedata")
 
----@type MusicPlayer
-local audioPlayer
-
-if Config.backend == "love" then
-   audioPlayer = require("src.domain.player.loveaudioplayer")
-elseif Config.backend == "miniaudio" then
-   audioPlayer = require("src.domain.player.miniaudioplayer")
-else
-   assert(false, "Unsupported backend: " .. Config.backend)
-end
-
 ---@class PlayerViewDelegate
 ---@field getQueue fun(self: PlayerViewDelegate): Song[]
 
@@ -32,14 +21,11 @@ end
 local PlayerView = View()
 
 ---@class PlayerViewOpts : ViewOpts
+---@field interactor PlayerInteractor?
 ---@param opts PlayerViewOpts?
 function PlayerView:init(opts)
    self.shader = Config.res.shaders.coloring()
    self.shader:send("tocolor", colors.accent:asVec4())
-   self.interactor = playerModule.interactor {
-      initialState = playerModule.state.PAUSED,
-      player = audioPlayer(),
-   }
 
    View.init(self, opts)
 end
@@ -56,6 +42,7 @@ end
 ---@param opts PlayerViewOpts
 function PlayerView:updateOpts(opts)
    View.updateOpts(self, opts)
+   self.interactor = opts.interactor
 
    self:updateContentViewOpts {
       backgroundColor = colors.secondary,

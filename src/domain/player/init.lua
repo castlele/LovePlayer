@@ -130,6 +130,8 @@ function PlayerInteractor:update()
    if self.loopMode == LoopMode.QUEUE then
       self:next()
       self:play()
+   else
+      self:stop()
    end
 end
 

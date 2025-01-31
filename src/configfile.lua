@@ -4,6 +4,20 @@ Config = {
    logging = {
       minLevel = "DEBUG",
    },
+   buttons = {
+      play = {
+         width = 30,
+         height = 30,
+      },
+      next_prev = {
+         width = 25,
+         height = 20,
+      },
+      loop = {
+         width = 25,
+         height = 20,
+      }
+   },
    navBar = {
       height = 50,
       horizontalPadding = 10,
@@ -48,6 +62,9 @@ Config = {
          prev = "res/images/prev.png",
          play = "res/images/play.png",
          next = "res/images/next.png",
+         loop_none = "res/images/loop_none.png",
+         loop_queue = "res/images/loop_queue.png",
+         loop_song = "res/images/loop_song.png",
          audioPlaceholder = "res/images/audio_placeholder.png",
       },
       fonts = {

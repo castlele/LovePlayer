@@ -1,22 +1,19 @@
 --- Module is responsible for managing track queues and playing songs (managing player lifecycle)
 --- Its main goal is to provide an interface for playing music.
 
+local LoopMode = require("src.domain.player.loopmode")
+
 ---@enum (value) PlayerState
 local PlayerState = {
    PAUSED = 0,
    PLAYING = 1,
 }
 
----@enum (value) LoopMode
-local LoopMode = {
-   NONE = 0,
-   SONG = 1,
-   QUEUE = 2,
-}
-
 ---@class MusicPlayer
 ---@field play fun(self: MusicPlayer, song: Song?)
 ---@field pause fun(self: MusicPlayer)
+---@field isPlaying fun(self: MusicPlayer): boolean
+---@field setLoopMode fun(self: MusicPlayer, loopMode: LoopMode)
 
 ---@class PlayerInteractor
 ---@field musicPlayer MusicPlayer
@@ -123,6 +120,41 @@ function PlayerInteractor:isQueueEmpty()
    return #self.queue == 0
 end
 
+function PlayerInteractor:update()
+   self.musicPlayer:setLoopMode(self.loopMode)
+
+   if self.musicPlayer:isPlaying() then
+      return
+   end
+
+   if self.loopMode == LoopMode.QUEUE then
+      self:next()
+      self:play()
+   end
+end
+
+---@return LoopMode
+function PlayerInteractor:nextLoopMode()
+   local m = self.loopMode
+
+   if m == LoopMode.NONE then
+      self.loopMode = LoopMode.QUEUE
+   elseif m == LoopMode.QUEUE then
+      self.loopMode = LoopMode.SONG
+   elseif m == LoopMode.SONG then
+      self.loopMode = LoopMode.NONE
+   else
+      assert(false, "Unknown LoopMode case: " .. m)
+   end
+
+   return self:getLoopMode()
+end
+
+---@return LoopMode
+function PlayerInteractor:getLoopMode()
+   return self.loopMode
+end
+
 ---@private
 function PlayerInteractor:decreaseCurrentIndex()
    if self.currentQueueIndex - 1 <= 0 then
@@ -149,6 +181,5 @@ end
 
 return {
    state = PlayerState,
-   loopMode = LoopMode,
    interactor = PlayerInteractor,
 }

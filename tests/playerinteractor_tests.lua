@@ -4,6 +4,7 @@ end
 
 local t = require("cluautils.tests")
 local sutModule = require("src.domain.player.init")
+local LoopMode = require("src.domain.player.loopmode")
 local mocks = require("tests.utils.mocks")
 
 ---@diagnostic disable
@@ -223,7 +224,7 @@ t.describe("Player Interactor Tests", function()
             player = player,
             initialState = sutModule.state.PLAYING,
             currentQueueIndex = #mockSongs,
-            loopMode = sutModule.loopMode.QUEUE,
+            loopMode = LoopMode.QUEUE,
             queue = mockSongs,
          }
 
@@ -263,7 +264,7 @@ t.describe("Player Interactor Tests", function()
             player = player,
             initialState = sutModule.state.PLAYING,
             currentQueueIndex = 1,
-            loopMode = sutModule.loopMode.QUEUE,
+            loopMode = LoopMode.QUEUE,
             queue = mockSongs,
          }
 

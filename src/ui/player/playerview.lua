@@ -1,6 +1,7 @@
 local View = require("src.ui.view")
 local Button = require("src.ui.button")
 local PlayButton = require("src.ui.player.playbutton")
+local LoopButton = require("src.ui.player.loopbutton")
 local HStack = require("src.ui.hstack")
 local colors = require("src.ui.colors")
 local playerModule = require("src.domain.player")
@@ -25,23 +26,22 @@ end
 ---@field prevButton Button
 ---@field playButton PlayButton
 ---@field nextButton Button
+---@field loopButton LoopButton
 ---@field delegate PlayerViewDelegate?
 ---@field private interactor PlayerInteractor
 local PlayerView = View()
-
 
 ---@class PlayerViewOpts : ViewOpts
 ---@param opts PlayerViewOpts?
 function PlayerView:init(opts)
    self.shader = Config.res.shaders.coloring()
    self.shader:send("tocolor", colors.accent:asVec4())
-
-   View.init(self, opts)
-
    self.interactor = playerModule.interactor {
       initialState = playerModule.state.PAUSED,
       player = audioPlayer(),
    }
+
+   View.init(self, opts)
 end
 
 function PlayerView:update(dt)
@@ -49,6 +49,8 @@ function PlayerView:update(dt)
 
    self.size = self.contentView.size
    self.contentView.origin = self.origin
+
+   self.interactor:update()
 end
 
 ---@param opts PlayerViewOpts
@@ -63,6 +65,7 @@ function PlayerView:updateOpts(opts)
    self:updatePrevButtonOpts()
    self:updatePlayButtonOpts()
    self:updateNextButtonOpts()
+   self:updateLoopButtonOpts()
 end
 
 ---@param opts HStackOpts
@@ -93,8 +96,8 @@ function PlayerView:updatePrevButtonOpts()
       titleState = {
          type = "image",
          normal = {
-            width = 30,
-            height = 30,
+            width = Config.buttons.next_prev.width,
+            height = Config.buttons.next_prev.height,
             backgroundColor = colors.clear,
             imageData = imageDataModule.imageData:new(
                Config.res.images.prev,
@@ -102,7 +105,7 @@ function PlayerView:updatePrevButtonOpts()
             ),
             shader = self.shader,
          },
-      }
+      },
    }
    self.contentView:addSubview(self.prevButton)
 end
@@ -123,8 +126,6 @@ function PlayerView:updatePlayButtonOpts()
          playButton.isPaused = self.interactor:getState()
             == playerModule.state.PAUSED
       end,
-      width = 30,
-      height = 30,
       shader = self.shader,
    }
    self.contentView:addSubview(self.playButton)
@@ -147,8 +148,8 @@ function PlayerView:updateNextButtonOpts()
       titleState = {
          type = "image",
          normal = {
-            width = 30,
-            height = 30,
+            width = Config.buttons.next_prev.width,
+            height = Config.buttons.next_prev.height,
             backgroundColor = colors.clear,
             imageData = imageDataModule.imageData:new(
                Config.res.images.next,
@@ -156,9 +157,24 @@ function PlayerView:updateNextButtonOpts()
             ),
             shader = self.shader,
          },
-      }
+      },
    }
    self.contentView:addSubview(self.nextButton)
+end
+
+function PlayerView:updateLoopButtonOpts()
+   if self.loopButton then
+      return
+   end
+
+   self.loopButton = LoopButton {
+      action = function(button)
+         button.loopMode = self.interactor:nextLoopMode()
+      end,
+      loopMode = self.interactor:getLoopMode(),
+      shader = self.shader,
+   }
+   self.contentView:addSubview(self.loopButton)
 end
 
 function PlayerView:toString()

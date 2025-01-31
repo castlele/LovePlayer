@@ -1,4 +1,5 @@
 local nativefs = require("nativefs")
+local LoopMode = require("src.domain.player.loopmode")
 
 ---@class LoveAudioPlayer : MusicPlayer
 ---@field private currentSource love.Source
@@ -25,6 +26,30 @@ function Player:play(song)
    if fileData then
       self.currentSource = love.audio.newSource(fileData, "static")
       love.audio.play(self.currentSource)
+   end
+end
+
+---@return boolean
+function Player:isPlaying()
+   if not self.currentSource then
+      return false
+   end
+
+   return self.currentSource:isPlaying()
+end
+
+---@param loopMode LoopMode
+function Player:setLoopMode(loopMode)
+   if loopMode == LoopMode.NONE or loopMode == LoopMode.QUEUE then
+      if self.currentSource then
+         self.currentSource:setLooping(false)
+      end
+   elseif loopMode == LoopMode.SONG then
+      if self.currentSource then
+         self.currentSource:setLooping(true)
+      end
+   else
+      assert(false, "Unknown LoopMode case: " .. loopMode)
    end
 end
 

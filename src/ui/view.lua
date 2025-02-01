@@ -112,6 +112,20 @@ function View:wheelmoved(x, y)
    end
 end
 
+---@param container View
+function View:centerX(container)
+   self.origin.x = container.origin.x
+      + container.size.width / 2
+      - self.size.width / 2
+end
+
+---@param container View
+function View:centerY(container)
+   self.origin.y = container.origin.y
+      + container.size.height / 2
+      - self.size.height / 2
+end
+
 ---@param dt number
 function View:update(dt)
    if self.isHidden then

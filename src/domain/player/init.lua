@@ -2,12 +2,7 @@
 --- Its main goal is to provide an interface for playing music.
 
 local LoopMode = require("src.domain.player.loopmode")
-
----@enum (value) PlayerState
-local PlayerState = {
-   PAUSED = 0,
-   PLAYING = 1,
-}
+local PlayerState = require("src.domain.player.playerstate")
 
 ---@class MusicPlayer
 ---@field play fun(self: MusicPlayer, song: Song?)
@@ -64,8 +59,8 @@ function PlayerInteractor:play()
       self.currentQueueIndex = 1
    end
 
-   self.musicPlayer:play(self.queue[self.currentQueueIndex])
    self.state = PlayerState.PLAYING
+   self.musicPlayer:play(self.queue[self.currentQueueIndex])
 end
 
 function PlayerInteractor:pause()
@@ -104,6 +99,7 @@ end
 
 ---@param queue Song[]
 function PlayerInteractor:setQueue(queue)
+   self.currentQueueIndex = -1
    self.queue = queue
 end
 

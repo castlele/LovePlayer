@@ -2,7 +2,7 @@
 Config = {
    backend = "love", -- "love"|"miniaudio"
    app = {
-      state = "miniplayer", -- "normal"|"miniplayer"
+      state = "normal", -- "normal"|"miniplayer"
       isFlowChanged = false,
    },
    logging = {
@@ -24,7 +24,11 @@ Config = {
       minimize = {
          width = 25,
          height = 20,
-      }
+      },
+      expand = {
+         width = 30,
+         height = 30,
+      },
    },
    navBar = {
       height = 50,
@@ -94,7 +98,7 @@ Config = {
 
    debug = {
       isDebug = true,
-      isRainbowBorders = false,
+      isRainbowBorders = true,
       isDebugTooltip = true,
       isDrawFPS = true,
 

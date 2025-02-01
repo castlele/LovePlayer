@@ -4,7 +4,6 @@ local PlayButton = require("src.ui.player.playbutton")
 local LoopButton = require("src.ui.player.loopbutton")
 local HStack = require("src.ui.hstack")
 local colors = require("src.ui.colors")
-local playerModule = require("src.domain.player")
 local imageDataModule = require("src.ui.imagedata")
 
 ---@class PlayerViewDelegate
@@ -36,14 +35,13 @@ function PlayerView:update(dt)
 
    self.size = self.contentView.size
    self.contentView.origin = self.origin
-
-   self.interactor:update()
 end
 
 ---@param opts PlayerViewOpts
 function PlayerView:updateOpts(opts)
    View.updateOpts(self, opts)
-   self.interactor = opts.interactor
+
+   self.interactor = opts.interactor or self.interactor
 
    self:updateContentViewOpts {
       backgroundColor = colors.secondary,
@@ -105,16 +103,14 @@ function PlayerView:updatePlayButtonOpts()
    end
 
    self.playButton = PlayButton {
-      action = function(playButton)
+      action = function()
          if self.interactor:isQueueEmpty() and self.delegate then
             self.interactor:setQueue(self.delegate:getQueue())
          end
 
          self.interactor:toggle()
-
-         playButton.isPaused = self.interactor:getState()
-            == playerModule.state.PAUSED
       end,
+      interactor = self.interactor,
       shader = self.shader,
    }
    self.contentView:addSubview(self.playButton)

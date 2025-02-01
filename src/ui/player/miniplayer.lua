@@ -1,11 +1,16 @@
 local View = require("src.ui.view")
+local Button = require("src.ui.button")
 local Image = require("src.ui.image")
 local Label = require("src.ui.label")
 local VStack = require("src.ui.vstack")
 local PlayerControlsView = require("src.ui.player.playercontrolsview")
+local imageDataModule = require("src.ui.imagedata")
 local colors = require("src.ui.colors")
 
 ---@class MiniPlayer : View
+---@field private interactor PlayerInteractor
+---@field private _shader love.Shader
+---@field private expandButton Button
 ---@field private imageView Image
 ---@field private titlesContainer VStack
 ---@field private songNameLabel Label
@@ -23,6 +28,9 @@ function MiniPlayer:init()
       centered = true,
    })
 
+   self._shader = Config.res.shaders.coloring()
+   self._shader:send("tocolor", colors.accent:asVec4())
+
    View.init(self, {
       backgroundColor = colors.background,
       width = w,
@@ -30,19 +38,120 @@ function MiniPlayer:init()
    })
 end
 
+function MiniPlayer:update(dt)
+   View.update(self, dt)
+
+   local currentSong = self.interactor:getCurrent()
+
+   if currentSong then
+      self:updateImageOpts {
+         imageData = currentSong.imageData,
+      }
+      self:updateSongNameLabelOpts {
+         title = currentSong.title,
+      }
+      self:updateArtistNameLabelOpts {
+         title = currentSong.artist.name or "Unknown",
+      }
+   else
+      self:updateImageOpts {
+         imageData = imageDataModule.imageData.placeholder,
+      }
+      self:updateSongNameLabelOpts {
+         title = "Unknown",
+      }
+      self:updateArtistNameLabelOpts {
+         title = "Unknown",
+      }
+   end
+
+   self.imageView:centerX(self)
+   self.imageView.origin.y = self.origin.y + 20
+
+   self.expandButton.origin.x = self.origin.x
+      + self.size.width
+      - self.expandButton.size.width
+      - 20
+   self.expandButton.origin.y = self.origin.y + 20
+
+   self.titlesContainer:centerX(self)
+   self.titlesContainer.origin.y = self.imageView.origin.y
+      + self.imageView.size.height
+      + 20
+end
+
 ---@param opts ViewOpts
 function MiniPlayer:updateOpts(opts)
    View.updateOpts(self, opts)
 
-   self:updateImageOpts {}
-   self:updateSongNameLabelOpts {}
-   self:updateArtistNameLabelOpts {}
-   self:updateTitlesContainerOpts()
+   self.interactor = PlayerInteractor
+
+   self:updateExpandButtonOpts {
+      action = function()
+         Config.app.state = "normal"
+         Config.app.isFlowChanged = true
+      end,
+      state = {
+         normal = {
+            backgroundColor = colors.background,
+            width = Config.buttons.expand.width,
+            height = Config.buttons.expand.height,
+         },
+      },
+      titleState = {
+         type = "image",
+         normal = {
+            width = Config.buttons.expand.width,
+            height = Config.buttons.expand.height,
+            backgroundColor = colors.clear,
+            shader = self._shader,
+            imageData = imageDataModule.imageData:new(
+               Config.res.images.expand,
+               imageDataModule.imageDataType.PATH
+            ),
+         },
+      },
+   }
+   self:updateImageOpts {
+      width = w / 2,
+      height = w / 2,
+   }
+   self:updateSongNameLabelOpts {
+      fontPath = Config.res.fonts.bold,
+      fontSize = Config.res.fonts.size.header1,
+      textColor = colors.white,
+      backgroundColor = colors.clear,
+   }
+   self:updateArtistNameLabelOpts {
+      fontPath = Config.res.fonts.regular,
+      fontSize = Config.res.fonts.size.header3,
+      textColor = colors.white,
+      backgroundColor = colors.clear,
+   }
+   self:updateTitlesContainerOpts {
+      backgroundColor = colors.clear,
+      views = {
+         self.songNameLabel,
+         self.artistNameLabel,
+      },
+   }
    self:updatePlayerControlsViewOpts()
 end
 
 function MiniPlayer:toString()
    return "MiniPlayer"
+end
+
+---@private
+---@param opts ButtonOpts
+function MiniPlayer:updateExpandButtonOpts(opts)
+   if self.expandButton then
+      self.expandButton:updateOpts(opts)
+      return
+   end
+
+   self.expandButton = Button(opts)
+   self:addSubview(self.expandButton)
 end
 
 ---@private
@@ -80,21 +189,25 @@ function MiniPlayer:updateArtistNameLabelOpts(opts)
 end
 
 ---@private
-function MiniPlayer:updateTitlesContainerOpts()
+---@param opts VStackOpts
+function MiniPlayer:updateTitlesContainerOpts(opts)
    if self.titlesContainer then
+      self.titlesContainer:updateOpts(opts)
       return
    end
 
-   self.titlesContainer = VStack {
-      views = {
-         self.songNameLabel,
-         self.artistNameLabel,
-      },
-   }
+   self.titlesContainer = VStack(opts)
    self:addSubview(self.titlesContainer)
 end
 
 ---@private
-function MiniPlayer:updatePlayerControlsViewOpts() end
+function MiniPlayer:updatePlayerControlsViewOpts()
+   if self.playerControlsView then
+      return
+   end
+
+   self.playerControlsView = PlayerControlsView()
+   self:addSubview(self.playerControlsView)
+end
 
 return MiniPlayer

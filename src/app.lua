@@ -2,14 +2,30 @@ require("src.loveext")
 require("src.utils.class")
 require("src.configfile")
 local debugView = require("src.ui.debugview")
+local PlayerState = require("src.domain.player.playerstate")
+local playerModule = require("src.domain.player")
+---@type MusicPlayer
+local audioPlayer
 
-local navigatorModule = require("src.ui.navigator")
+if Config.backend == "love" then
+   audioPlayer = require("src.domain.player.loveaudioplayer")
+elseif Config.backend == "miniaudio" then
+   audioPlayer = require("src.domain.player.miniaudioplayer")
+else
+   assert(false, "Unsupported backend: " .. Config.backend)
+end
+
+---@type PlayerInteractor
+PlayerInteractor = playerModule.interactor {
+   initialState = PlayerState.PAUSED,
+   player = audioPlayer(),
+}
+
 ---@type Navigator
-local navigator = navigatorModule.navigator()
+local navigator = require("src.ui.navigator")()
 
 function love.load()
    love.graphics.setDefaultFilter("nearest", "nearest")
-   navigator:startFlow(navigatorModule.flow.INITIAL)
 end
 
 ---@param x number
@@ -28,6 +44,8 @@ end
 
 function love.update(dt)
    navigator:update(dt)
+
+   PlayerInteractor:update()
 
    love.quitIfNeeded()
 end

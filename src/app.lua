@@ -36,6 +36,17 @@ function love.mousepressed(x, y, mouse, isTouch)
    navigator:mousepressed(x, y, mouse, isTouch)
 end
 
+---@param key love.KeyConstant
+---@param code love.Scancode
+---@param isrepeat boolean
+function love.keypressed(key, code, isrepeat)
+   if Config.debug.isDebug then
+      if code == "d" then
+         Config.debug.isRainbowBorders = not Config.debug.isRainbowBorders
+      end
+   end
+end
+
 ---@param x number
 ---@param y number
 function love.wheelmoved(x, y)

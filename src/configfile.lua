@@ -98,7 +98,7 @@ Config = {
 
    debug = {
       isDebug = true,
-      isRainbowBorders = true,
+      isRainbowBorders = false,
       isDebugTooltip = true,
       isDrawFPS = true,
 

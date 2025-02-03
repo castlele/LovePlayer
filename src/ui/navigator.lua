@@ -26,7 +26,7 @@ function Navigator:update(dt)
             table.remove(self.subviews, 1)
          end
 
-         love.window.setMode(1024, 768, nil)
+         -- love.window.setMode(1024, 768, nil)
 
          self:addSubview(self.tabView)
       end

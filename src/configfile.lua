@@ -56,7 +56,9 @@ Config = {
    },
 
    keymap = {
-      quit = "lctrl+q"
+      quit = "lctrl+q",
+      toggleMode = "lctrl+m",
+      rainbowBorders = "lctrl+d"
    },
 
    res = {

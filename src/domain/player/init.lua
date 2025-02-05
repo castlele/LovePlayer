@@ -119,7 +119,7 @@ end
 function PlayerInteractor:update()
    self.musicPlayer:setLoopMode(self.loopMode)
 
-   if self.musicPlayer:isPlaying() then
+   if self.musicPlayer:isPlaying() or self.state == PlayerState.PAUSED then
       return
    end
 

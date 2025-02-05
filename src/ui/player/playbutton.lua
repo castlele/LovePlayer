@@ -4,7 +4,7 @@ local PlayerState = require("src.domain.player.playerstate")
 local colors = require("src.ui.colors")
 
 ---@class PlayButton : Button
----@field private opts ButtonOpts
+---@field private opts PlayButtonOpts
 ---@field private interactor PlayerInteractor
 ---@field private isPaused boolean
 local PlayButton = Button()
@@ -18,18 +18,20 @@ PlayButton.pauseImage = imageDataModule.imageData:new(
    imageDataModule.imageDataType.PATH
 )
 
----@class PlayButtonOpts : ViewOpts
----@field action fun(self: PlayButton)
+---@class PlayButtonOpts : ButtonOpts
 ---@field interactor PlayerInteractor
----@field shader love.Shader
 ---@field isPaused boolean?
 ---@param opts PlayButtonOpts
 function PlayButton:init(opts)
+   local bg = (opts.state or { normal = { backgroundColor = nil } }).normal.backgroundColor
+
    self.opts = {
+      interactor = opts.interactor,
+      shader = opts.shader,
       action = opts.action,
       state = {
          normal = {
-            backgroundColor = colors.secondary,
+            backgroundColor = bg or colors.secondary,
          },
       },
       titleState = {
@@ -61,6 +63,11 @@ function PlayButton:update(dt)
    end
 
    self:updateOpts(self.opts)
+end
+
+---@param opts PlayButtonOpts
+function PlayButton:updateOpts(opts)
+   Button.updateOpts(self, opts)
 end
 
 function PlayButton:toString()

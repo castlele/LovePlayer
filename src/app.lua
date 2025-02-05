@@ -40,11 +40,9 @@ end
 ---@param code love.Scancode
 ---@param isrepeat boolean
 function love.keypressed(key, code, isrepeat)
-   if Config.debug.isDebug then
-      if code == "d" then
-         Config.debug.isRainbowBorders = not Config.debug.isRainbowBorders
-      end
-   end
+   love.toggleRainbowBorders()
+   love.toggleModeIfNeeded()
+   love.quitIfNeeded()
 end
 
 ---@param x number
@@ -57,8 +55,6 @@ function love.update(dt)
    navigator:update(dt)
 
    PlayerInteractor:update()
-
-   love.quitIfNeeded()
 end
 
 function love.draw()

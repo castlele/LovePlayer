@@ -26,7 +26,10 @@ function Navigator:update(dt)
             table.remove(self.subviews, 1)
          end
 
-         -- love.window.setMode(1024, 768, nil)
+         -- This means that flow was changed from the outside of the "normal" flow
+         if Config.app.isFlowChanged then
+            love.window.setMode(1024, 768, nil)
+         end
 
          self:addSubview(self.tabView)
       end

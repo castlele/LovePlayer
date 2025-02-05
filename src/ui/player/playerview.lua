@@ -1,6 +1,8 @@
 local View = require("src.ui.view")
 local Button = require("src.ui.button")
+local PrevButton = require("src.ui.player.prevbutton")
 local PlayButton = require("src.ui.player.playbutton")
+local NextButton = require("src.ui.player.nextbutton")
 local LoopButton = require("src.ui.player.loopbutton")
 local HStack = require("src.ui.hstack")
 local colors = require("src.ui.colors")
@@ -12,9 +14,9 @@ local imageDataModule = require("src.ui.imagedata")
 ---@class PlayerView : View
 ---@field delegate PlayerViewDelegate?
 ---@field private contentView HStack
----@field private prevButton Button
+---@field private prevButton PrevButton
 ---@field private playButton PlayButton
----@field private nextButton Button
+---@field private nextButton NextButton
 ---@field private loopButton LoopButton
 ---@field private minimizeButton Button
 ---@field private interactor PlayerInteractor
@@ -24,8 +26,8 @@ local PlayerView = View()
 ---@field interactor PlayerInteractor?
 ---@param opts PlayerViewOpts?
 function PlayerView:init(opts)
-   self.shader = Config.res.shaders.coloring()
-   self.shader:send("tocolor", colors.accent:asVec4())
+   self._shader = Config.res.shaders.coloring()
+   self._shader:send("tocolor", colors.accent:asVec4())
 
    View.init(self, opts)
 end
@@ -71,26 +73,11 @@ function PlayerView:updatePrevButtonOpts()
       return
    end
 
-   self.prevButton = Button {
-      action = function()
-         self.interactor:prev()
-      end,
-      state = {
-         normal = {
-            backgroundColor = colors.secondary,
-         },
-      },
+   self.prevButton = PrevButton {
+      interactor = self.interactor,
       titleState = {
-         type = "image",
          normal = {
-            width = Config.buttons.next_prev.width,
-            height = Config.buttons.next_prev.height,
-            backgroundColor = colors.clear,
-            imageData = imageDataModule.imageData:new(
-               Config.res.images.prev,
-               imageDataModule.imageDataType.PATH
-            ),
-            shader = self.shader,
+            shader = self._shader,
          },
       },
    }
@@ -111,7 +98,7 @@ function PlayerView:updatePlayButtonOpts()
          self.interactor:toggle()
       end,
       interactor = self.interactor,
-      shader = self.shader,
+      shader = self._shader,
    }
    self.contentView:addSubview(self.playButton)
 end
@@ -121,26 +108,11 @@ function PlayerView:updateNextButtonOpts()
       return
    end
 
-   self.nextButton = Button {
-      action = function()
-         self.interactor:next()
-      end,
-      state = {
-         normal = {
-            backgroundColor = colors.secondary,
-         },
-      },
+   self.nextButton = NextButton {
+      interactor = self.interactor,
       titleState = {
-         type = "image",
          normal = {
-            width = Config.buttons.next_prev.width,
-            height = Config.buttons.next_prev.height,
-            backgroundColor = colors.clear,
-            imageData = imageDataModule.imageData:new(
-               Config.res.images.next,
-               imageDataModule.imageDataType.PATH
-            ),
-            shader = self.shader,
+            shader = self._shader,
          },
       },
    }
@@ -157,7 +129,7 @@ function PlayerView:updateLoopButtonOpts()
          button.loopMode = self.interactor:nextLoopMode()
       end,
       loopMode = self.interactor:getLoopMode(),
-      shader = self.shader,
+      shader = self._shader,
    }
    self.contentView:addSubview(self.loopButton)
 end
@@ -174,7 +146,7 @@ function PlayerView:updateMinimizeButtonOpts()
       end,
       state = {
          normal = {
-            backgroundColor = colors.secondary,
+            backgroundColor = colors.clear,
          },
       },
       titleState = {
@@ -187,7 +159,7 @@ function PlayerView:updateMinimizeButtonOpts()
                Config.res.images.minimize,
                imageDataModule.imageDataType.PATH
             ),
-            shader = self.shader,
+            shader = self._shader,
          },
       },
    }

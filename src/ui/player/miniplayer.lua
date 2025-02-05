@@ -42,6 +42,7 @@ function MiniPlayer:update(dt)
    View.update(self, dt)
 
    local currentSong = self.interactor:getCurrent()
+   local padding = 20
 
    if currentSong then
       self:updateImageOpts {
@@ -66,18 +67,28 @@ function MiniPlayer:update(dt)
    end
 
    self.imageView:centerX(self)
-   self.imageView.origin.y = self.origin.y + 20
+   self.imageView.origin.y = self.origin.y + padding
 
    self.expandButton.origin.x = self.origin.x
       + self.size.width
       - self.expandButton.size.width
-      - 20
-   self.expandButton.origin.y = self.origin.y + 20
+      - padding
+   self.expandButton.origin.y = self.origin.y + padding
 
    self.titlesContainer:centerX(self)
    self.titlesContainer.origin.y = self.imageView.origin.y
       + self.imageView.size.height
-      + 20
+      + padding
+
+   self.playerControlsView.size.width = self.size.width - padding*2
+   self.playerControlsView.size.height = self.size.height
+      - self.titlesContainer.origin.y
+      - self.titlesContainer.size.height
+      - padding*2
+   self.playerControlsView.origin.y = self.titlesContainer.origin.y
+      + self.titlesContainer.size.height
+      + padding*2
+   self.playerControlsView.origin.x = self.origin.x + padding
 end
 
 ---@param opts ViewOpts
@@ -206,7 +217,10 @@ function MiniPlayer:updatePlayerControlsViewOpts()
       return
    end
 
-   self.playerControlsView = PlayerControlsView()
+   self.playerControlsView = PlayerControlsView {
+      backgroundColor = colors.background,
+      interactor = self.interactor,
+   }
    self:addSubview(self.playerControlsView)
 end
 

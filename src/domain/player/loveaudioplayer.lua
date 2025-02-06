@@ -29,6 +29,33 @@ function Player:play(song)
    end
 end
 
+---@param progress number: number in seconds
+function Player:setProgress(progress)
+   if not self.currentSource then
+      return
+   end
+
+   self.currentSource:seek(progress, "seconds")
+end
+
+---@return number: seconds of played audio
+function Player:getProgress()
+   if not self.currentSource then
+      return 0.0
+   end
+
+   return self.currentSource:tell("seconds")
+end
+
+---@return number: lenght in seconds of the current audio
+function Player:getLength()
+   if not self.currentSource then
+      return 0.0
+   end
+
+   return self.currentSource:getDuration("seconds")
+end
+
 ---@return boolean
 function Player:isPlaying()
    if not self.currentSource then

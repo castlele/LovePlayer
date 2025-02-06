@@ -9,6 +9,9 @@ local PlayerState = require("src.domain.player.playerstate")
 ---@field pause fun(self: MusicPlayer)
 ---@field isPlaying fun(self: MusicPlayer): boolean
 ---@field setLoopMode fun(self: MusicPlayer, loopMode: LoopMode)
+---@field getProgress fun(self: MusicPlayer): number
+---@field setProgress fun(self: MusicPlayer, progress: number)
+---@field getLength fun(self: MusicPlayer): number
 
 ---@class PlayerInteractor
 ---@field musicPlayer MusicPlayer
@@ -146,6 +149,21 @@ function PlayerInteractor:nextLoopMode()
    end
 
    return self:getLoopMode()
+end
+
+---@param progress number: progress of the playback from 0.0 to 1.0
+function PlayerInteractor:setProgress(progress)
+   local len = self.musicPlayer:getLength()
+
+   self.musicPlayer:setProgress(progress * len)
+end
+
+---@return number: progress of the playback from 0.0 to 1.0
+function PlayerInteractor:getProgress()
+   local sec = self.musicPlayer:getProgress()
+   local len = self.musicPlayer:getLength()
+
+   return sec / len
 end
 
 ---@return LoopMode

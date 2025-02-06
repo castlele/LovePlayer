@@ -50,15 +50,15 @@ Config = {
             padding = {
                l = 10,
                r = 0,
-            }
-         }
+            },
+         },
       },
    },
 
    keymap = {
       quit = "lctrl+q",
       toggleMode = "lctrl+m",
-      rainbowBorders = "lctrl+d"
+      rainbowBorders = "lctrl+d",
    },
 
    res = {
@@ -68,6 +68,9 @@ Config = {
          end,
          coloring = function()
             return love.graphics.newShader("res/shaders/coloring.glsl")
+         end,
+         timeline = function()
+            return love.graphics.newShader("res/shaders/timeline.glsl")
          end,
       },
       images = {
@@ -94,8 +97,8 @@ Config = {
             header2 = 24,
             header3 = 18,
             body = 12,
-         }
-      }
+         },
+      },
    },
 
    debug = {
@@ -106,7 +109,7 @@ Config = {
 
       mock = {
          isMocking = true,
-         folderPath = "$HOME/Music/"
+         folderPath = "$HOME/Music/",
       },
    },
 }

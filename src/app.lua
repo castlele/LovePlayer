@@ -52,9 +52,9 @@ function love.wheelmoved(x, y)
 end
 
 function love.update(dt)
-   navigator:update(dt)
-
    PlayerInteractor:update()
+
+   navigator:update(dt)
 end
 
 function love.draw()

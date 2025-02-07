@@ -9,8 +9,14 @@ local LoopMode = require("src.domain.player.loopmode")
 ---@field private currentSource Source?
 local Player = class()
 
+function Player:pause()
+   love.audio.pause(self.currentSource.source)
+end
+
 ---@param song Song?
 function Player:play(song)
+   print(debug.traceback("Stack trace"))
+
    if not song then
       self.currentSource = nil
       love.audio.stop()
@@ -85,10 +91,6 @@ function Player:setLoopMode(loopMode)
    else
       assert(false, "Unknown LoopMode case: " .. loopMode)
    end
-end
-
-function Player:pause()
-   love.audio.pause(self.currentSource.source)
 end
 
 return Player

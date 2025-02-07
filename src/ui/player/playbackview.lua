@@ -195,7 +195,10 @@ function PlaybackView:handleDragging()
 
       self:handleProgressChange(self.progressView.origin.x)
    else
-      self.interactor:play()
+      if self.resizing then
+         self.interactor:play()
+      end
+
       self.resizing = false
    end
 end

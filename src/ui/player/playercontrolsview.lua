@@ -22,7 +22,6 @@ local PlayerControls = View()
 ---@param opts PlayerControlsViewOpts
 function PlayerControls:init(opts)
    self._shader = Config.res.shaders.coloring()
-   self._shader:send("tocolor", colors.accent:asVec4())
 
    View.init(self, opts)
 end
@@ -37,6 +36,8 @@ function PlayerControls:update(dt)
    self.controlButtonsContainer.origin.y = self.contentContainer.origin.y
 
    self.playbackView.size.width = self.contentContainer.size.width
+
+   self._shader:send("tocolor", colors.accent:asVec4())
 end
 
 ---@param opts PlayerControlsViewOpts

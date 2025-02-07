@@ -180,6 +180,7 @@ function PlaybackView:handleDragging()
    end
 
    if love.mouse.isDown(1) and self.resizing then
+      self.interactor:pause()
       local min = self.progressView.origin.x
       local max = self.progressView.origin.x + self.progressView.size.width
       self.progressView.origin.x = x
@@ -194,6 +195,7 @@ function PlaybackView:handleDragging()
 
       self:handleProgressChange(self.progressView.origin.x)
    else
+      self.interactor:play()
       self.resizing = false
    end
 end

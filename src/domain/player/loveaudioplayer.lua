@@ -1,8 +1,12 @@
 local nativefs = require("nativefs")
 local LoopMode = require("src.domain.player.loopmode")
 
+---@class Source
+---@field source love.Source
+---@field id string
+
 ---@class LoveAudioPlayer : MusicPlayer
----@field private currentSource love.Source
+---@field private currentSource Source?
 local Player = class()
 
 ---@param song Song?
@@ -13,19 +17,22 @@ function Player:play(song)
       return
    end
 
-   if self.currentSource and not song then
-      love.audio.play(self.currentSource)
+   if self.currentSource and self.currentSource.id == song.file.path then
+      love.audio.play(self.currentSource.source)
       return
-   elseif self.currentSource and song then
-      self:play(nil)
+   else
+      love.audio.stop()
    end
 
    local fileData = nativefs.newFileData(song.file.path)
 
    -- TODO: Error handling!
    if fileData then
-      self.currentSource = love.audio.newSource(fileData, "static")
-      love.audio.play(self.currentSource)
+      self.currentSource = {
+         source = love.audio.newSource(fileData, "static"),
+         id = song.file.path,
+      }
+      love.audio.play(self.currentSource.source)
    end
 end
 
@@ -35,7 +42,7 @@ function Player:setProgress(progress)
       return
    end
 
-   self.currentSource:seek(progress, "seconds")
+   self.currentSource.source:seek(progress, "seconds")
 end
 
 ---@return number: seconds of played audio
@@ -44,7 +51,7 @@ function Player:getProgress()
       return 0.0
    end
 
-   return self.currentSource:tell("seconds")
+   return self.currentSource.source:tell("seconds")
 end
 
 ---@return number: lenght in seconds of the current audio
@@ -53,7 +60,7 @@ function Player:getLength()
       return 0.0
    end
 
-   return self.currentSource:getDuration("seconds")
+   return self.currentSource.source:getDuration("seconds")
 end
 
 ---@return boolean
@@ -62,18 +69,18 @@ function Player:isPlaying()
       return false
    end
 
-   return self.currentSource:isPlaying()
+   return self.currentSource.source:isPlaying()
 end
 
 ---@param loopMode LoopMode
 function Player:setLoopMode(loopMode)
    if loopMode == LoopMode.NONE or loopMode == LoopMode.QUEUE then
       if self.currentSource then
-         self.currentSource:setLooping(false)
+         self.currentSource.source:setLooping(false)
       end
    elseif loopMode == LoopMode.SONG then
       if self.currentSource then
-         self.currentSource:setLooping(true)
+         self.currentSource.source:setLooping(true)
       end
    else
       assert(false, "Unknown LoopMode case: " .. loopMode)
@@ -81,7 +88,7 @@ function Player:setLoopMode(loopMode)
 end
 
 function Player:pause()
-   love.audio.pause()
+   love.audio.pause(self.currentSource.source)
 end
 
 return Player

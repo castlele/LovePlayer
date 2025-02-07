@@ -15,8 +15,6 @@ end
 
 ---@param song Song?
 function Player:play(song)
-   print(debug.traceback("Stack trace"))
-
    if not song then
       self.currentSource = nil
       love.audio.stop()
@@ -91,6 +89,16 @@ function Player:setLoopMode(loopMode)
    else
       assert(false, "Unknown LoopMode case: " .. loopMode)
    end
+end
+
+---@return number
+function Player:getVolume()
+   return love.audio.getVolume()
+end
+
+---@param volume number
+function Player:setVolume(volume)
+   love.audio.setVolume(volume)
 end
 
 return Player

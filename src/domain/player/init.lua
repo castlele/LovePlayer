@@ -12,9 +12,12 @@ local PlayerState = require("src.domain.player.playerstate")
 ---@field getProgress fun(self: MusicPlayer): number
 ---@field setProgress fun(self: MusicPlayer, progress: number)
 ---@field getLength fun(self: MusicPlayer): number
+---@field getVolume fun(self: MusicPlayer): number
+---@field setVolume fun(self: MusicPlayer, volume: number)
 
 ---@class PlayerInteractor
 ---@field musicPlayer MusicPlayer
+---@field private pastVolume number
 ---@field private loopMode LoopMode
 ---@field private queue Song[]
 ---@field private currentQueueIndex integer
@@ -182,6 +185,25 @@ end
 ---@return LoopMode
 function PlayerInteractor:getLoopMode()
    return self.loopMode
+end
+
+---@return number: volume level from 0.0 to 1.0
+function PlayerInteractor:getVolume()
+   return self.musicPlayer:getVolume()
+end
+
+---@param volume number: volume level from 0.0 to 1.0
+function PlayerInteractor:setVolume(volume)
+   self.musicPlayer:setVolume(volume)
+end
+
+function PlayerInteractor:toggleMute()
+   if self:getVolume() > 0 then
+      self.pastVolume = self:getVolume()
+      self:setVolume(0)
+   else
+      self:setVolume(self.pastVolume or 1.0)
+   end
 end
 
 ---@private

@@ -29,6 +29,10 @@ Config = {
          width = 30,
          height = 30,
       },
+      volume = {
+         width = 30,
+         height = 30,
+      },
    },
    navBar = {
       height = 50,
@@ -84,6 +88,9 @@ Config = {
          loop_song = "res/images/loop_song.png",
          minimize = "res/images/minimize.png",
          expand = "res/images/expand.png",
+         no_volume = "res/images/no_volume.png",
+         low_volume = "res/images/low_volume.png",
+         high_volume = "res/images/high_volume.png",
          audioPlaceholder = "res/images/audio_placeholder.png",
       },
       fonts = {

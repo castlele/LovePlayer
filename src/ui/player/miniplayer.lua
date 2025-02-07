@@ -3,6 +3,7 @@ local Button = require("src.ui.button")
 local Image = require("src.ui.image")
 local Label = require("src.ui.label")
 local VStack = require("src.ui.vstack")
+local VolumeView = require("src.ui.player.volumeview")
 local PlayerControlsView = require("src.ui.player.playercontrolsview")
 local imageDataModule = require("src.ui.imagedata")
 local colors = require("src.ui.colors")
@@ -10,6 +11,7 @@ local colors = require("src.ui.colors")
 ---@class MiniPlayer : View
 ---@field private interactor PlayerInteractor
 ---@field private _shader love.Shader
+---@field private volumeView VolumeView
 ---@field private expandButton Button
 ---@field private imageView Image
 ---@field private titlesContainer VStack
@@ -69,6 +71,9 @@ function MiniPlayer:update(dt)
    self.imageView:centerX(self)
    self.imageView.origin.y = self.origin.y + padding
 
+   self.volumeView.origin.x = self.origin.x + padding
+   self.volumeView.origin.y = self.origin.y + padding
+
    self.expandButton.origin.x = self.origin.x
       + self.size.width
       - self.expandButton.size.width
@@ -97,6 +102,10 @@ function MiniPlayer:updateOpts(opts)
 
    self.interactor = PlayerInteractor
 
+   self:updateVolumeViewOpts {
+      interactor = self.interactor,
+      shader = self._shader,
+   }
    self:updateExpandButtonOpts {
       action = function()
          Config.app.state = "normal"
@@ -151,6 +160,18 @@ end
 
 function MiniPlayer:toString()
    return "MiniPlayer"
+end
+
+---@private
+---@param opts VolumeViewOpts
+function MiniPlayer:updateVolumeViewOpts(opts)
+   if self.volumeView then
+      self.volumeView:updateOpts(opts)
+      return
+   end
+
+   self.volumeView = VolumeView(opts)
+   self:addSubview(self.volumeView)
 end
 
 ---@private

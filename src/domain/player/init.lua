@@ -151,6 +151,20 @@ function PlayerInteractor:nextLoopMode()
    return self:getLoopMode()
 end
 
+---@return string: return time as stirng in format MM:SS
+function PlayerInteractor:getFormattedDuration()
+   local sec = self.musicPlayer:getLength()
+
+   return self:formatTime(sec)
+end
+
+---@return string: return time as stirng in format MM:SS
+function PlayerInteractor:getCurrentFormattedProgress()
+   local sec = self.musicPlayer:getProgress()
+
+   return self:formatTime(sec)
+end
+
 ---@param progress number: progress of the playback from 0.0 to 1.0
 function PlayerInteractor:setProgress(progress)
    local len = self.musicPlayer:getLength()
@@ -193,6 +207,35 @@ end
 ---@param index integer
 function PlayerInteractor:canPlayNext(index)
    return index <= #self.queue or self.loopMode == LoopMode.QUEUE
+end
+
+---@private
+---@param sec number
+---@return string
+function PlayerInteractor:formatTime(sec)
+   local days = math.floor(sec / 86400)
+   local remaining = sec % 86400
+   local hours = math.floor(remaining / 3600)
+   remaining = remaining % 3600
+   local minutes = math.floor(remaining / 60)
+   remaining = remaining % 60
+   local seconds = remaining
+
+   local time = string.format(
+      "%02d:%02d",
+      minutes,
+      seconds
+   )
+
+   if hours ~= 0 then
+      time = string.format("%02d:%s", hours, time)
+   end
+
+   if days ~= 0 then
+      time = string.format("%d:%s", days, time)
+   end
+
+   return time
 end
 
 return {

@@ -5,17 +5,20 @@ local imageDataModule = require("src.ui.imagedata")
 local colors = require("src.ui.colors")
 
 ---@class VolumeView : View
+---@field private resizing boolean
 ---@field private interactor PlayerInteractor
 ---@field private noVolumeImage image.ImageData
 ---@field private lowVolumeImage image.ImageData
 ---@field private highVolumeImage image.ImageData
 ---@field private volumeImage Image
 ---@field private volumeRangeView View
+---@field private draggingView View
 local VolumeView = View()
+
+local padding = 10
 
 ---@class VolumeViewOpts : ViewOpts
 ---@field interactor PlayerInteractor
----@field expandedHeight number
 ---@param opts VolumeViewOpts
 function VolumeView:init(opts)
    self.noVolumeImage = imageDataModule.imageData:new(
@@ -37,10 +40,7 @@ function VolumeView:init(opts)
 
    local o = tableutils.concat({
       backgroundColor = colors.clear,
-      width = Config.buttons.volume.width,
-      height = Config.buttons.volume.height,
       isUserInteractionEnabled = true,
-      expandedHeight = 40,
    }, opts)
 
    View.init(self, o)
@@ -48,18 +48,41 @@ end
 
 function VolumeView:handleMousePressed(x, y, mouse, isTouch)
    if self.volumeImage:isPointInside(x, y) then
-      self:updateVolumeImage()
+      self:toggleMuteState()
+   end
+
+   if self.volumeRangeView:isPointInside(x, y) then
+      self:updateVolume(y)
    end
 end
 
 function VolumeView:update(dt)
    View.update(self, dt)
 
+   self._shader:send("offColor", colors.secondary:asVec4())
+   self._shader:send("onColor", colors.accent:asVec4())
+   self._shader:send("volumeState", self.interactor:getVolume())
+
    self.volumeImage.origin = self.origin
-   self.volumeRangeView.origin.x = self.origin.x
-   self.volumeRangeView.origin.y = self.origin.y + self.size.height
+
+   local vr = self.volumeRangeView
+
+   vr:centerX(self)
+   vr.origin.y = self.volumeImage.origin.y
+      + self.volumeImage.size.height
+      + padding
+
+   self.draggingView:centerX(self)
+
+   local d = self.draggingView
+   local volume = self.interactor:getVolume()
+   local halfH = d.size.height / 2
+
+   d.origin.y = volume * vr.size.height + vr.origin.y - halfH
 
    self:expandIfNeeded(dt)
+   self:handleDragging()
+   self:updateVolumeImage()
 end
 
 ---@param opts VolumeViewOpts
@@ -69,32 +92,27 @@ function VolumeView:updateOpts(opts)
    self.interactor = opts.interactor or self.interactor
    self.shader = nil
 
-   self._shader = love.graphics.newShader([[
-extern number progress;
+   self._shader = Config.res.shaders.volume()
 
-vec4 effect(vec4 color, Image tex, vec2 texture_coords, vec2 screen_coords) {
-   if (texture_coords.y <= progress) {
-      return vec4(1, 0, 0, 1);
-   } else {
-      return vec4(0, 0, 0, 0);
-   }
-}
-   ]])
-
-   self:updateImageOpts {
+   self:updateVolumeImageOpts {
       isUserInteractionEnabled = true,
       backgroundColor = colors.clear,
-      width = self.size.width,
-      height = self.size.height,
-      shader = self._shader,
+      width = Config.buttons.volume.width,
+      height = Config.buttons.volume.height,
       imageData = self.highVolumeImage,
+      shader = opts.shader,
    }
    self:updateVolumeRangeViewOpts {
       backgroundColor = colors.clear,
-      width = self.size.width,
-      height = opts.expandedHeight,
+      width = self.size.width / 2,
+      height = self.size.height - padding - self.volumeImage.size.height,
       imageData = self.highVolumeImage,
-      -- shader = self._shader,
+      shader = self._shader,
+   }
+   self:updateDraggingViewOpts {
+      backgroundColor = colors.clear,
+      width = self.size.width,
+      height = self.size.width / 2,
    }
 end
 
@@ -104,7 +122,7 @@ end
 
 ---@private
 ---@param opts ImageOpts
-function VolumeView:updateImageOpts(opts)
+function VolumeView:updateVolumeImageOpts(opts)
    if self.volumeImage then
       self.volumeImage:updateOpts(opts)
       return
@@ -127,22 +145,35 @@ function VolumeView:updateVolumeRangeViewOpts(opts)
 end
 
 ---@private
-function VolumeView:updateVolumeImage()
-   if self.interactor:getVolume() > 0 then
-      self.interactor:toggleMute()
+---@param opts ViewOpts
+function VolumeView:updateDraggingViewOpts(opts)
+   if self.draggingView then
+      self.draggingView:updateOpts(opts)
+      return
+   end
 
-      self:updateImageOpts {
+   self.draggingView = View(opts)
+   self:addSubview(self.draggingView)
+end
+
+---@private
+function VolumeView:toggleMuteState()
+   self.interactor:toggleMute()
+end
+
+---@private
+function VolumeView:updateVolumeImage()
+   if self.interactor:getVolume() == 0 then
+      self:updateVolumeImageOpts {
          imageData = self.noVolumeImage,
       }
    else
-      self.interactor:toggleMute()
-
       if self.interactor:getVolume() > 0.5 then
-         self:updateImageOpts {
+         self:updateVolumeImageOpts {
             imageData = self.highVolumeImage,
          }
       else
-         self:updateImageOpts {
+         self:updateVolumeImageOpts {
             imageData = self.lowVolumeImage,
          }
       end
@@ -153,22 +184,65 @@ end
 ---@param dt number
 function VolumeView:expandIfNeeded(dt)
    local x, y = love.mouse.getX(), love.mouse.getY()
+   local animSpeed = 0.03
 
-   if self:isPointInside(x, y) then
-      self.animState = self.animState + dt
+   if self.volumeImage:isPointInside(x, y) and self.animState < 1 then
+      self.animState = self.animState + dt + animSpeed
 
       if self.animState > 1 then
          self.animState = 1
       end
-   else
-      self.animState = self.animState - dt
+   elseif not self:isPointInside(x, y) then
+      self.animState = self.animState - dt - animSpeed
 
       if self.animState < 0 then
          self.animState = 0
       end
    end
 
-   self._shader:send("progress", self.animState)
+   self._shader:send("animProgress", self.animState)
+end
+
+---@private
+function VolumeView:handleDragging()
+   local x, y = love.mouse.getX(), love.mouse.getY()
+
+   if self.draggingView:isPointInside(x, y) then
+      self.resizing = true
+   end
+
+   if love.mouse.isDown(1) and self.resizing then
+      local vr = self.volumeRangeView
+      local d = self.draggingView
+      local halfH = d.size.height / 2
+
+      d.origin.y = y - halfH
+
+      if d.origin.y + halfH < vr.origin.y then
+         d.origin.y = vr.origin.y - halfH
+      end
+
+      if d.origin.y + halfH > vr.size.height + vr.origin.y then
+         d.origin.y = vr.size.height + vr.origin.y - halfH
+      end
+
+      self:updateVolume(d.origin.y + halfH)
+   else
+      self.resizing = false
+   end
+end
+
+---@private
+---@param y number
+function VolumeView:updateVolume(y)
+   local this = self.volumeRangeView
+   local volume = (y - this.origin.y) / this.size.height
+
+   if volume < 0 then
+      volume = 0
+   end
+
+   self.interactor:setVolume(volume)
 end
 
 return VolumeView

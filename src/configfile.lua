@@ -76,6 +76,9 @@ Config = {
          timeline = function()
             return love.graphics.newShader("res/shaders/timeline.glsl")
          end,
+         volume = function()
+            return love.graphics.newShader("res/shaders/volume.glsl")
+         end,
       },
       images = {
          noFolder = "res/images/no_folder.png",

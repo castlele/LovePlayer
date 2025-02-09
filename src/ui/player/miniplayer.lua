@@ -105,6 +105,8 @@ function MiniPlayer:updateOpts(opts)
    self:updateVolumeViewOpts {
       interactor = self.interactor,
       shader = self._shader,
+      width = Config.buttons.volume.width,
+      height = w / 2,
    }
    self:updateExpandButtonOpts {
       action = function()

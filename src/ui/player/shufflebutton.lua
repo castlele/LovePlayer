@@ -32,8 +32,8 @@ function ShuffleButton:init(opts)
       titleState = {
          type = "image",
          normal = {
-            width = Config.buttons.next_prev.width,
-            height = Config.buttons.next_prev.height,
+            width = Config.buttons.shuffle.width,
+            height = Config.buttons.shuffle.height,
             backgroundColor = colors.clear,
             imageData = imageDataModule.imageData:new(
                Config.res.images.shuffle,

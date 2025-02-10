@@ -79,7 +79,15 @@ function PlayerControls:updateOpts(opts)
       titleState = {},
    }
    self:updateNextButtonOpts(buttonOpts)
-   self:updateLoopButtonOpts(buttonOpts)
+   self:updateLoopButtonOpts {
+      action = function(button)
+         button.loopMode = self.interactor:nextLoopMode()
+      end,
+      loopMode = self.interactor:getLoopMode(),
+      shader = self._shader,
+      state = {},
+      titleState = {},
+   }
    self:updateControlButtonsContainerOpts {
       backgroundColor = colors.clear,
       alignment = "center",
@@ -102,7 +110,7 @@ function PlayerControls:updateOpts(opts)
       views = {
          self.controlButtonsContainer,
          self.playbackView,
-      }
+      },
    }
 end
 

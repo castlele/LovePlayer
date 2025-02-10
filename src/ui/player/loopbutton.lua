@@ -2,10 +2,11 @@ local Button = require("src.ui.button")
 local LoopMode = require("src.domain.player.loopmode")
 local imageDataModule = require("src.ui.imagedata")
 local colors = require("src.ui.colors")
+local tableutils = require("src.utils.tableutils")
 
 ---@class LoopButton : Button
+---@field loopMode LoopMode
 ---@field private opts ButtonOpts
----@field private loopMode LoopMode
 local LoopButton = Button()
 
 local noneLoop = imageDataModule.imageData:new(
@@ -21,19 +22,19 @@ local songLoop = imageDataModule.imageData:new(
    imageDataModule.imageDataType.PATH
 )
 
----@class LoopButtonOpts : ViewOpts
+---@class LoopButtonOpts : ButtonOpts
 ---@field action fun(self: LoopButton)
 ---@field shader love.Shader
 ---@field loopMode LoopMode?
 ---@param opts LoopButtonOpts
 function LoopButton:init(opts)
-   self.opts = {
+   self.opts = tableutils.concat(opts, {
       action = function()
          opts.action(self)
       end,
       state = {
          normal = {
-            backgroundColor = colors.secondary,
+            backgroundColor = colors.clear,
          },
       },
       titleState = {
@@ -46,7 +47,7 @@ function LoopButton:init(opts)
             shader = opts.shader,
          },
       },
-   }
+   })
 
    Button.init(self, self.opts)
 

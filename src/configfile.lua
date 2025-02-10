@@ -2,7 +2,7 @@
 Config = {
    backend = "love", -- "love"|"miniaudio"
    app = {
-      state = "normal", -- "normal"|"miniplayer"
+      state = "miniplayer", -- "normal"|"miniplayer"
       isFlowChanged = false,
    },
    logging = {
@@ -12,6 +12,10 @@ Config = {
       play = {
          width = 30,
          height = 30,
+      },
+      shuffle = {
+         width = 25,
+         height = 20,
       },
       next_prev = {
          width = 25,
@@ -83,6 +87,7 @@ Config = {
       images = {
          noFolder = "res/images/no_folder.png",
          shuffle = "res/images/shuffle.png",
+         expandArrowUp = "res/images/expand_arrow_up.png",
          pause = "res/images/pause.png",
          prev = "res/images/prev.png",
          play = "res/images/play.png",

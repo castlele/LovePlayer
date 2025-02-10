@@ -5,6 +5,7 @@ local Label = require("src.ui.label")
 local VStack = require("src.ui.vstack")
 local VolumeView = require("src.ui.player.volumeview")
 local PlayerControlsView = require("src.ui.player.playercontrolsview")
+local SongsQueueView = require("src.ui.player.songsqueue")
 local imageDataModule = require("src.ui.imagedata")
 local colors = require("src.ui.colors")
 
@@ -18,6 +19,7 @@ local colors = require("src.ui.colors")
 ---@field private songNameLabel Label
 ---@field private artistNameLabel Label
 ---@field private playerControlsView PlayerControlsView
+---@field private songsQueueView SongsQueue
 local MiniPlayer = View()
 
 local w = 400
@@ -85,15 +87,23 @@ function MiniPlayer:update(dt)
       + self.imageView.size.height
       + padding
 
-   self.playerControlsView.size.width = self.size.width - padding*2
+   self.playerControlsView.size.width = self.size.width - padding * 2
    self.playerControlsView.size.height = self.size.height
       - self.titlesContainer.origin.y
       - self.titlesContainer.size.height
-      - padding*2
+      - padding * 2
    self.playerControlsView.origin.y = self.titlesContainer.origin.y
       + self.titlesContainer.size.height
-      + padding*2
+      + padding * 2
    self.playerControlsView.origin.x = self.origin.x + padding
+
+   self.songsQueueView:centerX(self)
+   self.songsQueueView.size.width = self.size.width
+   self.songsQueueView.origin.y = self.playerControlsView.origin.y
+      + self.playerControlsView.size.height / 3
+      + padding
+   self.songsQueueView.size.height = self.size.height
+      - self.songsQueueView.origin.y
 end
 
 ---@param opts ViewOpts
@@ -158,6 +168,9 @@ function MiniPlayer:updateOpts(opts)
       },
    }
    self:updatePlayerControlsViewOpts()
+   self:updateSongsQueueViewOpts {
+      interactor = self.interactor,
+   }
 end
 
 function MiniPlayer:toString()
@@ -245,6 +258,18 @@ function MiniPlayer:updatePlayerControlsViewOpts()
       interactor = self.interactor,
    }
    self:addSubview(self.playerControlsView)
+end
+
+---@private
+---@param opts SongsQueueOpts
+function MiniPlayer:updateSongsQueueViewOpts(opts)
+   if self.songsQueueView then
+      self.songsQueueView:updateOpts(opts)
+      return
+   end
+
+   self.songsQueueView = SongsQueueView(opts)
+   self:addSubview(self.songsQueueView)
 end
 
 return MiniPlayer

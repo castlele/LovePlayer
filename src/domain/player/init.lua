@@ -3,6 +3,7 @@
 
 local LoopMode = require("src.domain.player.loopmode")
 local PlayerState = require("src.domain.player.playerstate")
+local tableutils = require("src.utils.tableutils")
 
 ---@class MusicPlayer
 ---@field play fun(self: MusicPlayer, song: Song?)
@@ -20,8 +21,10 @@ local PlayerState = require("src.domain.player.playerstate")
 ---@field private pastVolume number
 ---@field private loopMode LoopMode
 ---@field private queue Song[]
+---@field private shuffledQueue Song[]
 ---@field private currentQueueIndex integer
 ---@field private state PlayerState
+---@field private isShuffling boolean
 local PlayerInteractor = class()
 
 ---@class PlayerInteractorOpts
@@ -37,6 +40,8 @@ function PlayerInteractor:init(opts)
    self.loopMode = opts.loopMode or LoopMode.NONE
    self.queue = opts.queue or {}
    self.currentQueueIndex = opts.currentQueueIndex or -1
+   self.isShuffling = false
+   self.shuffledQueue = {}
 
    if self.state == PlayerState.PLAYING then
       self:play()
@@ -66,7 +71,15 @@ function PlayerInteractor:play()
    end
 
    self.state = PlayerState.PLAYING
-   self.musicPlayer:play(self.queue[self.currentQueueIndex])
+   local song
+
+   if self.isShuffling then
+      song = self.shuffledQueue[self.currentQueueIndex]
+   else
+      song = self.queue[self.currentQueueIndex]
+   end
+
+   self.musicPlayer:play(song)
 end
 
 function PlayerInteractor:pause()
@@ -85,6 +98,11 @@ function PlayerInteractor:prev()
       return
    end
 
+   if not self:canPlayPrev() then
+      self:stop()
+      return
+   end
+
    self:decreaseCurrentIndex()
    self:play()
 end
@@ -94,7 +112,7 @@ function PlayerInteractor:next()
       return
    end
 
-   if not self:canPlayNext(self.currentQueueIndex + 1) then
+   if not self:canPlayNext() then
       self:stop()
       return
    end
@@ -115,7 +133,11 @@ function PlayerInteractor:getCurrent()
       return nil
    end
 
-   return self.queue[self.currentQueueIndex]
+   if self.isShuffling then
+      return self.shuffledQueue[self.currentQueueIndex]
+   else
+      return self.queue[self.currentQueueIndex]
+   end
 end
 
 function PlayerInteractor:isQueueEmpty()
@@ -206,6 +228,27 @@ function PlayerInteractor:toggleMute()
    end
 end
 
+---@return boolean
+function PlayerInteractor:isShufflingEnabled()
+   return self.isShuffling
+end
+
+function PlayerInteractor:toggleShuffle()
+   self.isShuffling = not self.isShuffling
+
+   if self.isShuffling then
+      local startIndex = 1
+
+      if self:getCurrent() then
+         startIndex = self:getNextIndex()
+      end
+
+      self.shuffledQueue = tableutils.shuffle(self.queue, startIndex)
+   else
+      self.shuffledQueue = {}
+   end
+end
+
 ---@private
 function PlayerInteractor:decreaseCurrentIndex()
    if self.currentQueueIndex - 1 <= 0 then
@@ -225,9 +268,22 @@ function PlayerInteractor:increaseCurrentIndex()
 end
 
 ---@private
----@param index integer
-function PlayerInteractor:canPlayNext(index)
+function PlayerInteractor:canPlayPrev()
+   local index = self.currentQueueIndex - 1
+
+   return index >= 1 or self.loopMode == LoopMode.QUEUE
+end
+
+---@private
+function PlayerInteractor:canPlayNext()
+   local index = self:getNextIndex()
    return index <= #self.queue or self.loopMode == LoopMode.QUEUE
+end
+
+---@private
+---@return integer
+function PlayerInteractor:getNextIndex()
+   return self.currentQueueIndex + 1
 end
 
 ---@private

@@ -1,7 +1,9 @@
 local View = require("src.ui.view")
+local ShuffleButton = require("src.ui.player.shufflebutton")
 local PrevButton = require("src.ui.player.prevbutton")
 local PlayButton = require("src.ui.player.playbutton")
 local NextButton = require("src.ui.player.nextbutton")
+local LoopButton = require("src.ui.player.loopbutton")
 local PlaybackView = require("src.ui.player.playbackview")
 local HStack = require("src.ui.hstack")
 local VStack = require("src.ui.vstack")
@@ -9,9 +11,11 @@ local colors = require("src.ui.colors")
 
 ---@class PlayerControlsView : View
 ---@field private interactor PlayerInteractor
+---@field private shuffleButton ShuffleButton
 ---@field private prevButton PrevButton
 ---@field private playButton PlayButton
 ---@field private nextButton NextButton
+---@field private loopButton LoopButton
 ---@field private controlButtonsContainer HStack
 ---@field private playbackView PlaybackView
 ---@field private contentContainer VStack
@@ -59,6 +63,7 @@ function PlayerControls:updateOpts(opts)
       },
    }
 
+   self:updateShuffleButtonOpts(buttonOpts)
    self:updatePrevButtonOpts(buttonOpts)
    self:updatePlayButtonOpts {
       interactor = self.interactor,
@@ -68,20 +73,23 @@ function PlayerControls:updateOpts(opts)
       shader = self._shader,
       state = {
          normal = {
-            backgroundColor = colors.background,
+            backgroundColor = colors.clear,
          },
       },
       titleState = {},
    }
    self:updateNextButtonOpts(buttonOpts)
+   self:updateLoopButtonOpts(buttonOpts)
    self:updateControlButtonsContainerOpts {
       backgroundColor = colors.clear,
       alignment = "center",
       spacing = 50,
       views = {
+         self.shuffleButton,
          self.prevButton,
          self.playButton,
          self.nextButton,
+         self.loopButton,
       },
    }
    self:updatePlaybackViewOpts {
@@ -96,6 +104,17 @@ function PlayerControls:updateOpts(opts)
          self.playbackView,
       }
    }
+end
+
+---@private
+---@param opts ShuffleButtonOpts
+function PlayerControls:updateShuffleButtonOpts(opts)
+   if self.shuffleButton then
+      self.shuffleButton:updateOpts(opts)
+      return
+   end
+
+   self.shuffleButton = ShuffleButton(opts)
 end
 
 ---@private
@@ -128,6 +147,17 @@ function PlayerControls:updateNextButtonOpts(opts)
    end
 
    self.nextButton = NextButton(opts)
+end
+
+---@private
+---@param opts LoopButtonOpts
+function PlayerControls:updateLoopButtonOpts(opts)
+   if self.loopButton then
+      self.loopButton:updateOpts(opts)
+      return
+   end
+
+   self.loopButton = LoopButton(opts)
 end
 
 ---@private

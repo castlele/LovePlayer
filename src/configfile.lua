@@ -82,6 +82,7 @@ Config = {
       },
       images = {
          noFolder = "res/images/no_folder.png",
+         shuffle = "res/images/shuffle.png",
          pause = "res/images/pause.png",
          prev = "res/images/prev.png",
          play = "res/images/play.png",

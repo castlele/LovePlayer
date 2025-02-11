@@ -11,6 +11,7 @@ local colors = require("src.ui.colors")
 
 ---@class MiniPlayer : View
 ---@field private interactor PlayerInteractor
+---@field private isSongsQueueExpanded boolean
 ---@field private _shader love.Shader
 ---@field private volumeView VolumeView
 ---@field private expandButton Button
@@ -19,6 +20,7 @@ local colors = require("src.ui.colors")
 ---@field private songNameLabel Label
 ---@field private artistNameLabel Label
 ---@field private playerControlsView PlayerControlsView
+---@field private songsQueueShadowView View
 ---@field private songsQueueView SongsQueue
 local MiniPlayer = View()
 
@@ -32,6 +34,7 @@ function MiniPlayer:init()
       centered = true,
    })
 
+   self.isSongsQueueExpanded = false
    self._shader = Config.res.shaders.coloring()
    self._shader:send("tocolor", colors.accent:asVec4())
 
@@ -99,11 +102,22 @@ function MiniPlayer:update(dt)
 
    self.songsQueueView:centerX(self)
    self.songsQueueView.size.width = self.size.width
-   self.songsQueueView.origin.y = self.playerControlsView.origin.y
-      + self.playerControlsView.size.height / 3
-      + padding
-   self.songsQueueView.size.height = self.size.height
-      - self.songsQueueView.origin.y
+
+   if self.isSongsQueueExpanded then
+      self.songsQueueView.origin.y = self.imageView.origin.y
+      self.songsQueueView.size.height = self.size.height - self.imageView.origin.y
+   else
+      self.songsQueueView.origin.y = self.playerControlsView.origin.y
+         + self.playerControlsView.size.height / 3
+         + padding
+      self.songsQueueView.size.height = self.size.height
+         - self.songsQueueView.origin.y
+   end
+
+   self.songsQueueShadowView.origin.x = self.origin.x
+   self.songsQueueShadowView.size.width = self.size.width
+   self.songsQueueShadowView.origin.y = self.songsQueueView.origin.y
+      - self.songsQueueShadowView.size.height
 end
 
 ---@param opts ViewOpts
@@ -168,8 +182,15 @@ function MiniPlayer:updateOpts(opts)
       },
    }
    self:updatePlayerControlsViewOpts()
+   self:updateSongsQueueShadowViewOpts {
+      backgroundColor = colors.shadow,
+      height = 2,
+   }
    self:updateSongsQueueViewOpts {
       interactor = self.interactor,
+      expandAction = function()
+         self.isSongsQueueExpanded = not self.isSongsQueueExpanded
+      end,
    }
 end
 
@@ -258,6 +279,18 @@ function MiniPlayer:updatePlayerControlsViewOpts()
       interactor = self.interactor,
    }
    self:addSubview(self.playerControlsView)
+end
+
+---@private
+---@param opts ViewOpts
+function MiniPlayer:updateSongsQueueShadowViewOpts(opts)
+   if self.songsQueueShadowView then
+      self.songsQueueShadowView:updateOpts(opts)
+      return
+   end
+
+   self.songsQueueShadowView = View(opts)
+   self:addSubview(self.songsQueueShadowView)
 end
 
 ---@private

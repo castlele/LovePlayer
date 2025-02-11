@@ -249,6 +249,33 @@ function PlayerInteractor:toggleShuffle()
    end
 end
 
+---@return Song[]
+function PlayerInteractor:getNextSongs()
+   if self.isShuffling then
+      return { unpack(self.shuffledQueue, self.currentQueueIndex) }
+   else
+      return { unpack(self.queue, self.currentQueueIndex) }
+   end
+end
+
+---@param index integer
+---@return Song?
+function PlayerInteractor:getSongInQueue(index)
+   local queue
+
+   if self.isShuffling then
+      queue = self.shuffledQueue
+   else
+      queue = self.queue
+   end
+
+   if index < 1 or index > #queue then
+      return nil
+   end
+
+   return queue[index]
+end
+
 ---@private
 function PlayerInteractor:decreaseCurrentIndex()
    if self.currentQueueIndex - 1 <= 0 then

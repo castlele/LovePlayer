@@ -2,7 +2,7 @@
 Config = {
    backend = "love", -- "love"|"miniaudio"
    app = {
-      state = "miniplayer", -- "normal"|"miniplayer"
+      state = "normal", -- "normal"|"miniplayer"
       isFlowChanged = false,
    },
    logging = {

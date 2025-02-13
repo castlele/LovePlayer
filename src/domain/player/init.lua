@@ -140,6 +140,31 @@ function PlayerInteractor:getCurrent()
    end
 end
 
+---@param index integer
+function PlayerInteractor:setCurrentIndex(index)
+   assert(index >= 1, string.format("Index is less than 1. Got: %i", index))
+
+   ---@type integer
+   local queueLen
+
+   if self:isShufflingEnabled() then
+      queueLen = #self.shuffledQueue
+   else
+      queueLen = #self.queue
+   end
+
+   assert(
+      index <= queueLen,
+      string.format(
+         "Index is grater than queue's len. Got: %i, while len is: %i",
+         index,
+         queueLen
+      )
+   )
+
+   self.currentQueueIndex = index
+end
+
 function PlayerInteractor:isQueueEmpty()
    return #self.queue == 0
 end
@@ -325,11 +350,7 @@ function PlayerInteractor:formatTime(sec)
    remaining = remaining % 60
    local seconds = remaining
 
-   local time = string.format(
-      "%02d:%02d",
-      minutes,
-      seconds
-   )
+   local time = string.format("%02d:%02d", minutes, seconds)
 
    if hours ~= 0 then
       time = string.format("%02d:%s", hours, time)

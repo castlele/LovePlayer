@@ -8,7 +8,7 @@ local sectionModule = require("src.ui.listsection")
 ---@field onSectionCreate (fun(self: ListDataSourceDelegate, index: integer): Section)?
 ---@field onSectionSetup (fun(self: ListDataSourceDelegate, section: Section, index: integer))?
 ---@field sectionsCount (fun(self: ListDataSourceDelegate): integer)?
----@field onItemSelected fun(self: ListDataSourceDelegate, index: integer)?
+---@field onItemSelected fun(self: ListDataSourceDelegate, index: integer, sectionIndex: integer)?
 
 ---@class List : View
 ---@field dataSourceDelegate ListDataSourceDelegate?
@@ -143,7 +143,7 @@ function List:updateRowsForSection(d, sectionIndex)
             return
          end
 
-         self.dataSourceDelegate:onItemSelected(i)
+         self.dataSourceDelegate:onItemSelected(i, sectionIndex)
       end
 
       section.rows[i].size.width = self.size.width

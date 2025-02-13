@@ -295,8 +295,11 @@ function MainView:onRowSetup(row, index)
    end
 end
 
-function MainView:onItemSelected(index)
+function MainView:onItemSelected(index, sectionIndex)
    if self.state == ListState.SONGS then
+      PlayerInteractor:setQueue(self.interactor:getSongs())
+      PlayerInteractor:setCurrentIndex(index)
+      PlayerInteractor:play()
    elseif self.state == ListState.ALBUMS then
       local album = self.interactor:getAlbums()[index]
       local albumSongs = self.interactor:getAlbumSongs(album)

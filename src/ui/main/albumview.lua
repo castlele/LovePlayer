@@ -286,6 +286,12 @@ function AlbumView:sectionsCount()
    return maxDisnumber
 end
 
+function AlbumView:onItemSelected(index, sectionIndex)
+   self.interactor:setQueue(self.songs)
+   self.interactor:setCurrentIndex(index)
+   self.interactor:play()
+end
+
 function AlbumView:toString()
    return "AlbumView"
 end

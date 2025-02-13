@@ -18,6 +18,7 @@ local storage = require("src.ui.main.media_storage")
 ---@field private songsList List
 ---@field private emptyStateView EmptyView
 ---@field private albumView AlbumView
+---@field private playerView PlayerView
 ---@field private interactor ListsInteractor
 ---@field private songs Song[]
 local MainView = View()
@@ -92,10 +93,10 @@ function MainView:load()
          },
       },
    }
-   local playerView = PlayerView {
+   self.playerView = PlayerView {
       interactor = PlayerInteractor,
    }
-   playerView.delegate = self
+   self.playerView.delegate = self
 
    self.navBar = NavBar {
       leadingView = SelectionView {
@@ -146,7 +147,6 @@ function MainView:load()
             end
          end,
       },
-      centerView = playerView,
       trailingView = reloadButton,
    }
    self.emptyStateView = EmptyView()
@@ -164,11 +164,14 @@ function MainView:load()
    self:addSubview(self.songsList)
    self:addSubview(self.albumView)
    self:addSubview(self.navBar)
+   self:addSubview(self.playerView)
 
    self:updateSongsList()
 end
 
 function MainView:update(dt)
+   self.size.width = love.graphics.getWidth()
+   self.size.height = love.graphics.getHeight()
    self:updateState()
 
    self.emptyStateView.origin.y = self.navBar.origin.y
@@ -179,8 +182,17 @@ function MainView:update(dt)
    self.navBar.backgroundColor = colors.secondary
 
    self.songsList.size.width = self.size.width
-   self.songsList.size.height = self.size.height - self.navBar.size.height
+   self.songsList.size.height = self.size.height
+      - self.navBar.size.height
+      - self.playerView.size.height
    self.songsList.origin.y = self.navBar.size.height
+
+   self.playerView.size.width = self.size.width
+   self.playerView.size.height = Config.player.height
+   self.playerView.origin.x = self.origin.x
+   self.playerView.origin.y = self.origin.y
+      + self.size.height
+      - self.playerView.size.height
 
    if not self.albumView.isHidden then
       local albumViewWidth = self.albumView.size.width

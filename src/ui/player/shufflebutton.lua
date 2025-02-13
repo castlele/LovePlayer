@@ -12,11 +12,11 @@ local ShuffleButton = Button()
 
 ---@class ShuffleButtonOpts : ButtonOpts
 ---@field interactor PlayerInteractor
+---@field onColor Color?
+---@field offColor Color?
 ---@param opts ShuffleButtonOpts
 function ShuffleButton:init(opts)
    self.interactor = opts.interactor or self.interactor
-   self.onColor = colors.accent:asVec4()
-   self.offColor = colors.secondary:asVec4()
    self._shader = Config.res.shaders.coloring()
 
    ---@type ShuffleButtonOpts
@@ -61,6 +61,9 @@ end
 ---@param opts ShuffleButtonOpts
 function ShuffleButton:updateOpts(opts)
    Button.updateOpts(self, opts)
+
+   self.onColor = (opts.onColor or colors.accent):asVec4()
+   self.offColor = (opts.offColor or colors.secondary):asVec4()
 end
 
 return ShuffleButton

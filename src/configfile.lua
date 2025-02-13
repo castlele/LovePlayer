@@ -38,6 +38,9 @@ Config = {
          height = 30,
       },
    },
+   player = {
+      height = 60,
+   },
    navBar = {
       height = 50,
       horizontalPadding = 10,

@@ -15,6 +15,8 @@ local PlaybackView = View()
 
 ---@class PlaybackViewOpts : ViewOpts
 ---@field interactor PlayerInteractor
+---@field offColor Color?
+---@field onColor Color?
 ---@param opts PlaybackViewOpts
 function PlaybackView:init(opts)
    local o = tableutils.concat({
@@ -77,8 +79,8 @@ function PlaybackView:updateOpts(opts)
 
    self.interactor = opts.interactor
    self._shader = Config.res.shaders.timeline()
-   self._shader:send("onColor", colors.accent:asVec4())
-   self._shader:send("offColor", colors.secondary:asVec4())
+   self._shader:send("onColor", (opts.onColor or colors.accent):asVec4())
+   self._shader:send("offColor", (opts.offColor or colors.secondary):asVec4())
 
    ---@type LabelOpts
    local labelOpts = {

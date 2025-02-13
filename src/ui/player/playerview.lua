@@ -1,26 +1,33 @@
 local View = require("src.ui.view")
 local Button = require("src.ui.button")
+local ShuffleButton = require("src.ui.player.shufflebutton")
 local PrevButton = require("src.ui.player.prevbutton")
 local PlayButton = require("src.ui.player.playbutton")
 local NextButton = require("src.ui.player.nextbutton")
 local LoopButton = require("src.ui.player.loopbutton")
+local PlaybackView = require("src.ui.player.playbackview")
 local HStack = require("src.ui.hstack")
 local colors = require("src.ui.colors")
 local imageDataModule = require("src.ui.imagedata")
+local tableutils = require("src.utils.tableutils")
 
 ---@class PlayerViewDelegate
 ---@field getQueue fun(self: PlayerViewDelegate): Song[]
 
 ---@class PlayerView : View
 ---@field delegate PlayerViewDelegate?
+---@field private interactor PlayerInteractor
 ---@field private contentView HStack
+---@field private shuffleButton ShuffleButton
 ---@field private prevButton PrevButton
 ---@field private playButton PlayButton
 ---@field private nextButton NextButton
 ---@field private loopButton LoopButton
 ---@field private minimizeButton Button
----@field private interactor PlayerInteractor
+---@field private playbackView PlaybackView
 local PlayerView = View()
+
+local padding = 20
 
 ---@class PlayerViewOpts : ViewOpts
 ---@field interactor PlayerInteractor?
@@ -29,14 +36,20 @@ function PlayerView:init(opts)
    self._shader = Config.res.shaders.coloring()
    self._shader:send("tocolor", colors.accent:asVec4())
 
-   View.init(self, opts)
+   ---@type PlayerViewOpts
+   local o = tableutils.concat({
+      backgroundColor = colors.secondary,
+   }, opts or {})
+
+   View.init(self, o)
 end
 
 function PlayerView:update(dt)
    View.update(self, dt)
 
-   self.size = self.contentView.size
-   self.contentView.origin = self.origin
+   self.contentView.origin.x = self.origin.x + padding
+   self.contentView:centerY(self)
+   self.contentView.size.height = self.size.height
 end
 
 ---@param opts PlayerViewOpts
@@ -46,15 +59,17 @@ function PlayerView:updateOpts(opts)
    self.interactor = opts.interactor or self.interactor
 
    self:updateContentViewOpts {
-      backgroundColor = colors.secondary,
+      backgroundColor = colors.clear,
       alignment = "center",
-      spacing = 10,
+      spacing = padding,
    }
+   self:updateShuffleButtonOpts()
    self:updatePrevButtonOpts()
    self:updatePlayButtonOpts()
    self:updateNextButtonOpts()
    self:updateLoopButtonOpts()
    self:updateMinimizeButtonOpts()
+   self:updatePlaybackViewOpts()
 end
 
 ---@param opts HStackOpts
@@ -66,6 +81,27 @@ function PlayerView:updateContentViewOpts(opts)
 
    self.contentView = HStack(opts)
    self:addSubview(self.contentView)
+end
+
+function PlayerView:updateShuffleButtonOpts()
+   if self.shuffleButton then
+      return
+   end
+
+   self.shuffleButton = ShuffleButton {
+      interactor = self.interactor,
+      state = {
+         normal = {
+            backgroundColor = colors.clear
+         },
+      },
+      titleState = {
+         normal = {
+         },
+      },
+      offColor = colors.background,
+   }
+   self.contentView:addSubview(self.shuffleButton)
 end
 
 function PlayerView:updatePrevButtonOpts()
@@ -98,6 +134,11 @@ function PlayerView:updatePlayButtonOpts()
          self.interactor:toggle()
       end,
       interactor = self.interactor,
+      state = {
+         normal = {
+            backgroundColor = colors.clear,
+         },
+      },
       shader = self._shader,
    }
    self.contentView:addSubview(self.playButton)
@@ -164,6 +205,20 @@ function PlayerView:updateMinimizeButtonOpts()
       },
    }
    self.contentView:addSubview(self.minimizeButton)
+end
+
+---@private
+function PlayerView:updatePlaybackViewOpts()
+   if self.playbackView then
+      return
+   end
+
+   self.playbackView = PlaybackView {
+      interactor = self.interactor,
+      width = 200,
+      offColor = colors.background,
+   }
+   self.contentView:addSubview(self.playbackView)
 end
 
 function PlayerView:toString()

@@ -1,5 +1,6 @@
 local View = require("src.ui.view")
 local Button = require("src.ui.button")
+local VolumeView = require("src.ui.player.volumeview")
 local ShuffleButton = require("src.ui.player.shufflebutton")
 local PrevButton = require("src.ui.player.prevbutton")
 local PlayButton = require("src.ui.player.playbutton")
@@ -18,6 +19,7 @@ local tableutils = require("src.utils.tableutils")
 ---@field delegate PlayerViewDelegate?
 ---@field private interactor PlayerInteractor
 ---@field private contentView HStack
+---@field private volumeView VolumeView
 ---@field private shuffleButton ShuffleButton
 ---@field private prevButton PrevButton
 ---@field private playButton PlayButton
@@ -63,6 +65,14 @@ function PlayerView:updateOpts(opts)
       alignment = "center",
       spacing = padding,
    }
+   self:updateVolumeViewOpts {
+      interactor = self.interactor,
+      shader = self._shader,
+      static = true,
+      orientation = "landscape",
+      width = 150,
+      height = Config.buttons.volume.height,
+   }
    self:updateShuffleButtonOpts()
    self:updatePrevButtonOpts()
    self:updatePlayButtonOpts()
@@ -81,6 +91,18 @@ function PlayerView:updateContentViewOpts(opts)
 
    self.contentView = HStack(opts)
    self:addSubview(self.contentView)
+end
+
+---@private
+---@param opts VolumeViewOpts
+function PlayerView:updateVolumeViewOpts(opts)
+   if self.volumeView then
+      self.volumeView:updateOpts(opts)
+      return
+   end
+
+   self.volumeView = VolumeView(opts)
+   self.contentView:addSubview(self.volumeView)
 end
 
 function PlayerView:updateShuffleButtonOpts()

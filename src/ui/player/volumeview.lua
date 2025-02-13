@@ -6,6 +6,8 @@ local colors = require("src.ui.colors")
 
 ---@class VolumeView : View
 ---@field private resizing boolean
+---@field private offColor table
+---@field private onColor table
 ---@field private interactor PlayerInteractor
 ---@field private noVolumeImage image.ImageData
 ---@field private lowVolumeImage image.ImageData
@@ -19,6 +21,10 @@ local padding = 10
 
 ---@class VolumeViewOpts : ViewOpts
 ---@field interactor PlayerInteractor
+---@field static boolean
+---@field orientation ("portrait"|"landscape")?
+---@field offColor Color?
+---@field onColor Color?
 ---@param opts VolumeViewOpts
 function VolumeView:init(opts)
    self.noVolumeImage = imageDataModule.imageData:new(
@@ -52,33 +58,56 @@ function VolumeView:handleMousePressed(x, y, mouse, isTouch)
    end
 
    if self.volumeRangeView:isPointInside(x, y) then
-      self:updateVolume(y)
+      if self.orientation == "portrait" then
+         self:updateVolume(y)
+      else
+         self:updateVolume(x)
+      end
    end
 end
 
 function VolumeView:update(dt)
    View.update(self, dt)
 
-   self._shader:send("offColor", colors.secondary:asVec4())
-   self._shader:send("onColor", colors.accent:asVec4())
+   self._shader:send("offColor", self.offColor)
+   self._shader:send("onColor", self.onColor)
    self._shader:send("volumeState", self.interactor:getVolume())
 
    self.volumeImage.origin = self.origin
 
    local vr = self.volumeRangeView
 
-   vr:centerX(self)
-   vr.origin.y = self.volumeImage.origin.y
-      + self.volumeImage.size.height
-      + padding
+   if self.orientation == "portrait" then
+      self._shader:send("orientation", 0)
 
-   self.draggingView:centerX(self)
+      vr:centerX(self)
+      vr.origin.y = self.volumeImage.origin.y
+         + self.volumeImage.size.height
+         + padding
 
-   local d = self.draggingView
-   local volume = self.interactor:getVolume()
-   local halfH = d.size.height / 2
+      self.draggingView:centerX(self)
 
-   d.origin.y = volume * vr.size.height + vr.origin.y - halfH
+      local d = self.draggingView
+      local volume = self.interactor:getVolume()
+      local halfH = d.size.height / 2
+
+      d.origin.y = volume * vr.size.height + vr.origin.y - halfH
+   else
+      self._shader:send("orientation", 1)
+
+      vr:centerY(self)
+      vr.origin.x = self.volumeImage.origin.x
+         + self.volumeImage.size.width
+         + padding
+
+      self.draggingView:centerY(self)
+
+      local d = self.draggingView
+      local volume = self.interactor:getVolume()
+      local halfW = d.size.width / 2
+
+      d.origin.x = volume * vr.size.width + vr.origin.x - halfW
+   end
 
    self:expandIfNeeded(dt)
    self:handleDragging()
@@ -89,6 +118,10 @@ end
 function VolumeView:updateOpts(opts)
    View.updateOpts(self, opts)
 
+   self.static = opts.static
+   self.onColor = (opts.onColor or colors.accent):asVec4()
+   self.offColor = (opts.offColor or colors.secondary):asVec4()
+   self.orientation = opts.orientation or "portrait"
    self.interactor = opts.interactor or self.interactor
    self.shader = nil
 
@@ -102,17 +135,39 @@ function VolumeView:updateOpts(opts)
       imageData = self.highVolumeImage,
       shader = opts.shader,
    }
+   local vw
+   local vh
+
+   if self.orientation == "portrait" then
+      vw = self.size.width / 2
+      vh = self.size.height - padding - self.volumeImage.size.height
+   else
+      vw = self.size.width - padding - self.volumeImage.size.width
+      vh = self.size.height / 2
+   end
+
    self:updateVolumeRangeViewOpts {
       backgroundColor = colors.clear,
-      width = self.size.width / 2,
-      height = self.size.height - padding - self.volumeImage.size.height,
+      width = vw,
+      height = vh,
       imageData = self.highVolumeImage,
       shader = self._shader,
    }
+   local dw
+   local dh
+
+   if self.orientation == "portrait" then
+      dw = self.size.width
+      dh = self.size.width / 2
+   else
+      dw = self.size.height
+      dh = self.size.height / 2
+   end
+
    self:updateDraggingViewOpts {
       backgroundColor = colors.clear,
-      width = self.size.width,
-      height = self.size.width / 2,
+      height = dh,
+      width = dw,
    }
 end
 
@@ -183,20 +238,24 @@ end
 ---@private
 ---@param dt number
 function VolumeView:expandIfNeeded(dt)
-   local x, y = love.mouse.getX(), love.mouse.getY()
-   local animSpeed = 0.03
+   if self.static then
+      self.animState = 1
+   else
+      local x, y = love.mouse.getX(), love.mouse.getY()
+      local animSpeed = 0.03
 
-   if self.volumeImage:isPointInside(x, y) and self.animState < 1 then
-      self.animState = self.animState + dt + animSpeed
+      if self.volumeImage:isPointInside(x, y) and self.animState < 1 then
+         self.animState = self.animState + dt + animSpeed
 
-      if self.animState > 1 then
-         self.animState = 1
-      end
-   elseif not self:isPointInside(x, y) then
-      self.animState = self.animState - dt - animSpeed
+         if self.animState > 1 then
+            self.animState = 1
+         end
+      elseif not self:isPointInside(x, y) then
+         self.animState = self.animState - dt - animSpeed
 
-      if self.animState < 0 then
-         self.animState = 0
+         if self.animState < 0 then
+            self.animState = 0
+         end
       end
    end
 
@@ -212,31 +271,55 @@ function VolumeView:handleDragging()
    end
 
    if love.mouse.isDown(1) and self.resizing then
-      local vr = self.volumeRangeView
-      local d = self.draggingView
-      local halfH = d.size.height / 2
+      if self.orientation == "portrait" then
+         local vr = self.volumeRangeView
+         local d = self.draggingView
+         local halfH = d.size.height / 2
 
-      d.origin.y = y - halfH
+         d.origin.y = y - halfH
 
-      if d.origin.y + halfH < vr.origin.y then
-         d.origin.y = vr.origin.y - halfH
+         if d.origin.y + halfH < vr.origin.y then
+            d.origin.y = vr.origin.y - halfH
+         end
+
+         if d.origin.y + halfH > vr.size.height + vr.origin.y then
+            d.origin.y = vr.size.height + vr.origin.y - halfH
+         end
+
+         self:updateVolume(d.origin.y + halfH)
+      else
+         local vr = self.volumeRangeView
+         local d = self.draggingView
+         local halfW = d.size.width / 2
+
+         d.origin.x = x - halfW
+
+         if d.origin.x + halfW < vr.origin.x then
+            d.origin.x = vr.origin.x - halfW
+         end
+
+         if d.origin.x + halfW > vr.size.width + vr.origin.x then
+            d.origin.x = vr.size.width + vr.origin.x - halfW
+         end
+
+         self:updateVolume(d.origin.x + halfW)
       end
-
-      if d.origin.y + halfH > vr.size.height + vr.origin.y then
-         d.origin.y = vr.size.height + vr.origin.y - halfH
-      end
-
-      self:updateVolume(d.origin.y + halfH)
    else
       self.resizing = false
    end
 end
 
 ---@private
----@param y number
-function VolumeView:updateVolume(y)
+---@param value number
+function VolumeView:updateVolume(value)
    local this = self.volumeRangeView
-   local volume = (y - this.origin.y) / this.size.height
+   local volume
+
+   if self.orientation == "portrait" then
+      volume = (value - this.origin.y) / this.size.height
+   else
+      volume = (value - this.origin.x) / this.size.width
+   end
 
    if volume < 0 then
       volume = 0

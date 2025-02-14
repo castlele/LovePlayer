@@ -10,6 +10,7 @@ local imageDataModule = require("src.ui.imagedata")
 ---@field clear fun(self: MediaDataStore)
 
 ---@class MediaRepository
+---@field clearAll fun(self: MediaRepository)
 ---@field saveMedia fun(self: MediaRepository, items: MediaFile[])
 ---@field saveSongs fun(self: MediaRepository, items: Song[])
 ---@field getMedia fun(self: MediaRepository): MediaFile[]
@@ -138,6 +139,10 @@ end
 
 function ListsInteractor:reload()
    self:requestMedia()
+end
+
+function ListsInteractor:clearAll()
+   self.mediaRepository:clearAll()
 end
 
 ---@private

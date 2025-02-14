@@ -27,6 +27,12 @@ function MediaRepository:init(dataStore)
    self.songsDataStore = {}
 end
 
+function MediaRepository:clearAll()
+   self.mediaDataStore:clear()
+   self.songsDataStore = {}
+   self.mediaFolderPath = nil
+end
+
 ---@param items MediaFile[]
 function MediaRepository:saveMedia(items)
    self.mediaDataStore:save(items)

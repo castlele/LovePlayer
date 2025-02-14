@@ -6,6 +6,7 @@ local EmptyView = require("src.ui.main.emptylist")
 local NavBar = require("src.ui.navbar")
 local View = require("src.ui.view")
 local PlayerView = require("src.ui.player.playerview")
+local HStack = require("src.ui.hstack")
 local List = require("src.ui.list")
 local Row = require("src.ui.row")
 local songRow = require("src.ui.main.songrow")
@@ -93,6 +94,53 @@ function MainView:load()
          },
       },
    }
+   local pickNewFolder = Button {
+      action = function()
+         local path = self.interactor:requestFilePicker()
+
+         if not path then
+            return
+         end
+
+         self.interactor:clearAll()
+         self.interactor:requestMedia(path)
+         self.onFolderPicked(true)
+      end,
+      state = {
+         normal = {
+            backgroundColor = colors.accent,
+            cornerRadius = 8,
+         },
+         highlighted = {
+            backgroundColor = colors.black,
+         },
+      },
+      titleState = {
+         type = "label",
+         normal = {
+            title = "Pick New Folder",
+            textColor = colors.black,
+            fontPath = Config.res.fonts.regular,
+            fontSize = Config.res.fonts.size.header2,
+            paddingTop = 5,
+            paddingBottom = 5,
+            paddingLeft = 5,
+            paddingRight = 5,
+            backgroundColor = colors.clear,
+         },
+         highlighted = {
+            title = "Pick New Folder",
+            textColor = colors.accent,
+            fontPath = Config.res.fonts.regular,
+            fontSize = Config.res.fonts.size.header2,
+            paddingTop = 5,
+            paddingBottom = 5,
+            paddingLeft = 5,
+            paddingRight = 5,
+            backgroundColor = colors.clear,
+         },
+      },
+   }
    self.playerView = PlayerView {
       interactor = PlayerInteractor,
    }
@@ -147,7 +195,15 @@ function MainView:load()
             end
          end,
       },
-      trailingView = reloadButton,
+      trailingView = HStack {
+         backgroundColor = colors.clear,
+         alignment = "center",
+         spacing = 10,
+         views = {
+            reloadButton,
+            pickNewFolder,
+         },
+      },
    }
    self.emptyStateView = EmptyView()
    self.emptyStateView.interactor = self.interactor

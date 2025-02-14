@@ -1,8 +1,7 @@
 local View = require("src.ui.view")
-local Button = require("src.ui.button")
+local Label = require("src.ui.label")
 local Image = require("src.ui.image")
 local colors = require("src.ui.colors")
-local geom = require("src.ui.geometry")
 local imageDataModule = require("src.ui.imagedata")
 
 ---@class FolderPickerDelegate
@@ -12,7 +11,7 @@ local imageDataModule = require("src.ui.imagedata")
 ---@field folderPickerDelegate FolderPickerDelegate?
 ---@field interactor ListsInteractor
 ---@field private noFolderImage Image
----@field private folderPickerButton Button
+---@field private noFolderLabel Label
 local EmptyView = View()
 
 function EmptyView:load()
@@ -29,20 +28,21 @@ function EmptyView:load()
          imageDataModule.imageDataType.PATH
       ),
    }
+   self.noFolderLabel = Label {
+      title = "No music folder selected! To start using the app, tap on the image above :)",
+      textColor = colors.white,
+      fontPath = Config.res.fonts.bold,
+      fontSize = Config.res.fonts.size.header1,
+      backgroundColor = colors.clear,
+      align = "center",
+   }
 
-   self.noFolderImage.handleMousePressed = function (...)
+   self.noFolderImage.handleMousePressed = function(...)
       self:openFolder()
    end
 
-   self.folderPickerButton = Button()
-   self.folderPickerButton.size = geom.Size(100, 50)
-   self.folderPickerButton.backgroundColor = colors.blue
-   self.folderPickerButton:addTapAction(function()
-      self:openFolder()
-   end)
-
    self:addSubview(self.noFolderImage)
-   self:addSubview(self.folderPickerButton)
+   self:addSubview(self.noFolderLabel)
 end
 
 function EmptyView:openFolder()
@@ -59,10 +59,8 @@ function EmptyView:openFolder()
 end
 
 function EmptyView:update(dt)
-   local buttonX = self.size.width / 2 - self.folderPickerButton.size.width / 2
-   local buttonY = self.size.height - self.folderPickerButton.size.height
-   self.folderPickerButton.origin.x = buttonX
-   self.folderPickerButton.origin.y = buttonY
+   View.update(self, dt)
+
 
    local noFolderImageX = self.size.width / 2
       - self.noFolderImage.size.width / 2
@@ -71,7 +69,9 @@ function EmptyView:update(dt)
    self.noFolderImage.origin.x = noFolderImageX
    self.noFolderImage.origin.y = noFolderImageY
 
-   View.update(self, dt)
+   self.noFolderLabel:centerX(self)
+   self.noFolderLabel.size.width = self.size.width
+   self.noFolderLabel.origin.y = noFolderImageY + self.noFolderImage.size.height + 20
 end
 
 function EmptyView:toString()

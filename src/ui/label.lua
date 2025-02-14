@@ -5,6 +5,7 @@ local colors = require("src.ui.colors")
 ---@field title string
 ---@field textColor Color
 ---@field font love.Font?
+---@field align love.AlignMode
 ---@field private fontPath string?
 ---@field private paddingTop number?
 ---@field private paddingBottom number?
@@ -17,6 +18,7 @@ local Label = View()
 ---@field textColor Color?
 ---@field fontPath string?
 ---@field fontSize number?
+---@field align love.AlignMode?
 ---@field paddingTop number?
 ---@field paddingBottom number?
 ---@field paddingLeft number?
@@ -59,11 +61,13 @@ function Label:draw()
       love.graphics.setFont(self.font)
    end
 
-   love.graphics.print(
+   love.graphics.printf(
       self.title,
       -- this doesn't work in update(dt) method
       self.origin.x + self.paddingLeft,
-      self.origin.y + self.paddingTop
+      self.origin.y + self.paddingTop,
+      self.size.width,
+      self.align
    )
    love.graphics.pop()
    love.graphics.setShader()
@@ -76,6 +80,7 @@ function Label:updateOpts(opts)
    self.title = opts.title or self.title or ""
    self.fontPath = opts.fontPath or self.fontPath or nil
    self.textColor = opts.textColor or self.textColor or colors.black
+   self.align = opts.align or self.align or "left"
    self.paddingTop = opts.paddingTop or self.paddingTop or 0
    self.paddingBottom = opts.paddingBottom or self.paddingBottom or 0
    self.paddingLeft = opts.paddingLeft or self.paddingLeft or 0

@@ -10,32 +10,32 @@ Config = {
    },
    buttons = {
       play = {
-         width = 30,
-         height = 30,
+         width = 32,
+         height = 32,
       },
       shuffle = {
          width = 25,
          height = 20,
       },
       next_prev = {
-         width = 25,
+         width = 24,
          height = 20,
       },
       loop = {
-         width = 25,
-         height = 20,
+         width = 24,
+         height = 24,
       },
       minimize = {
-         width = 25,
-         height = 20,
+         width = 24,
+         height = 24,
       },
       expand = {
-         width = 30,
-         height = 30,
+         width = 32,
+         height = 32,
       },
       volume = {
-         width = 30,
-         height = 30,
+         width = 32,
+         height = 32,
       },
    },
    player = {
@@ -93,8 +93,8 @@ Config = {
          expandArrowUp = "res/images/expand_arrow_up.png",
          pause = "res/images/pause.png",
          prev = "res/images/prev.png",
-         play = "res/images/play.png",
          next = "res/images/next.png",
+         play = "res/images/play.png",
          loop_none = "res/images/loop_none.png",
          loop_queue = "res/images/loop_queue.png",
          loop_song = "res/images/loop_song.png",
@@ -127,7 +127,7 @@ Config = {
       isDrawFPS = true,
 
       mock = {
-         isMocking = true,
+         isMocking = false,
          folderPath = "$HOME/Music/",
       },
    },

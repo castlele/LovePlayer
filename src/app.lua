@@ -25,7 +25,6 @@ PlayerInteractor = playerModule.interactor {
 local navigator = require("src.ui.navigator")()
 
 function love.load()
-   love.graphics.setDefaultFilter("nearest", "nearest")
 end
 
 ---@param x number

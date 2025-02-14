@@ -31,6 +31,8 @@ end
 
 ---@return love.Image?
 function ImageData:getImage()
+   love.graphics.setDefaultFilter("nearest", "nearest")
+
    if self.type == ImageDataType.PATH then
       assert(
          type(self.data) == "string",

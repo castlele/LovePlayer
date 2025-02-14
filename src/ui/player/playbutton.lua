@@ -32,6 +32,8 @@ function PlayButton:init(opts)
       state = {
          normal = {
             backgroundColor = bg or colors.secondary,
+            width = opts.width or Config.buttons.play.width,
+            height = opts.height or Config.buttons.play.height,
          },
       },
       titleState = {

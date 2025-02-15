@@ -61,7 +61,6 @@ end
 function EmptyView:update(dt)
    View.update(self, dt)
 
-
    local noFolderImageX = self.size.width / 2
       - self.noFolderImage.size.width / 2
    local noFolderImageY = self.size.height / 2
@@ -69,9 +68,11 @@ function EmptyView:update(dt)
    self.noFolderImage.origin.x = noFolderImageX
    self.noFolderImage.origin.y = noFolderImageY
 
-   self.noFolderLabel:centerX(self)
    self.noFolderLabel.size.width = self.size.width
-   self.noFolderLabel.origin.y = noFolderImageY + self.noFolderImage.size.height + 20
+   self.noFolderLabel:centerX(self)
+   self.noFolderLabel.origin.y = noFolderImageY
+      + self.noFolderImage.size.height
+      + 20
 end
 
 function EmptyView:toString()

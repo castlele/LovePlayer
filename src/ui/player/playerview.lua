@@ -1,5 +1,6 @@
 local View = require("src.ui.view")
 local Button = require("src.ui.button")
+local Label = require("src.ui.label")
 local Image = require("src.ui.image")
 local VolumeView = require("src.ui.player.volumeview")
 local ShuffleButton = require("src.ui.player.shufflebutton")
@@ -9,6 +10,7 @@ local NextButton = require("src.ui.player.nextbutton")
 local LoopButton = require("src.ui.player.loopbutton")
 local PlaybackView = require("src.ui.player.playbackview")
 local HStack = require("src.ui.hstack")
+local VStack = require("src.ui.vstack")
 local colors = require("src.ui.colors")
 local imageDataModule = require("src.ui.imagedata")
 local tableutils = require("src.utils.tableutils")
@@ -23,6 +25,10 @@ local tableutils = require("src.utils.tableutils")
 ---@field private contentView HStack
 ---@field private controlsButtonsView HStack
 ---@field private playbackContentView HStack
+---@field private playbackContainerView VStack
+---@field private titlesContainer VStack
+---@field private songNameLabel Label
+---@field private artistNameLabel Label
 ---@field private volumeView VolumeView
 ---@field private shuffleButton ShuffleButton
 ---@field private prevButton PrevButton
@@ -62,9 +68,21 @@ function PlayerView:update(dt)
          imageData = s.imageData,
          isHidden = false,
       }
+      self:updateSongNameLabelOpts {
+         title = s.title,
+      }
+      self:updateArtistNameLabelOpts {
+         title = s.artist.name or "Unknown",
+      }
    else
       self.songImage:updateOpts {
          isHidden = true,
+      }
+      self:updateSongNameLabelOpts {
+         title = nil,
+      }
+      self:updateArtistNameLabelOpts {
+         title = nil,
       }
    end
 
@@ -97,17 +115,41 @@ function PlayerView:updateOpts(opts)
       alignment = "center",
       spacing = padding,
    }
+   self:updatePlaybackConainerViewOpts {
+      backgroundColor = colors.clear,
+      alignment = "center",
+      spacing = 5,
+   }
    self:updatePlaybackContentViewOpts {
       backgroundColor = colors.clear,
       alignment = "center",
       spacing = 5,
+   }
+   self:updateSongNameLabelOpts {
+      fontPath = Config.res.fonts.bold,
+      fontSize = Config.res.fonts.size.header3,
+      textColor = colors.white,
+      backgroundColor = colors.clear,
+   }
+   self:updateArtistNameLabelOpts {
+      fontPath = Config.res.fonts.regular,
+      fontSize = Config.res.fonts.size.body,
+      textColor = colors.white,
+      backgroundColor = colors.clear,
+   }
+   self:updateSongImageOpts()
+   self:updateTitlesContainerOpts {
+      backgroundColor = colors.clear,
+      views = {
+         self.songNameLabel,
+         self.artistNameLabel,
+      },
    }
    self:updateShuffleButtonOpts()
    self:updatePrevButtonOpts()
    self:updatePlayButtonOpts()
    self:updateNextButtonOpts()
    self:updateLoopButtonOpts()
-   self:updateSongImageOpts()
    self:updateMinimizeButtonOpts()
    self:updatePlaybackViewOpts()
    self:updateVolumeViewOpts {
@@ -131,6 +173,37 @@ function PlayerView:updateContentViewOpts(opts)
    self:addSubview(self.contentView)
 end
 
+---@param opts LabelOpts
+function PlayerView:updateSongNameLabelOpts(opts)
+   if self.songNameLabel then
+      self.songNameLabel:updateOpts(opts)
+      return
+   end
+
+   self.songNameLabel = Label(opts)
+end
+
+---@param opts LabelOpts
+function PlayerView:updateArtistNameLabelOpts(opts)
+   if self.artistNameLabel then
+      self.artistNameLabel:updateOpts(opts)
+      return
+   end
+
+   self.artistNameLabel = Label(opts)
+end
+
+---@param opts VStackOpts
+function PlayerView:updateTitlesContainerOpts(opts)
+   if self.titlesContainer then
+      self.titlesContainer:updateOpts(opts)
+      return
+   end
+
+   self.titlesContainer = VStack(opts)
+   self.playbackContentView:addSubview(self.titlesContainer)
+end
+
 ---@param opts HStackOpts
 function PlayerView:updatePlaybackContentViewOpts(opts)
    if self.playbackContentView then
@@ -139,7 +212,7 @@ function PlayerView:updatePlaybackContentViewOpts(opts)
    end
 
    self.playbackContentView = HStack(opts)
-   self.contentView:addSubview(self.playbackContentView)
+   self.playbackContainerView:addSubview(self.playbackContentView)
 end
 
 ---@param opts HStackOpts
@@ -151,6 +224,17 @@ function PlayerView:updateControlsButtonsViewOpts(opts)
 
    self.controlsButtonsView = HStack(opts)
    self.contentView:addSubview(self.controlsButtonsView)
+end
+
+---@param opts VStackOpts
+function PlayerView:updatePlaybackConainerViewOpts(opts)
+   if self.playbackContainerView then
+      self.playbackContainerView:updateOpts(opts)
+      return
+   end
+
+   self.playbackContainerView = VStack(opts)
+   self.contentView:addSubview(self.playbackContainerView)
 end
 
 ---@param opts VolumeViewOpts
@@ -265,8 +349,8 @@ function PlayerView:updateSongImageOpts()
    self.songsImageShader:send("tocolor", colors.secondary:asVec4())
 
    self.songImage = Image {
-      width = 40,
-      height = 40,
+      width = 30,
+      height = 30,
       autoResizing = false,
       backgroundColor = colors.white,
       shader = self.songsImageShader,
@@ -322,7 +406,7 @@ function PlayerView:updatePlaybackViewOpts()
       width = 200,
       offColor = colors.background,
    }
-   self.playbackContentView:addSubview(self.playbackView)
+   self.playbackContainerView:addSubview(self.playbackView)
 end
 
 ---@private

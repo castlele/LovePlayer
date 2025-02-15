@@ -39,7 +39,7 @@ Config = {
       },
    },
    player = {
-      height = 60,
+      height = 70,
    },
    navBar = {
       height = 50,
@@ -86,6 +86,9 @@ Config = {
          volume = function()
             return love.graphics.newShader("res/shaders/volume.glsl")
          end,
+         shadowing = function()
+            return love.graphics.newShader("res/shaders/shadowing.glsl")
+         end,
       },
       images = {
          noFolder = "res/images/no_folder.png",
@@ -127,7 +130,7 @@ Config = {
       isDrawFPS = true,
 
       mock = {
-         isMocking = false,
+         isMocking = true,
          folderPath = "$HOME/Music/",
       },
    },

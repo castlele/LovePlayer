@@ -1,5 +1,6 @@
 local View = require("src.ui.view")
 local Button = require("src.ui.button")
+local Image = require("src.ui.image")
 local VolumeView = require("src.ui.player.volumeview")
 local ShuffleButton = require("src.ui.player.shufflebutton")
 local PrevButton = require("src.ui.player.prevbutton")
@@ -17,14 +18,18 @@ local tableutils = require("src.utils.tableutils")
 
 ---@class PlayerView : View
 ---@field delegate PlayerViewDelegate?
+---@field private songsImageShader love.Shader
 ---@field private interactor PlayerInteractor
 ---@field private contentView HStack
+---@field private controlsButtonsView HStack
+---@field private playbackContentView HStack
 ---@field private volumeView VolumeView
 ---@field private shuffleButton ShuffleButton
 ---@field private prevButton PrevButton
 ---@field private playButton PlayButton
 ---@field private nextButton NextButton
 ---@field private loopButton LoopButton
+---@field private songImage Image
 ---@field private minimizeButton Button
 ---@field private playbackView PlaybackView
 local PlayerView = View()
@@ -37,6 +42,7 @@ local padding = 20
 function PlayerView:init(opts)
    self._shader = Config.res.shaders.coloring()
    self._shader:send("tocolor", colors.accent:asVec4())
+   self.shader = nil
 
    ---@type PlayerViewOpts
    local o = tableutils.concat({
@@ -49,9 +55,30 @@ end
 function PlayerView:update(dt)
    View.update(self, dt)
 
-   self.contentView.origin.x = self.origin.x + padding
-   self.contentView:centerY(self)
+   local s = self.interactor:getCurrent()
+
+   if s then
+      self.songImage:updateOpts {
+         imageData = s.imageData,
+         isHidden = false,
+      }
+   else
+      self.songImage:updateOpts {
+         isHidden = true,
+      }
+   end
+
+   self:showMinimizeButtonIfNeeded()
+
+   local p = 50
+
+   self.minimizeButton:centerX(self.songImage)
+   self.minimizeButton:centerY(self.songImage)
+
+   self.contentView.origin.x = self.origin.x + p
+   self.contentView.size.width = self.size.width - p
    self.contentView.size.height = self.size.height
+   self.contentView:centerY(self)
 end
 
 ---@param opts PlayerViewOpts
@@ -63,8 +90,26 @@ function PlayerView:updateOpts(opts)
    self:updateContentViewOpts {
       backgroundColor = colors.clear,
       alignment = "center",
+      spacing = "max",
+   }
+   self:updateControlsButtonsViewOpts {
+      backgroundColor = colors.clear,
+      alignment = "center",
       spacing = padding,
    }
+   self:updatePlaybackContentViewOpts {
+      backgroundColor = colors.clear,
+      alignment = "center",
+      spacing = 5,
+   }
+   self:updateShuffleButtonOpts()
+   self:updatePrevButtonOpts()
+   self:updatePlayButtonOpts()
+   self:updateNextButtonOpts()
+   self:updateLoopButtonOpts()
+   self:updateSongImageOpts()
+   self:updateMinimizeButtonOpts()
+   self:updatePlaybackViewOpts()
    self:updateVolumeViewOpts {
       interactor = self.interactor,
       shader = self._shader,
@@ -73,13 +118,6 @@ function PlayerView:updateOpts(opts)
       width = 150,
       height = Config.buttons.volume.height,
    }
-   self:updateShuffleButtonOpts()
-   self:updatePrevButtonOpts()
-   self:updatePlayButtonOpts()
-   self:updateNextButtonOpts()
-   self:updateLoopButtonOpts()
-   self:updateMinimizeButtonOpts()
-   self:updatePlaybackViewOpts()
 end
 
 ---@param opts HStackOpts
@@ -93,7 +131,28 @@ function PlayerView:updateContentViewOpts(opts)
    self:addSubview(self.contentView)
 end
 
----@private
+---@param opts HStackOpts
+function PlayerView:updatePlaybackContentViewOpts(opts)
+   if self.playbackContentView then
+      self.playbackContentView:updateOpts(opts)
+      return
+   end
+
+   self.playbackContentView = HStack(opts)
+   self.contentView:addSubview(self.playbackContentView)
+end
+
+---@param opts HStackOpts
+function PlayerView:updateControlsButtonsViewOpts(opts)
+   if self.controlsButtonsView then
+      self.controlsButtonsView:updateOpts(opts)
+      return
+   end
+
+   self.controlsButtonsView = HStack(opts)
+   self.contentView:addSubview(self.controlsButtonsView)
+end
+
 ---@param opts VolumeViewOpts
 function PlayerView:updateVolumeViewOpts(opts)
    if self.volumeView then
@@ -114,16 +173,15 @@ function PlayerView:updateShuffleButtonOpts()
       interactor = self.interactor,
       state = {
          normal = {
-            backgroundColor = colors.clear
+            backgroundColor = colors.clear,
          },
       },
       titleState = {
-         normal = {
-         },
+         normal = {},
       },
       offColor = colors.background,
    }
-   self.contentView:addSubview(self.shuffleButton)
+   self.controlsButtonsView:addSubview(self.shuffleButton)
 end
 
 function PlayerView:updatePrevButtonOpts()
@@ -139,7 +197,7 @@ function PlayerView:updatePrevButtonOpts()
          },
       },
    }
-   self.contentView:addSubview(self.prevButton)
+   self.controlsButtonsView:addSubview(self.prevButton)
 end
 
 function PlayerView:updatePlayButtonOpts()
@@ -163,7 +221,7 @@ function PlayerView:updatePlayButtonOpts()
       },
       shader = self._shader,
    }
-   self.contentView:addSubview(self.playButton)
+   self.controlsButtonsView:addSubview(self.playButton)
 end
 
 function PlayerView:updateNextButtonOpts()
@@ -179,7 +237,7 @@ function PlayerView:updateNextButtonOpts()
          },
       },
    }
-   self.contentView:addSubview(self.nextButton)
+   self.controlsButtonsView:addSubview(self.nextButton)
 end
 
 function PlayerView:updateLoopButtonOpts()
@@ -194,7 +252,26 @@ function PlayerView:updateLoopButtonOpts()
       loopMode = self.interactor:getLoopMode(),
       shader = self._shader,
    }
-   self.contentView:addSubview(self.loopButton)
+   self.controlsButtonsView:addSubview(self.loopButton)
+end
+
+function PlayerView:updateSongImageOpts()
+   if self.songImage then
+      return
+   end
+
+   self.songsImageShader = Config.res.shaders.shadowing()
+   self.songsImageShader:send("enabled", 0)
+   self.songsImageShader:send("tocolor", colors.secondary:asVec4())
+
+   self.songImage = Image {
+      width = 40,
+      height = 40,
+      autoResizing = false,
+      backgroundColor = colors.white,
+      shader = self.songsImageShader,
+   }
+   self.playbackContentView:addSubview(self.songImage)
 end
 
 function PlayerView:updateMinimizeButtonOpts()
@@ -226,7 +303,12 @@ function PlayerView:updateMinimizeButtonOpts()
          },
       },
    }
-   self.contentView:addSubview(self.minimizeButton)
+   -- Don't add this view to imageview in order to prevent wrong coloring with shader
+   self:addSubview(self.minimizeButton)
+end
+
+function PlayerView:toString()
+   return "PlayerView"
 end
 
 ---@private
@@ -240,11 +322,26 @@ function PlayerView:updatePlaybackViewOpts()
       width = 200,
       offColor = colors.background,
    }
-   self.contentView:addSubview(self.playbackView)
+   self.playbackContentView:addSubview(self.playbackView)
 end
 
-function PlayerView:toString()
-   return "PlayerView"
+---@private
+function PlayerView:showMinimizeButtonIfNeeded()
+   local x, y = love.mouse.getX(), love.mouse.getY()
+
+   self.minimizeButton.isHidden = not self.minimizeButton:isPointInside(x, y)
+      or self.songImage.isHidden
+
+   ---@type integer
+   local enabled
+
+   if self.minimizeButton.isHidden then
+      enabled = 1
+   else
+      enabled = 0
+   end
+
+   self.songsImageShader:send("enabled", enabled)
 end
 
 return PlayerView

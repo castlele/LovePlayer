@@ -137,22 +137,6 @@ function VolumeView:updateOpts(opts)
    }
    local vw
    local vh
-
-   if self.orientation == "portrait" then
-      vw = self.size.width / 2
-      vh = self.size.height - padding - self.volumeImage.size.height
-   else
-      vw = self.size.width - padding - self.volumeImage.size.width
-      vh = self.size.height / 2
-   end
-
-   self:updateVolumeRangeViewOpts {
-      backgroundColor = colors.clear,
-      width = vw,
-      height = vh,
-      imageData = self.highVolumeImage,
-      shader = self._shader,
-   }
    local dw
    local dh
 
@@ -163,6 +147,22 @@ function VolumeView:updateOpts(opts)
       dw = self.size.height
       dh = self.size.height / 2
    end
+
+   if self.orientation == "portrait" then
+      vw = self.size.width / 2
+      vh = self.size.height - padding - self.volumeImage.size.height - dh / 2
+   else
+      vw = self.size.width - padding - self.volumeImage.size.width - dw / 2
+      vh = self.size.height / 2
+   end
+
+   self:updateVolumeRangeViewOpts {
+      backgroundColor = colors.clear,
+      width = vw,
+      height = vh,
+      imageData = self.highVolumeImage,
+      shader = self._shader,
+   }
 
    self:updateDraggingViewOpts {
       backgroundColor = colors.clear,
@@ -243,8 +243,12 @@ function VolumeView:expandIfNeeded(dt)
    else
       local x, y = love.mouse.getX(), love.mouse.getY()
       local animSpeed = 0.03
+      local pointInside = self.volumeImage:isPointInside(x, y)
 
-      if self.volumeImage:isPointInside(x, y) and self.animState < 1 then
+      if
+         pointInside and self.animState < 1
+         or self.animState > 0 and self:isPointInside(x, y)
+      then
          self.animState = self.animState + dt + animSpeed
 
          if self.animState > 1 then
@@ -266,7 +270,7 @@ end
 function VolumeView:handleDragging()
    local x, y = love.mouse.getX(), love.mouse.getY()
 
-   if self.draggingView:isPointInside(x, y) then
+   if self.draggingView:isPointInside(x, y) and self.animState == 1 then
       self.resizing = true
    end
 
@@ -312,6 +316,10 @@ end
 ---@private
 ---@param value number
 function VolumeView:updateVolume(value)
+   if self.animState ~= 1 then
+      return
+   end
+
    local this = self.volumeRangeView
    local volume
 

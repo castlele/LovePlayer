@@ -51,6 +51,9 @@ function MiniPlayer:update(dt)
    local currentSong = self.interactor:getCurrent()
    local padding = 20
 
+   self.songsQueueShadowView.isHidden = currentSong == nil
+   self.songsQueueView.isHidden = currentSong == nil
+
    if currentSong then
       self:updateImageOpts {
          imageData = currentSong.imageData,

@@ -179,7 +179,6 @@ function MainView:load()
          items = {
             "songs",
             "albums",
-            "artists",
          },
          selected = 1,
          height = 50,
@@ -190,8 +189,6 @@ function MainView:load()
                self.state = ListState.SONGS
             elseif item == "albums" then
                self.state = ListState.ALBUMS
-            elseif item == "artists" then
-               self.state = ListState.ARTISTS
             end
          end,
       },

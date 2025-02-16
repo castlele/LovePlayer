@@ -6,6 +6,7 @@ local VolumeView = require("src.ui.player.volumeview")
 local ShuffleButton = require("src.ui.player.shufflebutton")
 local PrevButton = require("src.ui.player.prevbutton")
 local PlayButton = require("src.ui.player.playbutton")
+local TitleSubtitle = require("src.ui.titlesubtitle")
 local NextButton = require("src.ui.player.nextbutton")
 local LoopButton = require("src.ui.player.loopbutton")
 local PlaybackView = require("src.ui.player.playbackview")
@@ -26,7 +27,7 @@ local tableutils = require("src.utils.tableutils")
 ---@field private controlsButtonsView HStack
 ---@field private playbackContentView HStack
 ---@field private playbackContainerView VStack
----@field private titlesContainer VStack
+---@field private titlesContainer TitleSubtitle
 ---@field private songNameLabel Label
 ---@field private artistNameLabel Label
 ---@field private volumeView VolumeView
@@ -68,21 +69,9 @@ function PlayerView:update(dt)
          imageData = s.imageData,
          isHidden = false,
       }
-      self:updateSongNameLabelOpts {
-         title = s.title,
-      }
-      self:updateArtistNameLabelOpts {
-         title = s.artist.name or "Unknown",
-      }
    else
       self.songImage:updateOpts {
          isHidden = true,
-      }
-      self:updateSongNameLabelOpts {
-         title = nil,
-      }
-      self:updateArtistNameLabelOpts {
-         title = nil,
       }
    end
 
@@ -125,24 +114,27 @@ function PlayerView:updateOpts(opts)
       alignment = "center",
       spacing = 5,
    }
-   self:updateSongNameLabelOpts {
-      fontPath = Config.res.fonts.bold,
-      fontSize = Config.res.fonts.size.header3,
-      textColor = colors.white,
-      backgroundColor = colors.clear,
-   }
-   self:updateArtistNameLabelOpts {
-      fontPath = Config.res.fonts.regular,
-      fontSize = Config.res.fonts.size.body,
-      textColor = colors.white,
-      backgroundColor = colors.clear,
-   }
    self:updateSongImageOpts()
-   self:updateTitlesContainerOpts {
+   self:updateTitleSubtitleOpts {
       backgroundColor = colors.clear,
-      views = {
-         self.songNameLabel,
-         self.artistNameLabel,
+      update = function()
+         local song = self.interactor:getCurrent()
+
+         if song then
+            return song.title, song.artist.name
+         end
+      end,
+      titleOpts = {
+         fontPath = Config.res.fonts.bold,
+         fontSize = Config.res.fonts.size.header3,
+         textColor = colors.white,
+         backgroundColor = colors.clear,
+      },
+      subtitleOpts = {
+         fontPath = Config.res.fonts.regular,
+         fontSize = Config.res.fonts.size.body,
+         textColor = colors.white,
+         backgroundColor = colors.clear,
       },
    }
    self:updateShuffleButtonOpts()
@@ -173,34 +165,15 @@ function PlayerView:updateContentViewOpts(opts)
    self:addSubview(self.contentView)
 end
 
----@param opts LabelOpts
-function PlayerView:updateSongNameLabelOpts(opts)
-   if self.songNameLabel then
-      self.songNameLabel:updateOpts(opts)
-      return
-   end
-
-   self.songNameLabel = Label(opts)
-end
-
----@param opts LabelOpts
-function PlayerView:updateArtistNameLabelOpts(opts)
-   if self.artistNameLabel then
-      self.artistNameLabel:updateOpts(opts)
-      return
-   end
-
-   self.artistNameLabel = Label(opts)
-end
-
----@param opts VStackOpts
-function PlayerView:updateTitlesContainerOpts(opts)
+---@private
+---@param opts TitleSubtitleOpts
+function PlayerView:updateTitleSubtitleOpts(opts)
    if self.titlesContainer then
       self.titlesContainer:updateOpts(opts)
       return
    end
 
-   self.titlesContainer = VStack(opts)
+   self.titlesContainer = TitleSubtitle(opts)
    self.playbackContentView:addSubview(self.titlesContainer)
 end
 

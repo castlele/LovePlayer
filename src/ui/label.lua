@@ -6,6 +6,7 @@ local colors = require("src.ui.colors")
 ---@field textColor Color
 ---@field font love.Font?
 ---@field align love.AlignMode
+---@field private autoResizing boolean
 ---@field private fontPath string?
 ---@field private paddingTop number?
 ---@field private paddingBottom number?
@@ -19,6 +20,7 @@ local Label = View()
 ---@field fontPath string?
 ---@field fontSize number?
 ---@field align love.AlignMode?
+---@field autoResizing boolean?
 ---@field paddingTop number?
 ---@field paddingBottom number?
 ---@field paddingLeft number?
@@ -31,10 +33,9 @@ end
 function Label:update(dt)
    View.update(self, dt)
 
-   self.size.width = 0
-   self.size.height = 0
-
-   if self.font then
+   if self.font and self.autoResizing then
+      self.size.width = 0
+      self.size.height = 0
       self.size.width = self.font:getWidth(self.title)
       self.size.height = self.font:getHeight()
    end
@@ -85,6 +86,7 @@ function Label:updateOpts(opts)
    self.paddingBottom = opts.paddingBottom or self.paddingBottom or 0
    self.paddingLeft = opts.paddingLeft or self.paddingLeft or 0
    self.paddingRight = opts.paddingRight or self.paddingRight or 0
+   self.autoResizing = opts.autoResizing or self.autoResizing or true
 
    if self.fontPath and not self.font then
       local f = love.graphics.newFont(self.fontPath, opts.fontSize)

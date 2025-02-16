@@ -28,9 +28,11 @@ local songLoop = imageDataModule.imageData:new(
 ---@field loopMode LoopMode?
 ---@param opts LoopButtonOpts
 function LoopButton:init(opts)
+   local a = opts.action
+
    self.opts = tableutils.concat(opts, {
       action = function()
-         opts.action(self)
+         a(self)
       end,
       state = {
          normal = {

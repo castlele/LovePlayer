@@ -24,31 +24,35 @@ function ImageData:new(data, type, id)
 
    setmetatable(this, { __index = self })
 
-   this.image = this:getImage()
+   if this.getImage then
+      this.image = this:getImage()
+   end
 
    return this
 end
 
----@return love.Image?
-function ImageData:getImage()
-   love.graphics.setDefaultFilter("nearest", "nearest")
+if love then
+   ---@return love.Image?
+   function ImageData:getImage()
+      love.graphics.setDefaultFilter("nearest", "nearest")
 
-   if self.type == ImageDataType.PATH then
-      assert(
-         type(self.data) == "string",
-         "ImageData's data should be string aka path"
-      )
-      return love.graphics.newImage(self.data)
-   elseif self.type == ImageDataType.DATA then
-      assert(
-         type(self.data) == "string",
-         "ImageData's data should be string aka bytes"
-      )
-      local byteData = love.data.newByteData(self.data)
-      ---@diagnostic disable-next-line
-      local imageData = love.image.newImageData(byteData)
+      if self.type == ImageDataType.PATH then
+         assert(
+            type(self.data) == "string",
+            "ImageData's data should be string aka path"
+         )
+         return love.graphics.newImage(self.data)
+      elseif self.type == ImageDataType.DATA then
+         assert(
+            type(self.data) == "string",
+            "ImageData's data should be string aka bytes"
+         )
+         local byteData = love.data.newByteData(self.data)
+         ---@diagnostic disable-next-line
+         local imageData = love.image.newImageData(byteData)
 
-      return love.graphics.newImage(imageData)
+         return love.graphics.newImage(imageData)
+      end
    end
 end
 

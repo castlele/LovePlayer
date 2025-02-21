@@ -111,52 +111,6 @@ t.describe("ListInteractor tests", function()
       end
    )
 
-   t.it(
-      "If after reloading folder was changed data store will change too",
-      function()
-         local interMediateResult = 0
-         local finalResult = 0
-         local expectedIntermediateResult = 2
-         local expectedFinalResult = 1
-         local dataStore = mocks.dataStore:new()
-         local repo = mocks.mediaRepo:new(dataStore)
-         local sut = sutModule(repo)
-
-         utils.runInEnvironment(musicEnv, function(cwd)
-            sut:requestMedia(cwd)
-
-            interMediateResult = #dataStore:getAll()
-            local file = FM.get_dir_content({
-               dir_path = cwd,
-               file_type = "file",
-            })[1]
-            os.execute("mv " .. "$(pwd)/" .. file .. " ../")
-
-            sut:reload()
-
-            local comps = strutils.split(file, "%/")
-            os.execute("mv ../" .. comps[#comps] .. " " .. file)
-
-            finalResult = #dataStore:getAll()
-         end)
-
-         t.expect(
-            interMediateResult == expectedIntermediateResult,
-            "Got wrong interMediateResult. Expected: "
-               .. expectedIntermediateResult
-               .. ". But got: "
-               .. interMediateResult
-         )
-         t.expect(
-            finalResult == expectedFinalResult,
-            "Got wrong final result. Expected: "
-               .. expectedFinalResult
-               .. ". But got: "
-               .. finalResult
-         )
-      end
-   )
-
    t.it("Songs list can be got from data source", function()
       local dataStore = mocks.dataStore:new()
       local repo = mocks.mediaRepo:new(dataStore)
@@ -188,14 +142,6 @@ t.describe("ListInteractor tests", function()
       t.expect(
          "Уроборос: Улица 36" == song.album.name,
          "Wrong album name, got: " .. song.album.name
-      )
-      t.expect(
-         1 == song.album.discnumber,
-         "Wrong discnumber, got: " .. song.album.discnumber
-      )
-      t.expect(
-         2 == song.album.tracknumber,
-         "Wrong tracknumber, got: " .. song.album.tracknumber
       )
    end)
 

@@ -10,13 +10,7 @@ end
 local function getLove()
    local osname = require("cluautils.os").getName()
 
-   if osname == "Linux" then
-      return "~/Downloads/love-11.5-x86_64.AppImage"
-   elseif osname == "MacOS" then
-      return "/Applications/love.app/Contents/MacOS/love"
-   end
-
-   assert(false, "Unsupported OS type")
+   return io.popen("which love", "r"):read("*l")
 end
 
 local function getOpenCmd()
@@ -43,7 +37,7 @@ conf = {
       bear -- make build_luaminiaudio
       lua ./src/main.lua
    ]],
-   testAll = "./run_tests.sh \"*\"",
+   testAll = "./run_tests.sh \"*.lua\"",
    testListsInteractor = "./run_tests.sh \"listsinteractor_tests\"",
    run = getLove() .. " .",
    currentTest = string.format("./run_tests.sh \"%s\"", getCurrentFileName()),

@@ -15,14 +15,25 @@ kanban-plugin: board
 - [ ] Implement methods of getting albums from Interactor #1h #backend #lists
 - [ ] Implement methods of getting artists from Interactor #1h #backend #lists
 - [ ] Implement artists list view #4h #lists #ui
-- [ ] Implement view with songs queue #3h #ui #player
+- [ ] Port application for Android #week
+- [ ] Port application for Windows #week
+- [ ] Fix wrong PlayButton state if song started from outside playerview #bug #major
+- [ ] Fix wrong loop button state on miniplayer if state changed from playerview #bug #major
+- [ ] Fix controls buttons not seen on miniplayer if user change from mainview to miniplayer #bug #crit
+- [ ] [albumview] play button is outside of the header view #bug #minor
+- [ ] [songrow] fix wrong subtitle's font and font size if switching from albums to songs #bug #major
+- [ ] Add fast scrolling to lists #feature #major
+- [ ] [albumview, miniplayer] wrong songs's list height #bug #minor
+- [ ] Add ability to share album's image #feature #minor
+- [ ] Add statistics #feature #crit
+- [ ] Add track's duration to song row #feature #major
+- [ ] Add track's number in an album to song row #feature #minor
+- [ ] Add pausing playback if current audio output device become unavailable #feature #crit
+- [ ] Add server synchronization for all audio #feature #crit
 
 
 ## In Progress
 
-- [ ] Implement player functions #2h #backend #player
-- [ ] Implement player view #2h #ui #player
-- [ ] Implement mini player view #6h #ui #player
 
 
 ## Done
@@ -47,6 +58,10 @@ kanban-plugin: board
 - [x] Implement album's songs view #1_5h #lists #ui
 - [x] Implement navigation between screens #4h #lists #ui
 - [x] Implement music queue logic #3h #backend #player
+- [x] Implement player functions #2h #backend #player
+- [x] Implement player view #2h #ui #player
+- [x] Implement mini player view #6h #ui #player
+- [x] Implement view with songs queue #3h #ui #player
 
 
 

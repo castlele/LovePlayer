@@ -4,49 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "787e4e692bdd4559",
+        "id": "b7817018f66f0101",
         "type": "tabs",
-        "dimension": 42.96028880866427,
         "children": [
           {
-            "id": "5c7554e56cdfd87d",
+            "id": "a4ae5ee031c01192",
             "type": "leaf",
             "state": {
-              "type": "kanban",
-              "state": {
-                "file": "mvp_plan.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false
-                  ]
-                }
-              },
-              "icon": "lucide-trello",
-              "title": "mvp_plan"
-            }
-          }
-        ]
-      },
-      {
-        "id": "d85ec5e1d15a952f",
-        "type": "tabs",
-        "dimension": 57.03971119133573,
-        "children": [
-          {
-            "id": "447795f6cf6594b9",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "player.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "player"
+              "title": "New tab"
             }
           }
         ]
@@ -68,7 +36,8 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
+                "sortOrder": "alphabetical",
+                "autoReveal": false
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -80,7 +49,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "2",
+                "query": "tag:#week",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -101,7 +70,8 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -221,12 +191,12 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "5c7554e56cdfd87d",
+  "active": "a4ae5ee031c01192",
   "lastOpenFiles": [
+    "mvp_plan.md",
     "player.md",
     "user_map.canvas",
     "statistics.md",
-    "mvp_plan.md",
     "music_folder_picker.md",
     "mindmap.canvas",
     "lists.md",

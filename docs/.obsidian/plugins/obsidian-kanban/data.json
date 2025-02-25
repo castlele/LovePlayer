@@ -25,6 +25,31 @@
       "tagKey": "#player",
       "color": "rgba(255, 255, 255, 1)",
       "backgroundColor": "rgba(91, 255, 200, 0.58)"
+    },
+    {
+      "tagKey": "#bug",
+      "color": "rgba(255, 255, 255, 1)",
+      "backgroundColor": "rgba(255, 183, 104, 0.94)"
+    },
+    {
+      "tagKey": "#feature",
+      "color": "rgba(255, 255, 255, 1)",
+      "backgroundColor": "rgba(187, 124, 214, 1)"
+    },
+    {
+      "tagKey": "#minor",
+      "color": "rgba(255, 255, 255, 1)",
+      "backgroundColor": "rgba(0, 21, 255, 1)"
+    },
+    {
+      "tagKey": "#major",
+      "color": "rgba(255, 255, 255, 1)",
+      "backgroundColor": "rgba(255, 203, 0, 1)"
+    },
+    {
+      "tagKey": "#crit",
+      "color": "rgba(255, 255, 255, 1)",
+      "backgroundColor": "rgba(255, 13, 0, 1)"
     }
   ],
   "move-tags": true,

@@ -30,6 +30,7 @@ kanban-plugin: board
 - [ ] Add track's number in an album to song row #feature #minor
 - [ ] Add pausing playback if current audio output device become unavailable #feature #crit
 - [ ] Add server synchronization for all audio #feature #crit
+- [ ] [albumview] selecting song while changing volume in playerview #bug #crit
 
 
 ## In Progress

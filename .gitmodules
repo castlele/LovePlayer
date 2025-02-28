@@ -7,3 +7,6 @@
 [submodule "nativefs"]
 	path = nativefs
 	url = git@github.com:EngineerSmith/nativefs.git
+[submodule "lovekit"]
+	path = lovekit
+	url = git@github.com:castlele/lovekit.git

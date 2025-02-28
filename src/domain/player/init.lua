@@ -3,7 +3,7 @@
 
 local LoopMode = require("src.domain.player.loopmode")
 local PlayerState = require("src.domain.player.playerstate")
-local tableutils = require("src.utils.tableutils")
+local tableutils = require("lovekit.utils.tableutils")
 
 ---@class MusicPlayer
 ---@field play fun(self: MusicPlayer, song: Song?)

@@ -1,7 +1,8 @@
+require("lovekit.ext.loveext")
 require("src.loveext")
-require("src.utils.class")
+require("lovekit.utils.class")
 require("src.configfile")
-local debugView = require("src.ui.debugview")
+local debugView = require("lovekit.ui.debugview")
 local PlayerState = require("src.domain.player.playerstate")
 local playerModule = require("src.domain.player")
 ---@type MusicPlayer

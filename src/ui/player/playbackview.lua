@@ -1,9 +1,9 @@
-local View = require("src.ui.view")
-local Label = require("src.ui.label")
-local Image = require("src.ui.image")
-local tableutils = require("src.utils.tableutils")
-local imageDataModule = require("src.ui.imagedata")
-local colors = require("src.ui.colors")
+local View = require("lovekit.ui.view")
+local Label = require("lovekit.ui.label")
+local Image = require("lovekit.ui.image")
+local tableutils = require("lovekit.utils.tableutils")
+local imageDataModule = require("lovekit.ui.imagedata")
+local colors = require("lovekit.ui.colors")
 
 ---@class PlaybackView : View
 ---@field private interactor PlayerInteractor

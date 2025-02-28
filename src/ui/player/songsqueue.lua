@@ -1,10 +1,10 @@
-local View = require("src.ui.view")
-local Button = require("src.ui.button")
-local List = require("src.ui.list")
-local tableutils = require("src.utils.tableutils")
-local imageDataModule = require("src.ui.imagedata")
+local View = require("lovekit.ui.view")
+local Button = require("lovekit.ui.button")
+local List = require("lovekit.ui.list")
+local tableutils = require("lovekit.utils.tableutils")
+local imageDataModule = require("lovekit.ui.imagedata")
 local songRowFactory = require("src.ui.main.songrow").factoryMethod
-local colors = require("src.ui.colors")
+local colors = require("lovekit.ui.colors")
 
 ---@class SongsQueue : View, ListDataSourceDelegate
 ---@field private interactor PlayerInteractor

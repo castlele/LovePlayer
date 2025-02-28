@@ -3,7 +3,7 @@ if not Config then
 end
 
 if not class then
-   require("src.utils.class")
+   require("lovekit.utils.class")
 end
 
 local sutModule = require("src.domain.lists.init")

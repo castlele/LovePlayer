@@ -2,7 +2,7 @@
 --- Its main goal it to sort, filter and combine lists of songs.
 
 local log = require("src.domain.logger.init")
-local imageDataModule = require("src.ui.imagedata")
+local imageDataModule = require("lovekit.ui.imagedata")
 
 ---@class MediaDataStore
 ---@field save fun(self: MediaDataStore, item: MediaFile[])

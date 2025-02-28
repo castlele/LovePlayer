@@ -1,8 +1,8 @@
-local Button = require("src.ui.button")
+local Button = require("lovekit.ui.button")
 local LoopMode = require("src.domain.player.loopmode")
-local imageDataModule = require("src.ui.imagedata")
-local colors = require("src.ui.colors")
-local tableutils = require("src.utils.tableutils")
+local imageDataModule = require("lovekit.ui.imagedata")
+local colors = require("lovekit.ui.colors")
+local tableutils = require("lovekit.utils.tableutils")
 
 ---@class LoopButton : Button
 ---@field loopMode LoopMode

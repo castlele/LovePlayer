@@ -1,13 +1,13 @@
-local View = require("src.ui.view")
+local View = require("lovekit.ui.view")
 local ShuffleButton = require("src.ui.player.shufflebutton")
 local PrevButton = require("src.ui.player.prevbutton")
 local PlayButton = require("src.ui.player.playbutton")
 local NextButton = require("src.ui.player.nextbutton")
 local LoopButton = require("src.ui.player.loopbutton")
 local PlaybackView = require("src.ui.player.playbackview")
-local HStack = require("src.ui.hstack")
-local VStack = require("src.ui.vstack")
-local colors = require("src.ui.colors")
+local HStack = require("lovekit.ui.hstack")
+local VStack = require("lovekit.ui.vstack")
+local colors = require("lovekit.ui.colors")
 
 ---@class PlayerControlsView : View
 ---@field private interactor PlayerInteractor

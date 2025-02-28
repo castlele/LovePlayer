@@ -1,12 +1,12 @@
-local View = require("src.ui.view")
-local Button = require("src.ui.button")
-local Image = require("src.ui.image")
-local VStack = require("src.ui.vstack")
-local Label = require("src.ui.label")
-local List = require("src.ui.list")
+local View = require("lovekit.ui.view")
+local Button = require("lovekit.ui.button")
+local Image = require("lovekit.ui.image")
+local VStack = require("lovekit.ui.vstack")
+local Label = require("lovekit.ui.label")
+local List = require("lovekit.ui.list")
 local songRow = require("src.ui.main.songrow")
-local colors = require("src.ui.colors")
-local sectionsModule = require("src.ui.listsection")
+local colors = require("lovekit.ui.colors")
+local sectionsModule = require("lovekit.ui.listsection")
 
 ---@class AlbumView : View, ListDataSourceDelegate
 ---@field private isResizing boolean

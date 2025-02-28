@@ -1,7 +1,7 @@
-local Button = require("src.ui.button")
-local colors = require("src.ui.colors")
-local imageDataModule = require("src.ui.imagedata")
-local tableutils = require("src.utils.tableutils")
+local Button = require("lovekit.ui.button")
+local colors = require("lovekit.ui.colors")
+local imageDataModule = require("lovekit.ui.imagedata")
+local tableutils = require("lovekit.utils.tableutils")
 
 ---@class NextButton : Button
 ---@field private interactor PlayerInteractor

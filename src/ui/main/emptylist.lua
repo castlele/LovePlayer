@@ -1,8 +1,8 @@
-local View = require("src.ui.view")
-local Label = require("src.ui.label")
-local Image = require("src.ui.image")
-local colors = require("src.ui.colors")
-local imageDataModule = require("src.ui.imagedata")
+local View = require("lovekit.ui.view")
+local Label = require("lovekit.ui.label")
+local Image = require("lovekit.ui.image")
+local colors = require("lovekit.ui.colors")
+local imageDataModule = require("lovekit.ui.imagedata")
 
 ---@class FolderPickerDelegate
 ---@field onFolderPicked fun(isSuccess: boolean)

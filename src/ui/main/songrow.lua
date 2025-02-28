@@ -1,5 +1,5 @@
-local Row = require("src.ui.row")
-local colors = require("src.ui.colors")
+local Row = require("lovekit.ui.row")
+local colors = require("lovekit.ui.colors")
 
 ---@param song Song
 local function createSongRow(song)

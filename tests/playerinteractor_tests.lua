@@ -1,5 +1,5 @@
 if not class then
-   require("src.utils.class")
+   require("lovekit.utils.class")
 end
 
 local t = require("cluautils.tests")

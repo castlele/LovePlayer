@@ -1,7 +1,7 @@
 local MainView = require("src.ui.main")
 local MiniPlayer = require("src.ui.player.miniplayer")
-local View = require("src.ui.view")
-local geom = require("src.ui.geometry")
+local View = require("lovekit.ui.view")
+local geom = require("lovekit.ui.geometry")
 
 ---@class Navigator : View
 ---@field private currentView MainView

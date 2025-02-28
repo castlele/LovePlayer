@@ -1,7 +1,7 @@
-local Button = require("src.ui.button")
-local imageDataModule = require("src.ui.imagedata")
+local Button = require("lovekit.ui.button")
+local imageDataModule = require("lovekit.ui.imagedata")
 local PlayerState = require("src.domain.player.playerstate")
-local colors = require("src.ui.colors")
+local colors = require("lovekit.ui.colors")
 
 ---@class PlayButton : Button
 ---@field private opts PlayButtonOpts

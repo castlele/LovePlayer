@@ -9,3 +9,4 @@
 - nativefiledialog
     - gtk-3.0
 - cluautils
+- appImage

@@ -1,30 +1,38 @@
 require("src.loveext")
 require("lovekit.utils.class")
 require("src.configfile")
-local debugView = require("lovekit.ui.debugview")
-local PlayerState = require("src.domain.player.playerstate")
-local playerModule = require("src.domain.player")
+
+local debugView
+local PlayerState
+local playerModule
 ---@type MusicPlayer
 local audioPlayer
 
-if Config.backend == "love" then
-   audioPlayer = require("src.domain.player.loveaudioplayer")
-elseif Config.backend == "miniaudio" then
-   audioPlayer = require("src.domain.player.miniaudioplayer")
-else
-   assert(false, "Unsupported backend: " .. Config.backend)
-end
-
 ---@type PlayerInteractor
-PlayerInteractor = playerModule.interactor {
-   initialState = PlayerState.PAUSED,
-   player = audioPlayer(),
-}
+PlayerInteractor = nil
 
 ---@type Navigator
-local navigator = require("src.ui.navigator")()
+local navigator
 
 function love.load()
+   debugView = require("lovekit.ui.debugview")
+   PlayerState = require("src.domain.player.playerstate")
+   playerModule = require("src.domain.player")
+
+   if Config.backend == "love" then
+      audioPlayer = require("src.domain.player.loveaudioplayer")
+   elseif Config.backend == "miniaudio" then
+      audioPlayer = require("src.domain.player.miniaudioplayer")
+   else
+      assert(false, "Unsupported backend: " .. Config.backend)
+   end
+
+   PlayerInteractor = playerModule.interactor {
+      initialState = PlayerState.PAUSED,
+      player = audioPlayer(),
+   }
+
+   navigator = require("src.ui.navigator")()
 end
 
 ---@param x number

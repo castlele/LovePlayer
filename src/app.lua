@@ -1,4 +1,3 @@
-require("lovekit.ext.loveext")
 require("src.loveext")
 require("lovekit.utils.class")
 require("src.configfile")
@@ -40,9 +39,9 @@ end
 ---@param code love.Scancode
 ---@param isrepeat boolean
 function love.keypressed(key, code, isrepeat)
-   love.toggleRainbowBorders()
+   love.toggleRainbowBorders(Config)
    love.toggleModeIfNeeded()
-   love.quitIfNeeded()
+   love.quitIfNeeded(Config.keymap.quit)
 end
 
 ---@param x number

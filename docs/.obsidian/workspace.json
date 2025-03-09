@@ -4,27 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "b7817018f66f0101",
+        "id": "12ca9416e0e05568",
         "type": "tabs",
         "children": [
           {
-            "id": "a4ae5ee031c01192",
+            "id": "4a8c18444b553cd7",
             "type": "leaf",
             "state": {
-              "type": "kanban",
-              "state": {
-                "file": "mvp_plan.md",
-                "kanbanViewState": {
-                  "kanban-plugin": "board",
-                  "list-collapse": [
-                    false,
-                    false,
-                    false
-                  ]
-                }
-              },
-              "icon": "lucide-trello",
-              "title": "mvp_plan"
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
             }
           }
         ]
@@ -59,7 +49,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#week",
+                "query": "2",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -99,14 +89,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "mvp_plan.md",
-                "followCursor": false,
-                "showSearch": false,
-                "searchQuery": ""
-              },
+              "state": {},
               "icon": "lucide-list",
-              "title": "Outline of mvp_plan"
+              "title": "Outline"
             }
           },
           {
@@ -155,7 +140,8 @@
               "title": "Outgoing links from binary_tree"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       },
       {
         "id": "27f00551efd5d624",
@@ -189,7 +175,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 246.5
+    "width": 246.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -203,14 +190,14 @@
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "a4ae5ee031c01192",
+  "active": "4a8c18444b553cd7",
   "lastOpenFiles": [
     "mvp_plan.md",
+    "mindmap.canvas",
+    "music_folder_picker.md",
     "player.md",
     "user_map.canvas",
     "statistics.md",
-    "music_folder_picker.md",
-    "mindmap.canvas",
     "lists.md",
     "Untitled.md",
     "[MacOS] Implement flow of picking folder ui.md",
